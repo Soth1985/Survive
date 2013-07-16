@@ -19,7 +19,7 @@ set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/extlibs/SFML/cmake/Modules/;${CMAK
 
 # Find packages.
 find_package( OpenGL REQUIRED )
-set(SFML_ROOT "E:\\Programming\\Survive\\deps_trunk\\build\\SFML-2.0")
+set(SFML_ROOT "E:\\Programming\\GitRepositories\\Survive\\dependencies\\build\\SFML-2.0")
 find_package( SFML 2.0 REQUIRED COMPONENTS GRAPHICS WINDOW SYSTEM )
 
 if( SFGUI_INCLUDE_FONT )
