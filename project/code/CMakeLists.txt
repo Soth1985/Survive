@@ -4,7 +4,7 @@ project(Survive)
 set(CMAKE_DEBUG_POSTFIX _d)
 set(SURVIVE_PATH "" CACHE PATH "Path to the root directory.")
 set(SURVIVE_DEPS_PATH "" CACHE PATH "Path to the directory with dependencies.")
-set(SURVIVE_CONTENT_PATH "" CACHE PATH "Path to the root directory of the content")
+#set(SURVIVE_CONTENT_PATH "" CACHE PATH "Path to the root directory of the content")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
