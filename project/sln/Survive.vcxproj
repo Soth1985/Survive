@@ -12,10 +12,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\code\Survive\application.cpp" />
+    <ClCompile Include="..\code\Survive\big_sprite.cpp" />
+    <ClCompile Include="..\code\Survive\big_texture.cpp" />
+    <ClCompile Include="..\code\Survive\content_holder.cpp" />
+    <ClCompile Include="..\code\Survive\content_manager.cpp" />
+    <ClCompile Include="..\code\Survive\landscape_node.cpp" />
     <ClCompile Include="..\code\Survive\main.cpp" />
+    <ClCompile Include="..\code\Survive\scene_node.cpp" />
+    <ClCompile Include="..\code\Survive\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\code\Survive\application.h" />
+    <ClInclude Include="..\code\Survive\big_sprite.h" />
+    <ClInclude Include="..\code\Survive\big_texture.h" />
+    <ClInclude Include="..\code\Survive\content_holder.h" />
+    <ClInclude Include="..\code\Survive\content_manager.h" />
+    <ClInclude Include="..\code\Survive\forward.h" />
+    <ClInclude Include="..\code\Survive\landscape_node.h" />
+    <ClInclude Include="..\code\Survive\scene_node.h" />
+    <ClInclude Include="..\code\Survive\world.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{95BE61A3-8C36-4A9E-969C-57BB4FF415A0}</ProjectGuid>
@@ -62,9 +77,9 @@
       <AdditionalIncludeDirectories>../../dependencies/include;../code</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfgui-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfgui-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;opengl32.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../lib/vc10_32/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutputDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -81,12 +96,12 @@
       <AdditionalIncludeDirectories>../../dependencies/include;../code</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutputDir)$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>sfgui.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfgui.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;opengl32.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../lib/vc10_32/Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
