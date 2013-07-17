@@ -1,4 +1,4 @@
-#include <Survive/Application.h>
+#include <Survive/application.h>
 
 int main()
 {

@@ -1,26 +1,77 @@
-#include <Survive/Application.h>
+#include <Survive/application.h>
+#include <Survive/world.h>
+#include <Survive/content_manager.h>
+#include <SFML/Graphics.hpp>
 
 namespace Survive
 {
 
 Application::Application()
 	:
-m_RenderWindow(sf::VideoMode(1024, 768), "Survive", sf::Style::Close)
+m_pRenderWindow(new sf::RenderWindow(sf::VideoMode(800, 600), "Survive", sf::Style::Close)),
+m_UpdateFrequency(1.0f / 60.0f)
+{
+	m_Worlds[CurrentWorld].reset(new World());
+}
+
+Application::~Application()
 {
 
 }
 
+void Application::ProcessEvents()
+{
+	sf::Event event;
+
+	while (m_pRenderWindow->pollEvent(event))
+	{
+		if (event.type == sf::Event::Closed)
+			m_pRenderWindow->close();
+	}
+}
+
+void Application::Update(float Dt)
+{
+	m_Worlds[CurrentWorld]->Update(Dt);
+}
+
+void Application::Render()
+{
+	m_pRenderWindow->clear();
+
+	m_Worlds[CurrentWorld]->Draw(m_pRenderWindow.get());
+
+	m_pRenderWindow->display();
+}
+
+void Application::Init()
+{
+	m_Worlds[CurrentWorld]->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape, "Textures/Map3.jpg");
+	m_Worlds[CurrentWorld]->Init(m_pRenderWindow->getDefaultView());
+}
+
 void Application::Run()
 {
-	while (m_RenderWindow.isOpen())
-	{
-		sf::Event event;
+	sf::Clock Clocks;
+	sf::Time PrevUpdateTime = sf::Time::Zero;
+	sf::Time UpdateFrequency = sf::seconds(m_UpdateFrequency);
 
-		while (m_RenderWindow.pollEvent(event))
+	Init();
+
+	while (m_pRenderWindow->isOpen())
+	{
+		sf::Time Dt = Clocks.restart();
+		PrevUpdateTime += Dt;
+
+		while (PrevUpdateTime > UpdateFrequency)
 		{
-			if (event.type == sf::Event::Closed)
-				m_RenderWindow.close();
+			PrevUpdateTime -= UpdateFrequency;
+
+			ProcessEvents();
+			Update(UpdateFrequency.asSeconds());
 		}
+
+		Render();
 	}
 }
 
