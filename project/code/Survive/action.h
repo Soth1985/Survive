@@ -16,6 +16,7 @@ public:
 
 	Function m_Action;
 	Type* m_ReceiverType;
+	int m_ReceiverId;
 	bool m_DownCast;
 };
 

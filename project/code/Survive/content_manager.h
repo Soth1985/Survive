@@ -37,9 +37,9 @@ public:
 		m_ContentMountPoint = path;
 	}
 
-	BigTexture* LoadBigTexture(eBigTextureID::Val id, const std::string& path);
+	BigTexture* LoadBigTexture(eBigTextureID::Val id);
 
-	sf::Texture* LoadTexture(eTextureID::Val id, const std::string& path);
+	sf::Texture* LoadTexture(eTextureID::Val id);
 
 private:
 

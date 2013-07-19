@@ -10,7 +10,7 @@ MainMenuState::MainMenuState(StateStack* pStack, Context* pContext)
 	:
 State(pStack, pContext)
 {
-	sf::Texture* BackGroundTex = pContext->GetContentManager()->LoadTexture(eTextureID::MainMenuBackground, "Textures/main_menu_background.jpg");
+	sf::Texture* BackGroundTex = pContext->GetContentManager()->LoadTexture(eTextureID::MainMenuBackground);
 	m_Background.setTexture(*BackGroundTex);
 	sf::FloatRect Bounds = m_Background.getGlobalBounds();
 	sf::Vector2u WindowSize = pContext->GetRenderWindow()->getSize();

@@ -1,4 +1,6 @@
 #include <Survive/content_manager.h>
+#include <Survive/templates/template_manager.h>
+#include <Survive/templates/content_template.h>
 
 namespace Survive
 {
@@ -10,11 +12,13 @@ m_ContentMountPoint("../../../../content/")
 
 }
 
-BigTexture* ContentManager::LoadBigTexture(eBigTextureID::Val id, const std::string& path)
+BigTexture* ContentManager::LoadBigTexture(eBigTextureID::Val id)
 {
 	BigTexture* result = new BigTexture();
 
-	std::string realPath = m_ContentMountPoint + path;
+	ContentTemplate* Content = TemplateManager::Instance().GetTemplate<ContentTemplate>("Content");
+
+	std::string realPath = m_ContentMountPoint + Content->m_BigTextures[id];
 
 	if (!result->LoadFromFile(realPath))
 	{
@@ -27,11 +31,13 @@ BigTexture* ContentManager::LoadBigTexture(eBigTextureID::Val id, const std::str
 	return result;
 }
 
-sf::Texture* ContentManager::LoadTexture(eTextureID::Val id, const std::string& path)
+sf::Texture* ContentManager::LoadTexture(eTextureID::Val id)
 {
 	sf::Texture* result = new sf::Texture();
 
-	std::string realPath = m_ContentMountPoint + path;
+	ContentTemplate* Content = TemplateManager::Instance().GetTemplate<ContentTemplate>("Content");
+
+	std::string realPath = m_ContentMountPoint + Content->m_Textures[id];
 
 	if (!result->loadFromFile(realPath))
 	{

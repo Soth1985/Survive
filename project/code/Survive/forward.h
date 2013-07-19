@@ -30,15 +30,17 @@ namespace Survive
 {
 
 class Type;
+class Rtti;
 
 class Application;
 
-class BigTexture;
+class Settings;
+typedef std::unique_ptr<Settings> SettingsPtr;
 
+class BigTexture;
 class BigSprite;
 
 class Action;
-
 class ActionQueue;
 
 class State;
@@ -47,9 +49,7 @@ typedef std::unique_ptr<State> StatePtr;
 class StateStack;
 
 class GameState;
-
 class SandboxState;
-
 class MainMenuState;
 
 class Context;
@@ -64,17 +64,34 @@ typedef std::unique_ptr<ContentManager> ContentManagerPtr;
 class SceneNode;
 typedef std::unique_ptr<SceneNode> SceneNodePtr;
 
+class DynamicEntityNode;
+class StaticEntityNode;
+class CharacterEntityNode;
+class MonsterEntityNode;
+class PickupEntityNode;
+class PlayerEntityNode;
 class LandscapeNode;
-typedef std::unique_ptr<LandscapeNode> LandscapeNodePtr;
+class RespawnNode;
 
 class World;
 typedef std::unique_ptr<World> WorldPtr;
+
+class Template;
+typedef std::unique_ptr<Template> TemplatePtr;
+
+class CharacterTemplate;
+class ContentTemplate;
+class MonsterTemplate;
+class PickupTemplate;
+class PlayerTemplate;
+class StaticObjectTemplate;
 
 struct eBigTextureID
 {
 	enum Val
 	{
-		Landscape
+		Landscape,
+		BigTextureCount
 	};
 };
 
@@ -82,7 +99,8 @@ struct eTextureID
 {
 	enum Val
 	{
-		MainMenuBackground
+		MainMenuBackground,
+		TextureCount
 	};
 };
 
@@ -94,6 +112,24 @@ struct eStateID
 		MainMenu,
 		Game,
 		Sandbox
+	};
+};
+
+struct eWorldLayer
+{
+	enum Val
+	{
+		LandscapeLayer,
+		GroundLayer,
+		LayerCount
+	};	
+};
+
+struct eSceneNodeFlags
+{
+	enum Val
+	{
+		MarkToDelete = 1 << 0
 	};
 };
 

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\templates">
+      <UniqueIdentifier>{ba30cf97-b092-4d5d-aa1b-cb2f19f59df7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scene_nodes">
+      <UniqueIdentifier>{c7703e5d-b003-48cb-9020-4323cc53780e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\code\Survive\application.cpp">
@@ -24,9 +30,6 @@
     <ClCompile Include="..\code\Survive\content_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\code\Survive\scene_node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\code\Survive\big_sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -34,9 +37,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\code\Survive\world.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\code\Survive\landscape_node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\code\Survive\content_holder.cpp">
@@ -78,6 +78,66 @@
     <ClCompile Include="..\code\Survive\gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\code\Survive\render_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\string_utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\rtti.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\template_manager.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\character_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\content_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\monster_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\pickup_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\player_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\static_object_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\character_entity_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\dynamic_entity_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\monster_entity_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\pickup_entity_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\player_entity_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\scene_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\static_entity_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\landscape_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\code\Survive\application.h">
@@ -89,9 +149,6 @@
     <ClInclude Include="..\code\Survive\forward.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\code\Survive\scene_node.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\code\Survive\big_sprite.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -99,9 +156,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\code\Survive\world.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\code\Survive\landscape_node.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\code\Survive\content_holder.h">
@@ -148,6 +202,66 @@
     </ClInclude>
     <ClInclude Include="..\code\Survive\gui.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\render_queue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\string_utilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\settings.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\character_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\monster_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\pickup_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\player_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\static_object_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\template_manager.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\rtti.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\content_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\character_entity_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\dynamic_entity_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\monster_entity_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\pickup_entity_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\player_entity_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\scene_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\static_entity_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\landscape_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

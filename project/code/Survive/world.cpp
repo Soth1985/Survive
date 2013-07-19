@@ -1,7 +1,7 @@
 #include <Survive/world.h>
-#include <Survive/scene_node.h>
+#include <Survive/scene_nodes/scene_node.h>
 #include <Survive/content_manager.h>
-#include <Survive/landscape_node.h>
+#include <Survive/scene_nodes/landscape_node.h>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -27,21 +27,20 @@ void World::Init()
 {
 	for (size_t Idx = 0; Idx < m_pLayers.size(); ++Idx)
 	{
-		m_pLayers[Idx] = new SceneNode();
+		m_pLayers[Idx] = CreateNode<SceneNode>(GetSceneRoot());
 
-		m_pSceneRoot->AddChild(m_pLayers[Idx]);
+		m_pLayers[Idx]->m_Layer = (eWorldLayer::Val)Idx;
 	}
 
-	const BigTexture* landscapeTex = m_pContext->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape, "Textures/map2.jpg");
-	//const BigTexture* landscapeTex = m_pContext->GetContentManager()->BigTextures().Get(eBigTextureID::Landscape);
+	const BigTexture* LandscapeTex = m_pContext->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape);
+
 	m_WorldSize.top = 0.0f;
 	m_WorldSize.left = 0.0f;
-	sf::Vector2u texSize = landscapeTex->GetSize();
+	sf::Vector2u texSize = LandscapeTex->GetSize();
 	m_WorldSize.height = texSize.y;
 	m_WorldSize.width = texSize.x;
-	LandscapeNode* landscape = new LandscapeNode();
-	landscape->SetTexture(landscapeTex);
-	m_pLayers[LandscapeLayer]->AddChild(landscape);
+	LandscapeNode* Landscape = CreateNode<LandscapeNode>(GetLayerRoot(eWorldLayer::LandscapeLayer));
+	Landscape->SetTexture(LandscapeTex);
 }
 
 void World::Update(float Dt)
