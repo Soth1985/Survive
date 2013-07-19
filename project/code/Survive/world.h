@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Survive/forward.h>
+#include <Survive/context.h>
 
 #include <SFML/Graphics/View.hpp>
 
@@ -19,19 +20,19 @@ public:
 		LayerCount
 	};
 
-	World();
+	World(Context* pContext);
 
 	~World();
 
-	void Init(const sf::View& View);
+	void Init();
 
 	void Update(float Dt);
 
 	void Draw(sf::RenderWindow* Window);
 
-	ContentManager* GetContentManager()
+	Context* GetContext()
 	{
-		return m_pContentManager.get();
+		return m_pContext;
 	}
 
 	SceneNode* GetSceneRoot()
@@ -50,7 +51,7 @@ private:
 	sf::FloatRect m_WorldSize;
 	SceneNodePtr m_pSceneRoot;
 	std::array<SceneNode*, LayerCount> m_pLayers;
-	ContentManagerPtr m_pContentManager;
+	Context* m_pContext;
 };
 
 }

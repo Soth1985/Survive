@@ -5,6 +5,8 @@
 namespace Survive
 {
 
+SURVIVE_REG_ROOT_TYPE(SceneNode);
+
 SceneNode::SceneNode()
 	:
 m_pParent(0)
@@ -97,6 +99,11 @@ void SceneNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 void SceneNode::OnUpdate(float Dt)
 {
 
+}
+
+Type* SceneNode::GetType()const
+{
+	return TypeImpl<SceneNode>::Instance();
 }
 
 }

@@ -7,11 +7,17 @@
 namespace Survive
 {
 
+SURVIVE_DECL_TYPE(Survive::LandscapeNode);
+
 class LandscapeNode: public SceneNode
 {
 public:
 
-	LandscapeNode(const BigTexture* tex);
+	LandscapeNode();
+
+	virtual Type* GetType()const;
+
+	void SetTexture(const BigTexture* tex);
 
 protected:
 

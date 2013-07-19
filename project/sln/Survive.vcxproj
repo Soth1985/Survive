@@ -11,26 +11,52 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\code\Survive\action.cpp" />
+    <ClCompile Include="..\code\Survive\action_queue.cpp" />
     <ClCompile Include="..\code\Survive\application.cpp" />
     <ClCompile Include="..\code\Survive\big_sprite.cpp" />
     <ClCompile Include="..\code\Survive\big_texture.cpp" />
     <ClCompile Include="..\code\Survive\content_holder.cpp" />
     <ClCompile Include="..\code\Survive\content_manager.cpp" />
+    <ClCompile Include="..\code\Survive\context.cpp" />
+    <ClCompile Include="..\code\Survive\game_state.cpp" />
+    <ClCompile Include="..\code\Survive\gui.cpp" />
     <ClCompile Include="..\code\Survive\landscape_node.cpp" />
     <ClCompile Include="..\code\Survive\main.cpp" />
+    <ClCompile Include="..\code\Survive\main_menu_state.cpp" />
+    <ClCompile Include="..\code\Survive\quad_tree.cpp" />
+    <ClCompile Include="..\code\Survive\rtti_manager.cpp" />
+    <ClCompile Include="..\code\Survive\sandbox_state.cpp" />
     <ClCompile Include="..\code\Survive\scene_node.cpp" />
+    <ClCompile Include="..\code\Survive\state.cpp" />
+    <ClCompile Include="..\code\Survive\state_stack.cpp" />
     <ClCompile Include="..\code\Survive\world.cpp" />
+    <ClCompile Include="..\code\Survive\xml_archive.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\code\Survive\action.h" />
+    <ClInclude Include="..\code\Survive\action_queue.h" />
     <ClInclude Include="..\code\Survive\application.h" />
     <ClInclude Include="..\code\Survive\big_sprite.h" />
     <ClInclude Include="..\code\Survive\big_texture.h" />
     <ClInclude Include="..\code\Survive\content_holder.h" />
     <ClInclude Include="..\code\Survive\content_manager.h" />
+    <ClInclude Include="..\code\Survive\context.h" />
     <ClInclude Include="..\code\Survive\forward.h" />
+    <ClInclude Include="..\code\Survive\game_state.h" />
+    <ClInclude Include="..\code\Survive\gui.h" />
     <ClInclude Include="..\code\Survive\landscape_node.h" />
+    <ClInclude Include="..\code\Survive\main_menu_state.h" />
+    <ClInclude Include="..\code\Survive\quad_tree.h" />
+    <ClInclude Include="..\code\Survive\rtti_manager.h" />
+    <ClInclude Include="..\code\Survive\sandbox_state.h" />
     <ClInclude Include="..\code\Survive\scene_node.h" />
+    <ClInclude Include="..\code\Survive\state.h" />
+    <ClInclude Include="..\code\Survive\state_stack.h" />
+    <ClInclude Include="..\code\Survive\type_info.h" />
+    <ClInclude Include="..\code\Survive\type_lists.h" />
     <ClInclude Include="..\code\Survive\world.h" />
+    <ClInclude Include="..\code\Survive\xml_archive.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{95BE61A3-8C36-4A9E-969C-57BB4FF415A0}</ProjectGuid>

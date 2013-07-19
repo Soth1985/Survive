@@ -5,9 +5,9 @@
 namespace Survive
 {
 
-LandscapeNode::LandscapeNode(const BigTexture* tex)
-	:
-m_Sprite(*tex)
+SURVIVE_REG_TYPE(LandscapeNode, SURVIVE_TYPELIST_1(SceneNode))
+
+LandscapeNode::LandscapeNode()
 {
 
 }
@@ -20,6 +20,16 @@ void LandscapeNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)con
 void LandscapeNode::OnUpdate(float Dt)
 {
 
+}
+
+Type* LandscapeNode::GetType()const
+{
+	return TypeImpl<LandscapeNode>::Instance();
+}
+
+void LandscapeNode::SetTexture(const BigTexture* tex)
+{
+	m_Sprite.SetTexture(*tex);
 }
 
 }

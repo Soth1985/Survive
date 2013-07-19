@@ -1,12 +1,15 @@
 #pragma once
 
 #include <Survive/forward.h>
+#include <Survive/type_info.h>
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
 namespace Survive
 {
+
+SURVIVE_DECL_TYPE(Survive::SceneNode);
 
 class SceneNode: public sf::Drawable
 {
@@ -75,6 +78,8 @@ public:
 	}
 
 	void Update(float Dt);
+
+	virtual Type* GetType()const;
 
 protected:
 

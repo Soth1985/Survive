@@ -37,7 +37,7 @@ int main() {
 
 DesktopExample::DesktopExample() :
 	m_desktop(),
-	m_window( sfg::Window::Create() ),
+	m_window( sfg::Window::Create(sfg::Window::BACKGROUND) ),
 	m_count( 0 )
 {
 }

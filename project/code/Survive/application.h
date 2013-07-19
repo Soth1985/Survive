@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Survive/forward.h>
+#include <Survive/state_stack.h>
 
 namespace Survive
 {
@@ -25,16 +26,10 @@ private:
 
 	void Init();
 
-	enum WorldID
-	{
-		CurrentWorld,
-		LoadingWorld,
-		WorldCount
-	};
-
 	std::unique_ptr<sf::RenderWindow> m_pRenderWindow;
+	ContextPtr m_pContext;
+	StateStack m_StateStack;
 	float m_UpdateFrequency;
-	std::array<WorldPtr, WorldCount> m_Worlds;
 };
 
 }

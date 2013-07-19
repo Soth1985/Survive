@@ -10,10 +10,12 @@ target_link_libraries( 	Survive
 						debug sfml-graphics-d
 						debug sfml-window-d
 						debug sfml-system-d
+						debug sfml-main-d
 						optimized sfgui
 						optimized sfml-graphics
 						optimized sfml-window
 						optimized sfml-system
+						optimized sfml-main
 						opengl32.lib )
 						
 survive_install(Survive)

@@ -10,12 +10,12 @@
 namespace Survive
 {
 
-World::World()
+World::World(Context* pContext)
 	:
 m_pSceneRoot(new SceneNode()),
-m_pContentManager(new ContentManager())
+m_pContext(pContext)
 {
-
+	m_View = m_pContext->GetRenderWindow()->getDefaultView();
 }
 
 World::~World()
@@ -23,10 +23,8 @@ World::~World()
 
 }
 
-void World::Init(const sf::View& View)
+void World::Init()
 {
-	m_View = View;
-
 	for (size_t Idx = 0; Idx < m_pLayers.size(); ++Idx)
 	{
 		m_pLayers[Idx] = new SceneNode();
@@ -34,13 +32,16 @@ void World::Init(const sf::View& View)
 		m_pSceneRoot->AddChild(m_pLayers[Idx]);
 	}
 
-	const BigTexture* landscapeTex = m_pContentManager->BigTextures().Get(eBigTextureID::Landscape);
+	const BigTexture* landscapeTex = m_pContext->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape, "Textures/map2.jpg");
+	//const BigTexture* landscapeTex = m_pContext->GetContentManager()->BigTextures().Get(eBigTextureID::Landscape);
 	m_WorldSize.top = 0.0f;
 	m_WorldSize.left = 0.0f;
 	sf::Vector2u texSize = landscapeTex->GetSize();
 	m_WorldSize.height = texSize.y;
 	m_WorldSize.width = texSize.x;
-	m_pLayers[LandscapeLayer]->AddChild(new LandscapeNode(landscapeTex));
+	LandscapeNode* landscape = new LandscapeNode();
+	landscape->SetTexture(landscapeTex);
+	m_pLayers[LandscapeLayer]->AddChild(landscape);
 }
 
 void World::Update(float Dt)
@@ -99,7 +100,6 @@ void World::Update(float Dt)
 
 void World::Draw(sf::RenderWindow* Window)
 {
-	auto v = Window->getDefaultView();
 	Window->setView(m_View);
 	Window->draw(*m_pSceneRoot);
 }
