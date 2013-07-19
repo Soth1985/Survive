@@ -1,6 +1,7 @@
 #include <Survive/templates/template_manager.h>
 
 #include <Survive/templates/content_template.h>
+#include <Survive/templates/player_template.h>
 
 namespace Survive
 {
@@ -53,6 +54,11 @@ void TemplateManager::CreateDefaultTemplates()
 	ContentTemplate* ContentTmpl = new ContentTemplate();
 
 	AddTemplate<ContentTemplate>("Content", ContentTmpl);
+
+	PlayerTemplate* PlayerTmpl = new PlayerTemplate();
+	PlayerTmpl->m_BodyTexture = eTextureID::ChaosLordBody;
+
+	AddTemplate<PlayerTemplate>("Player", PlayerTmpl);
 }
 
 }

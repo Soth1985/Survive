@@ -45,7 +45,7 @@ State(pStack, pContext)
 	pContext->GetGui()->GetDesktop().SetProperty( "Button#main_menu_play_button", "FontSize", 24.f );
 	pContext->GetGui()->GetDesktop().SetProperty( "Button#main_menu_exit_button", "FontSize", 24.f );
 
-	Gui::PlaceToCenter(m_pWindow, pContext->GetRenderWindow());
+	Gui::PlaceToCenter(m_pWindow, pContext->GetRenderWindow()->getSize().x, pContext->GetRenderWindow()->getSize().y);
 
 	pContext->GetRenderWindow()->resetGLStates();
 }
@@ -53,7 +53,7 @@ State(pStack, pContext)
 MainMenuState::~MainMenuState()
 {
 	//GetContext()->GetGui()->RemoveWindow(m_pWindow);
-	GetContext()->GetGui()->GetDesktop().RemoveAll();
+	GetContext()->GetGui()->Reset();
 }
 
 void MainMenuState::Draw()

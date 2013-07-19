@@ -2,6 +2,7 @@
 #include <Survive/gui.h>
 #include <Survive/world.h>
 #include <Survive/content_manager.h>
+#include <Survive/settings.h>
 
 namespace Survive
 {
@@ -56,6 +57,16 @@ World* Context::GetWorld()
 void Context::SetWorld(World* pWorld)
 {
 	m_pWorld.reset(pWorld);
+}
+
+Settings* Context::GetSettings()
+{
+	return m_pSettings.get();
+}
+
+void Context::SetSettings(Settings* pSettings)
+{
+	m_pSettings.reset(pSettings);
 }
 
 }

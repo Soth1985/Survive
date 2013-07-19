@@ -40,7 +40,7 @@ m_Paused(false)
 	pContext->GetGui()->GetDesktop().SetProperty( "Button#game_menu_resume_button", "FontSize", 24.f );
 	pContext->GetGui()->GetDesktop().SetProperty( "Button#game_menu_return_button", "FontSize", 24.f );
 
-	Gui::PlaceToCenter(m_pMenuWindow, pContext->GetRenderWindow());
+	Gui::PlaceToCenter(m_pMenuWindow, pContext->GetRenderWindow()->getSize().x, pContext->GetRenderWindow()->getSize().y);
 
 	m_pMenuWindow->Show(false);
 
@@ -49,7 +49,7 @@ m_Paused(false)
 
 GameState::~GameState()
 {
-	GetContext()->GetGui()->GetDesktop().RemoveAll();
+	GetContext()->GetGui()->Reset();
 }
 
 void GameState::Draw()

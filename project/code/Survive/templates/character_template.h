@@ -11,7 +11,12 @@ class CharacterTemplate : public Template
 {
 public:
 
+	CharacterTemplate();
+
 	virtual Type* GetType()const;
+
+	eTextureID::Val m_BodyTexture;
+	int m_MaxHealth;
 };
 
 }

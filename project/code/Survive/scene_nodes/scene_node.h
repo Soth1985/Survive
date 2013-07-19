@@ -77,6 +77,18 @@ public:
 		m_Transform.setOrigin(Origin);
 	}
 
+	void Move(const sf::Vector2f& Disp)
+	{
+		m_Transform.move(Disp);
+	}
+
+	void Rotate(float AngleDegrees)
+	{
+		m_Transform.rotate(AngleDegrees);
+	}
+
+	virtual sf::FloatRect GetBounds();
+
 	void Update(float Dt);
 
 	virtual Type* GetType()const;

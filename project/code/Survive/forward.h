@@ -100,6 +100,11 @@ struct eTextureID
 	enum Val
 	{
 		MainMenuBackground,
+		ChaosLordBody,
+		ChaosLordSword,
+		ChaosLordBolter,
+		ChaosLordPlasma,
+		ChaosLordMelta,
 		TextureCount
 	};
 };

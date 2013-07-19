@@ -11,6 +11,9 @@ SURVIVE_DECL_TYPE(Survive::PlayerEntityNode);
 class PlayerEntityNode : public CharacterEntityNode
 {
 public:
+
+	//void InitFromTemplate(Template* Tmpl);
+
 private:
 };
 

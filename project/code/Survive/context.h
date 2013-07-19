@@ -29,12 +29,17 @@ public:
 
 	void SetWorld(World* pWorld);
 
+	Settings* GetSettings();
+
+	void SetSettings(Settings* pSettings);
+
 private:
 	
 	sf::RenderWindow* m_pWindow;
 	ContentManagerPtr m_pContentManager;
 	GuiPtr m_pGui;
 	WorldPtr m_pWorld;
+	SettingsPtr m_pSettings;
 };
 
 }

@@ -3,6 +3,7 @@
 #include <Survive/context.h>
 #include <Survive/content_manager.h>
 #include <Survive/gui.h>
+#include <Survive/settings.h>
 #include <Survive/main_menu_state.h>
 #include <Survive/game_state.h>
 #include <SFML/Graphics.hpp>
@@ -12,19 +13,23 @@ namespace Survive
 
 Application::Application()
 	:
-m_pRenderWindow(new sf::RenderWindow(sf::VideoMode(800, 600), "Survive", sf::Style::Close)),
+m_pRenderWindow(new sf::RenderWindow()),
 m_pContext(new Context()),
 m_StateStack(m_pContext.get()),
 m_UpdateFrequency(1.0f / 60.0f)
 {
+	Settings* pSettings = new Settings();
 	m_pContext->SetRenderWindow(m_pRenderWindow.get());
 	m_pContext->SetContentManager(new ContentManager());
-	m_pContext->SetGui(new Gui());
+	m_pContext->SetGui(new Gui(pSettings));
 	//m_pContext->SetWorld(new World(m_pContext.get()));
+
+	m_pRenderWindow->create(sf::VideoMode(pSettings->GetRenderWindowWidth(), pSettings->GetRenderWindowHeight()), "Survive", sf::Style::Close);
 
 	m_StateStack.RegisterState<MainMenuState>(eStateID::MainMenu);
 	m_StateStack.RegisterState<GameState>(eStateID::Game);
 
+	//m_StateStack.PushState(eStateID::Game);
 	m_StateStack.PushState(eStateID::MainMenu);
 }
 

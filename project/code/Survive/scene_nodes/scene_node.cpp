@@ -111,4 +111,9 @@ Type* SceneNode::GetType()const
 	return TypeImpl<SceneNode>::Instance();
 }
 
+sf::FloatRect SceneNode::GetBounds()
+{
+	return sf::FloatRect();
+}
+
 }

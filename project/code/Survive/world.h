@@ -75,9 +75,12 @@ private:
 	typedef std::vector<SceneNode*> NodeList;
 	typedef std::unordered_map<Type*, NodeList> TypeNodeCache;
 
+	sf::Vector2f ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize);
+
 	sf::View m_View;
 	sf::FloatRect m_WorldSize;
 	SceneNodePtr m_pSceneRoot;
+	PlayerEntityNode* m_pPlayer;
 	TypeNodeCache m_TypeNodeCache;
 	std::array<SceneNode*, eWorldLayer::LayerCount> m_pLayers;
 	Context* m_pContext;
