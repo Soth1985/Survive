@@ -86,6 +86,13 @@ class PickupTemplate;
 class PlayerTemplate;
 class StaticObjectTemplate;
 
+class CollisionShape;
+class AlignedBoxShape;
+class OrientedBoxShape;
+class ConvexPolygonShape;
+class Ray;
+class LineSegment;
+
 struct eBigTextureID
 {
 	enum Val
