@@ -1,5 +1,4 @@
 #include <Survive/collision/intersection_tests.h>
-#include <Survive/collision/range.h>
 #include <Survive/math_utils.h>
 
 namespace Survive
@@ -73,7 +72,38 @@ static bool SeparatingAxisForAlignedBox(const LineSegment& Axis, const AlignedBo
 	return !AxisRange.Overlap(Projection);
 }
 
-static Range ComputeInterval(const ConvexPolygonShape& C, const sf::Vector2f& D)
+static int FindIntersectionLineLine(const sf::Vector2f& P1, const sf::Vector2f& D1, const sf::Vector2f& P2, const sf::Vector2f& D2, float& Param1)
+{
+	sf::Vector2f E = P2 - P1;
+	float Kross = D1.x * D2.y - D1.y * D2.x;
+	float SqrKross = Kross * Kross;
+	float SqrLen0 = D1.x * D1.x + D1.y * D1.y;
+	float SqrLen1 = D2.x * D2.x + D2.y * D2.y;
+	const float SqrEpsilon = 0.0001f;
+
+	if (SqrKross > SqrEpsilon * SqrLen0 * SqrLen1)
+	{
+		// lines are not parallel
+		Param1 = (E.x * D2.y - E.y * D2.x) / Kross;
+		return 1;
+	}
+
+	// lines are parallel
+	float SqrLenE = E.x * E.x + E.y * E.y;
+	Kross = E.x * D1.y - E.y * D1.x;
+	SqrKross = Kross * Kross;
+
+	if (SqrKross > SqrEpsilon * SqrLen0 * SqrLenE)
+	{
+		// lines are different
+		return 0;
+	}
+
+	//lines are same
+	return 2;
+}
+
+Range IntersectionTests::ComputeInterval(const ConvexPolygonShape& C, const sf::Vector2f& D)
 {
 	float Min = MathUtils::DotProduct(D, C[0]);
 	float Max = Min;
@@ -91,7 +121,7 @@ static Range ComputeInterval(const ConvexPolygonShape& C, const sf::Vector2f& D)
 	return Range(Min, Max);
 }
 
-bool IntersectionTests::IntersectAlignedBoxAlignedBox(const AlignedBoxShape& A, const AlignedBoxShape& B)
+bool IntersectionTests::HasIntersectionAlignedBoxAlignedBox(const AlignedBoxShape& A, const AlignedBoxShape& B)
 {
 	float LeftA = A.GetCornerPosition().x;
 	float RightA = LeftA + A.GetSize().x;
@@ -110,7 +140,7 @@ bool IntersectionTests::IntersectAlignedBoxAlignedBox(const AlignedBoxShape& A, 
 	return R11.Overlap(R12) && R21.Overlap(R22);
 }
 
-bool IntersectionTests::IntersectRayRay(const Ray& R1, const Ray& R2)
+bool IntersectionTests::HasIntersectionRayRay(const Ray& R1, const Ray& R2)
 {
 	if (MathUtils::AreParallel(R1.GetDirection(), R2.GetDirection())) 
 		return EquivalentRays(R1, R2); 
@@ -118,7 +148,7 @@ bool IntersectionTests::IntersectRayRay(const Ray& R1, const Ray& R2)
 		return true;
 }
 
-bool IntersectionTests::IntersectLineSegmentLineSegment(const LineSegment& L1, const LineSegment& L2)
+bool IntersectionTests::HasIntersectioLineSegmentLineSegment(const LineSegment& L1, const LineSegment& L2)
 {
 	Ray Axis1(L1.GetPoint1(), L1.GetPoint2() - L1.GetPoint1());
 
@@ -145,7 +175,7 @@ bool IntersectionTests::IntersectLineSegmentLineSegment(const LineSegment& L1, c
 		return true;
 }
 
-bool IntersectionTests::IntersectOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2)
+bool IntersectionTests::HasIntersectionOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2)
 {
 	LineSegment Edge = Box1.GetEdge(0);
 
@@ -165,7 +195,7 @@ bool IntersectionTests::IntersectOrientedBoxOrientedBox(const OrientedBoxShape& 
 	return !SeparatingAxisForOrientedBox(Edge, Box1);
 }
 
-bool IntersectionTests::IntersectRayAlignedBox(const Ray& R, const AlignedBoxShape& B)
+bool IntersectionTests::HasIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& B)
 {
 	sf::Vector2f N = MathUtils::GetVectorNormal(R.GetDirection());
 
@@ -187,12 +217,12 @@ bool IntersectionTests::IntersectRayAlignedBox(const Ray& R, const AlignedBoxSha
 	return (Dp1 * Dp2 <= 0) || (Dp2 * Dp3 <= 0) || (Dp3 * Dp4 <= 0);
 }
 
-bool IntersectionTests::IntersectRayLineSegment(const Ray& R, const LineSegment& L)
+bool IntersectionTests::HasIntersectionRayLineSegment(const Ray& R, const LineSegment& L)
 {
 	return !IsSegmentOnOneSide(R, L);
 }
 
-bool IntersectionTests::IntersectRayOrientedBox(const Ray& R, const OrientedBoxShape& B)
+bool IntersectionTests::HasIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& B)
 {
 	AlignedBoxShape AlignedB(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(B.GetHalfExtents().x * 2, B.GetHalfExtents().y * 2));
 
@@ -204,14 +234,14 @@ bool IntersectionTests::IntersectRayOrientedBox(const Ray& R, const OrientedBoxS
 
 	Ray RotatedR(RotatedRPos, RotatedRDir);
 
-	return IntersectRayAlignedBox(RotatedR, AlignedB);
+	return HasIntersectionRayAlignedBox(RotatedR, AlignedB);
 }
 
-bool IntersectionTests::IntersectOrientedBoxAlignedBox(const OrientedBoxShape& OB, const AlignedBoxShape& AB)
+bool IntersectionTests::HasIntersectionOrientedBoxAlignedBox(const OrientedBoxShape& OB, const AlignedBoxShape& AB)
 {
 	AlignedBoxShape Hull = OB.GetAlignedHull();
 
-	if(!IntersectAlignedBoxAlignedBox(Hull, AB))
+	if(!HasIntersectionAlignedBoxAlignedBox(Hull, AB))
 		return false;
 
 	LineSegment edge = OB.GetEdge(0);
@@ -224,12 +254,12 @@ bool IntersectionTests::IntersectOrientedBoxAlignedBox(const OrientedBoxShape& O
 	return !SeparatingAxisForAlignedBox(edge, AB);
 }
 
-bool IntersectionTests::IntersectRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly)
+bool IntersectionTests::HasIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly)
 {
 	return true;
 }
 
-bool IntersectionTests::IntersectConvexPolygonConvexPolygon(const ConvexPolygonShape& Poly1, const ConvexPolygonShape& Poly2)
+bool IntersectionTests::HasIntersectionConvexPolygonConvexPolygon(const ConvexPolygonShape& Poly1, const ConvexPolygonShape& Poly2)
 {
 	for (size_t Idx0 = 0, Idx1 = Poly1.GetPointC() - 1; Idx0 < Poly1.GetPointC(); Idx1 = Idx0, ++Idx0) 
 	{
@@ -243,7 +273,7 @@ bool IntersectionTests::IntersectConvexPolygonConvexPolygon(const ConvexPolygonS
 
 	for (size_t Idx0 = 0, Idx1 = Poly2.GetPointC() - 1; Idx0 < Poly2.GetPointC(); Idx1 = Idx0, ++Idx0)
 	{
-		sf::Vector2f Edge = Poly1[Idx0] - Poly1[Idx1];
+		sf::Vector2f Edge = Poly2[Idx0] - Poly2[Idx1];
 		sf::Vector2f D = MathUtils::GetVectorNormal(Edge);
 		Range R1 = ComputeInterval(Poly1, D);
 		Range R2 = ComputeInterval(Poly2, D);
@@ -254,6 +284,77 @@ bool IntersectionTests::IntersectConvexPolygonConvexPolygon(const ConvexPolygonS
 	return true;
 }
 
+int IntersectionTests::FindIntersectionRayLineSegment(const Ray& R, const LineSegment& L1, float& Param)
+{
+	int result = FindIntersectionLineLine(R.GetPosition(), R.GetDirection(), L1.GetPoint1(), L1.GetPoint2() - L1.GetPoint1(), Param);
+
+	if (result == 1 && Param < 0.0f)
+		result = 0;
+
+	return result;
+}
+
+int IntersectionTests::FindIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& Box, float& Param)
+{
+	int Result = 0;
+
+	float ClosestCollision = FLT_MAX;
+
+	for(int EdgeIdx = 0; EdgeIdx < 4; ++EdgeIdx)
+	{
+		Param = FLT_MAX;
+		Result = FindIntersectionRayLineSegment(R, Box.GetEdge(EdgeIdx), Param);
+
+		if (Result == 1)
+		{
+			if (Param < ClosestCollision)
+				ClosestCollision = Param;
+		}
+		else
+			Result = 0;
+	}
+
+	return Result;
+}
+
+int IntersectionTests::FindIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& Box, float& Param)
+{
+	AlignedBoxShape AlignedB(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(Box.GetHalfExtents().x * 2.0f, Box.GetHalfExtents().y * 2.0f));
+
+	sf::Vector2f RotatedRPos = R.GetPosition() - Box.GetCenter();
+	RotatedRPos = MathUtils::RotateVector(RotatedRPos, -Box.GetRotation());
+	RotatedRPos = RotatedRPos + Box.GetHalfExtents();
+
+	sf::Vector2f RotatedRDir = MathUtils::RotateVector(R.GetDirection(), -Box.GetRotation());
+
+	Ray RotatedR(RotatedRPos, RotatedRDir);
+
+	return FindIntersectionRayAlignedBox(R, AlignedB, Param);
+}
+
+int IntersectionTests::FindIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly, float& Param)
+{
+	int Result = 0;
+
+	float ClosestCollision = FLT_MAX;
+
+	for (size_t Idx0 = 0, Idx1 = Poly.GetPointC() - 1; Idx0 < Poly.GetPointC(); Idx1 = Idx0, ++Idx0)
+	{
+		Param = FLT_MAX;
+		Result = FindIntersectionRayLineSegment(R, LineSegment(Poly[Idx0], Poly[Idx1]), Param);
+
+		if (Result == 1)
+		{
+			if (Param < ClosestCollision)
+				ClosestCollision = Param;
+		}
+		else
+			Result = 0;
+	}
+
+	return Result;
+}
+
 void IntersectionTests::Tests()
 {
 	//IntersectAlignedBoxAlignedBox
@@ -262,9 +363,9 @@ void IntersectionTests::Tests()
 		AlignedBoxShape B(sf::Vector2f(2.0f, 2.0f), sf::Vector2f(5.0f, 5.0f));
 		AlignedBoxShape C(sf::Vector2f(6.0f, 4.0f), sf::Vector2f(4.0f, 2.0f));
 
-		assert(IntersectAlignedBoxAlignedBox(A, B) == true);
-		assert(IntersectAlignedBoxAlignedBox(B, C) == true);
-		assert(IntersectAlignedBoxAlignedBox(A, C) == false);
+		assert(HasIntersectionAlignedBoxAlignedBox(A, B) == true);
+		assert(HasIntersectionAlignedBoxAlignedBox(B, C) == true);
+		assert(HasIntersectionAlignedBoxAlignedBox(A, C) == false);
 	}
 
 	//IntersectRayRay
@@ -280,10 +381,10 @@ void IntersectionTests::Tests()
 		Ray R3(b, up);
 		Ray R4(c, down);
 		
-		assert(IntersectRayRay(R1, R2) == true);
-		assert(IntersectRayRay(R1, R3) == true);
-		assert(IntersectRayRay(R2, R3) == false);
-		assert(IntersectRayRay(R1, R4) == true); 
+		assert(HasIntersectionRayRay(R1, R2) == true);
+		assert(HasIntersectionRayRay(R1, R3) == true);
+		assert(HasIntersectionRayRay(R2, R3) == false);
+		assert(HasIntersectionRayRay(R1, R4) == true); 
 	}
 
 	//IntersectLineSegmentLineSegment
@@ -296,7 +397,7 @@ void IntersectionTests::Tests()
 		LineSegment s1(a, b);
 		LineSegment s2(c, d);
 		
-		assert(IntersectLineSegmentLineSegment( s1, s2)==false); 
+		assert(HasIntersectioLineSegmentLineSegment( s1, s2)==false); 
 	}
 
 	//IntersectOrientedBoxOrientedBox
@@ -304,7 +405,7 @@ void IntersectionTests::Tests()
 		OrientedBoxShape a(sf::Vector2f(3.0f, 5.0f), sf::Vector2f(1.0f, 3.0f), 15.0f);
 		OrientedBoxShape b(sf::Vector2f(10.0f, 5.0f), sf::Vector2f(2.0f, 2.0f), -15.0f);
 
-		assert(IntersectOrientedBoxOrientedBox(a, b) == false);
+		assert(HasIntersectionOrientedBoxOrientedBox(a, b) == false);
 	}
 
 	//IntersectRayAlignedBox
@@ -312,7 +413,7 @@ void IntersectionTests::Tests()
 		Ray r(sf::Vector2f(6.0f, 8.0f), sf::Vector2f(2.0f, -3.0f));
 		AlignedBoxShape box(sf::Vector2f(3.0f, 2.0f), sf::Vector2f(6.0f, 4.0f));
 		
-		assert(IntersectRayAlignedBox(r, box) == true);
+		assert(HasIntersectionRayAlignedBox(r, box) == true);
 	}
 
 	//IntersectRayLineSegment
@@ -325,7 +426,7 @@ void IntersectionTests::Tests()
 		LineSegment s(point1, point2);
 		Ray l(base, direction);
 
-		assert(IntersectRayLineSegment(l, s) == false);
+		assert(HasIntersectionRayLineSegment(l, s) == false);
 	}
 
 	//IntersectRayOrientedBox
@@ -333,7 +434,7 @@ void IntersectionTests::Tests()
 		Ray r(sf::Vector2f(7.0f, 3.0f), sf::Vector2f(2.0f, -1.0f));
 		OrientedBoxShape b(sf::Vector2f(5.0f, 4.0f), sf::Vector2f(3.0f, 2.0f), 30.0f);
 		
-		assert(IntersectRayOrientedBox(r, b) == true);
+		assert(HasIntersectionRayOrientedBox(r, b) == true);
 	}
 
 	//IntersectOrientedBoxAlignedBox
@@ -341,7 +442,47 @@ void IntersectionTests::Tests()
 		AlignedBoxShape aar(sf::Vector2f(1.0f, 5.0f), sf::Vector2f(3.0f, 3.0f)); 
 		OrientedBoxShape or(sf::Vector2f(10.0f, 4.0f), sf::Vector2f(4.0f, 2.0f), 25.0f); 
 		
-		assert(IntersectOrientedBoxAlignedBox(or, aar) == false);
+		assert(HasIntersectionOrientedBoxAlignedBox(or, aar) == false);
+	}
+
+	//FindIntersectionRayLineSegment
+	{
+		sf::Vector2f dir(1.0f,1.0f);
+		dir = MathUtils::Normalize(dir);
+
+		Ray r(sf::Vector2f(1.0f, 1.0f), dir);
+		Ray r1(sf::Vector2f(4.0f, 2.0f), sf::Vector2f(0.0f, 1.0f));
+
+		sf::Vector2f p0(0.0f, 1.0f);
+		sf::Vector2f p1(1.0f, 0.0f);
+		sf::Vector2f p2(1.0f, 3.0f);
+		sf::Vector2f p3(1.0f, 4.0f);
+		sf::Vector2f p4(3.0f, 1.0f);
+		sf::Vector2f p5(3.0f, 4.0f);
+		sf::Vector2f p6(5.0f, 4.0f);
+		sf::Vector2f p7(4.0f, 4.0f);
+		sf::Vector2f p8(4.0f, 5.0f);
+
+		float param = 0.0f;
+		int res = 0;
+
+		res = FindIntersectionRayLineSegment(r, LineSegment(p0, p1), param);
+		assert(res==0);
+
+		res = FindIntersectionRayLineSegment(r, LineSegment(p0, p2), param);
+		assert(res==0);
+
+		res = FindIntersectionRayLineSegment(r, LineSegment(p2, p4), param);
+		assert(res==1);
+
+		res = FindIntersectionRayLineSegment(r, LineSegment(p3, p4), param);
+		assert(res==1);
+
+		res = FindIntersectionRayLineSegment(r1, LineSegment(p5, p6), param);
+		assert(res==1);
+
+		res = FindIntersectionRayLineSegment(r1, LineSegment(p7, p8), param);
+		assert(res==2);
 	}
 }
 

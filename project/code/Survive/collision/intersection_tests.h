@@ -6,6 +6,7 @@
 #include <Survive/collision/convex_polygon_shape.h>
 #include <Survive/collision/ray.h>
 #include <Survive/collision/line_segment.h>
+#include <Survive/collision/range.h>
 
 namespace Survive
 {
@@ -14,25 +15,35 @@ class IntersectionTests
 {
 public:
 
-	static bool IntersectAlignedBoxAlignedBox(const AlignedBoxShape& A, const AlignedBoxShape& B);
+	static bool HasIntersectionAlignedBoxAlignedBox(const AlignedBoxShape& A, const AlignedBoxShape& B);
 
-	static bool IntersectRayRay(const Ray& R1, const Ray& R2);
+	static bool HasIntersectionRayRay(const Ray& R1, const Ray& R2);
 
-	static bool IntersectRayAlignedBox(const Ray& R, const AlignedBoxShape& B);
+	static bool HasIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& B);
 
-	static bool IntersectRayLineSegment(const Ray& R, const LineSegment& L);
+	static bool HasIntersectionRayLineSegment(const Ray& R, const LineSegment& L);
 
-	static bool IntersectRayOrientedBox(const Ray& R, const OrientedBoxShape& B);
+	static bool HasIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& B);
 
-	static bool IntersectRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly);
+	static bool HasIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly);
 
-	static bool IntersectConvexPolygonConvexPolygon(const ConvexPolygonShape& Poly1, const ConvexPolygonShape& Poly2);
+	static bool HasIntersectionConvexPolygonConvexPolygon(const ConvexPolygonShape& Poly1, const ConvexPolygonShape& Poly2);
 
-	static bool IntersectLineSegmentLineSegment(const LineSegment& L1, const LineSegment& L2);
+	static bool HasIntersectioLineSegmentLineSegment(const LineSegment& L1, const LineSegment& L2);
 
-	static bool IntersectOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2);
+	static bool HasIntersectionOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2);
 
-	static bool IntersectOrientedBoxAlignedBox(const OrientedBoxShape& OB, const AlignedBoxShape& AB);
+	static bool HasIntersectionOrientedBoxAlignedBox(const OrientedBoxShape& OB, const AlignedBoxShape& AB);
+
+	static int FindIntersectionRayLineSegment(const Ray& R, const LineSegment& L1, float& Param);
+
+	static int FindIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& Box, float& Param);
+
+	static int FindIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& Box, float& Param);
+
+	static int FindIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly, float& Param);
+
+	static Range ComputeInterval(const ConvexPolygonShape& C, const sf::Vector2f& D);
 
 	static void Tests();
 };

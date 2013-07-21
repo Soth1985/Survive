@@ -21,18 +21,24 @@ public:
 	}
 
 	ConvexPolygonShape(size_t PointC)
+		:
+	m_PointC(PointC)
 	{
-		m_Points.resize(PointC);
+		//m_Points.resize(PointC);
 	}
 
 	size_t GetPointC()const
 	{
-		return m_Points.size();
+		//return m_Points.size();
+		return m_PointC;
 	}
 
 	void SetPointC(size_t PointC)
 	{
-		m_Points.resize(PointC);
+		//m_Points.resize(PointC);
+
+		assert(PointC < MaxPointC);
+		m_PointC = PointC;
 	}
 
 	sf::Vector2f& operator[](size_t Idx)
@@ -47,9 +53,18 @@ public:
 
 	AlignedBoxShape GetAlignedHull()const;
 
+	int GetMaxPointC()const
+	{
+		return MaxPointC;
+	}
+
 private:
 
-	std::vector<sf::Vector2f> m_Points;
+	static const int MaxPointC = 15;
+
+	std::array<sf::Vector2f, MaxPointC> m_Points;
+	int m_PointC;
+	//std::vector<sf::Vector2f> m_Points;
 };
 
 }
