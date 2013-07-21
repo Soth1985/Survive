@@ -2,6 +2,7 @@
 
 #include <Survive/forward.h>
 #include <Survive/collision/collision_shape.h>
+#include <Survive/collision/aligned_box_shape.h>
 
 namespace Survive
 {
@@ -43,6 +44,8 @@ public:
 	{
 		return m_Points[Idx];
 	}
+
+	AlignedBoxShape GetAlignedHull()const;
 
 private:
 

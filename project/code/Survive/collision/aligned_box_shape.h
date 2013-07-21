@@ -2,6 +2,7 @@
 
 #include <Survive/forward.h>
 #include <Survive/collision/collision_shape.h>
+#include <Survive/collision/line_segment.h>
 
 namespace Survive
 {
@@ -50,6 +51,12 @@ public:
 	void Extend(const sf::Vector2f& Point);
 
 	void Extend(const AlignedBoxShape& Box);
+
+	bool Contains(const sf::Vector2f& Point)const;
+
+	sf::Vector2f GetCorner(int CornerIdx)const;
+
+	LineSegment GetEdge(int EdgeIdx)const;
 
 private:
 

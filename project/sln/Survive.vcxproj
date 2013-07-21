@@ -16,6 +16,15 @@
     <ClCompile Include="..\code\Survive\application.cpp" />
     <ClCompile Include="..\code\Survive\big_sprite.cpp" />
     <ClCompile Include="..\code\Survive\big_texture.cpp" />
+    <ClCompile Include="..\code\Survive\collision\aligned_box_shape.cpp" />
+    <ClCompile Include="..\code\Survive\collision\collision_shape.cpp" />
+    <ClCompile Include="..\code\Survive\collision\convex_polygon_shape.cpp" />
+    <ClCompile Include="..\code\Survive\collision\intersection_tests.cpp" />
+    <ClCompile Include="..\code\Survive\collision\line_segment.cpp" />
+    <ClCompile Include="..\code\Survive\collision\oriented_box_shape.cpp" />
+    <ClCompile Include="..\code\Survive\collision\range.cpp" />
+    <ClCompile Include="..\code\Survive\collision\ray.cpp" />
+    <ClCompile Include="..\code\Survive\collision\sweep_tests.cpp" />
     <ClCompile Include="..\code\Survive\content_holder.cpp" />
     <ClCompile Include="..\code\Survive\content_manager.cpp" />
     <ClCompile Include="..\code\Survive\context.cpp" />
@@ -23,6 +32,7 @@
     <ClCompile Include="..\code\Survive\gui.cpp" />
     <ClCompile Include="..\code\Survive\main.cpp" />
     <ClCompile Include="..\code\Survive\main_menu_state.cpp" />
+    <ClCompile Include="..\code\Survive\math_utils.cpp" />
     <ClCompile Include="..\code\Survive\quad_tree.cpp" />
     <ClCompile Include="..\code\Survive\render_queue.cpp" />
     <ClCompile Include="..\code\Survive\rtti.cpp" />
@@ -57,6 +67,15 @@
     <ClInclude Include="..\code\Survive\application.h" />
     <ClInclude Include="..\code\Survive\big_sprite.h" />
     <ClInclude Include="..\code\Survive\big_texture.h" />
+    <ClInclude Include="..\code\Survive\collision\aligned_box_shape.h" />
+    <ClInclude Include="..\code\Survive\collision\collision_shape.h" />
+    <ClInclude Include="..\code\Survive\collision\convex_polygon_shape.h" />
+    <ClInclude Include="..\code\Survive\collision\intersection_tests.h" />
+    <ClInclude Include="..\code\Survive\collision\line_segment.h" />
+    <ClInclude Include="..\code\Survive\collision\oriented_box_shape.h" />
+    <ClInclude Include="..\code\Survive\collision\range.h" />
+    <ClInclude Include="..\code\Survive\collision\ray.h" />
+    <ClInclude Include="..\code\Survive\collision\sweep_tests.h" />
     <ClInclude Include="..\code\Survive\content_holder.h" />
     <ClInclude Include="..\code\Survive\content_manager.h" />
     <ClInclude Include="..\code\Survive\context.h" />
@@ -64,6 +83,7 @@
     <ClInclude Include="..\code\Survive\game_state.h" />
     <ClInclude Include="..\code\Survive\gui.h" />
     <ClInclude Include="..\code\Survive\main_menu_state.h" />
+    <ClInclude Include="..\code\Survive\math_utils.h" />
     <ClInclude Include="..\code\Survive\quad_tree.h" />
     <ClInclude Include="..\code\Survive\render_queue.h" />
     <ClInclude Include="..\code\Survive\rtti.h" />

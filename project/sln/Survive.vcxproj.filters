@@ -19,6 +19,9 @@
     <Filter Include="Source Files\scene_nodes">
       <UniqueIdentifier>{c7703e5d-b003-48cb-9020-4323cc53780e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\collision">
+      <UniqueIdentifier>{4f092358-7d3a-42db-8881-95fbf135398c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\code\Survive\application.cpp">
@@ -137,6 +140,36 @@
     </ClCompile>
     <ClCompile Include="..\code\Survive\scene_nodes\landscape_node.cpp">
       <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\collision_shape.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\line_segment.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\ray.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\aligned_box_shape.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\convex_polygon_shape.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\oriented_box_shape.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\intersection_tests.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\math_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\range.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\collision\sweep_tests.cpp">
+      <Filter>Source Files\collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +295,36 @@
     </ClInclude>
     <ClInclude Include="..\code\Survive\scene_nodes\landscape_node.h">
       <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\collision_shape.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\line_segment.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\ray.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\aligned_box_shape.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\convex_polygon_shape.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\oriented_box_shape.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\intersection_tests.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\math_utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\range.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\collision\sweep_tests.h">
+      <Filter>Source Files\collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

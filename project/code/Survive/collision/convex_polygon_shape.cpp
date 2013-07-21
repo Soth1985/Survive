@@ -10,4 +10,16 @@ Type* ConvexPolygonShape::GetType()const
 	return TypeImpl<ConvexPolygonShape>::Instance();
 }
 
+AlignedBoxShape ConvexPolygonShape::GetAlignedHull()const
+{
+	AlignedBoxShape Result;
+
+	for (size_t Idx = 0; Idx < GetPointC(); ++Idx)
+	{
+		Result.Extend(m_Points[Idx]);
+	}
+
+	return Result;
+}
+
 }

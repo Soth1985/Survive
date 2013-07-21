@@ -2,6 +2,7 @@
 
 #include <Survive/forward.h>
 #include <Survive/collision/collision_shape.h>
+#include <Survive/collision/aligned_box_shape.h>
 
 namespace Survive
 {
@@ -59,6 +60,14 @@ public:
 	{
 		m_Rotation = Rotation;
 	}
+
+	bool Contains(const sf::Vector2f& Point)const;
+
+	sf::Vector2f GetCorner(int CornerIdx)const;
+
+	LineSegment GetEdge(int EdgeIdx)const;
+
+	AlignedBoxShape GetAlignedHull()const;
 
 private:
 

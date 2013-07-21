@@ -38,71 +38,76 @@ static bool EquivalentRays(const Ray& R1, const Ray& R2)
 	return MathUtils::AreParallel(D, R1.GetDirection());
 }
 
-static LineSegment OrientedRectangleEdge(const OrientedBoxShape& Box, int nr)
+static bool SeparatingAxisForOrientedBox(const LineSegment& Axis, const OrientedBoxShape& Box)
 {
-	sf::Vector2f P1 = Box.GetHalfExtents();
-	sf::Vector2f P2 = Box.GetHalfExtents();
+	LineSegment Edge0 = Box.GetEdge(0);
+	LineSegment Edge2 = Box.GetEdge(2);
+	sf::Vector2f N = Axis.GetPoint1() - Axis.GetPoint2();
 
-	switch(nr % 4) 
-	{
-	case 0:/* top edge */
-		P1.x = -P1.x;
-		break;
-	case 1:/* right edge */
-		P2.y = -P2.y;
-		break;
-	case 2:/* bottom edge */
-		P1.y = -P1.y;
-		P2 = -P2;
-		break;
-	default:/* left edge */
-		P1 = -P1;
-		P2.x = -P2.x;
-		break;
-	}
-
-	P1 = MathUtils::RotateVector(P1, Box.GetRotation());
-	P1 = P1 + Box.GetCenter();
-
-	P2 = MathUtils::RotateVector(P1, Box.GetRotation());
-	P2 = P2 + Box.GetCenter();
-
-	return LineSegment(P1, P2);
-}
-
-static bool SeparatingAxisForOrientedRectangle(const LineSegment& Axis, const OrientedBoxShape& Box)
-{
-	LineSegment Edge0 = OrientedRectangleEdge(Box, 0);
-	LineSegment Edge2 = OrientedRectangleEdge(Box, 2);
-	sf::Vector2f n = Axis.GetPoint1() - Axis.GetPoint2();
-
-	n = MathUtils::Normalize(n);
-	Range axisRange = ProjectLineSegment(Axis, n);
-	Range Range0 = ProjectLineSegment(Edge0, n);
-	Range Range2 = ProjectLineSegment(Edge2, n);
+	N = MathUtils::Normalize(N);
+	Range AxisRange = ProjectLineSegment(Axis, N);
+	Range Range0 = ProjectLineSegment(Edge0, N);
+	Range Range2 = ProjectLineSegment(Edge2, N);
 	Range Projection(Range0);
 	Projection.Join(Range2);
 
-	return !axisRange.Overlap(Projection);
+	return !AxisRange.Overlap(Projection);
+}
+
+static bool SeparatingAxisForAlignedBox(const LineSegment& Axis, const AlignedBoxShape& Box)
+{
+	sf::Vector2f N = Axis.GetPoint1() - Axis.GetPoint2();
+
+	N = MathUtils::Normalize(N);
+
+	LineSegment EdgeA(Box.GetCorner(0), Box.GetCorner(1));
+	LineSegment EdgeB(Box.GetCorner(2), Box.GetCorner(3));
+
+	Range EdgeARange = ProjectLineSegment(EdgeA, N);
+	Range EdgeBRange = ProjectLineSegment(EdgeB, N);
+	Range Projection(EdgeARange);
+	Projection.Join(EdgeBRange);
+
+	Range AxisRange = ProjectLineSegment(Axis, N);
+
+	return !AxisRange.Overlap(Projection);
+}
+
+static Range ComputeInterval(const ConvexPolygonShape& C, const sf::Vector2f& D)
+{
+	float Min = MathUtils::DotProduct(D, C[0]);
+	float Max = Min;
+
+	for (size_t Idx = 1; Idx < C.GetPointC(); ++Idx)
+	{
+		float Value = MathUtils::DotProduct(D, C[Idx]);
+
+		if (Value < Min)
+			Min = Value;
+		else if (Value > Max)
+			Max = Value;
+	}
+
+	return Range(Min, Max);
 }
 
 bool IntersectionTests::IntersectAlignedBoxAlignedBox(const AlignedBoxShape& A, const AlignedBoxShape& B)
 {
-	float aLeft = A.GetCornerPosition().x;
-	float aRight = aLeft + A.GetSize().x;
-	float bLeft = B.GetCornerPosition().x;
-	float bRight = bLeft + B.GetSize().x;
-	float aBottom = A.GetCornerPosition().y;
-	float aTop = aBottom + A.GetSize().y; 
-	float bBottom = B.GetSize().y;
-	float bTop = bBottom + B.GetSize().y;
+	float LeftA = A.GetCornerPosition().x;
+	float RightA = LeftA + A.GetSize().x;
+	float LeftB = B.GetCornerPosition().x;
+	float RightB = LeftB + B.GetSize().x;
+	float BottomA = A.GetCornerPosition().y;
+	float TopA = BottomA + A.GetSize().y; 
+	float BottomB = B.GetSize().y;
+	float TopB = BottomB + B.GetSize().y;
 
-	Range r11(aLeft, aRight);
-	Range r12(bLeft, bRight);
-	Range r21(aBottom, aTop);
-	Range r22(bBottom, bTop);
+	Range R11(LeftA, RightA);
+	Range R12(LeftB, RightB);
+	Range R21(BottomA, TopA);
+	Range R22(BottomB, TopB);
 	
-	return r11.Overlap(r12) && r21.Overlap(r22);
+	return R11.Overlap(R12) && R21.Overlap(R22);
 }
 
 bool IntersectionTests::IntersectRayRay(const Ray& R1, const Ray& R2)
@@ -142,22 +147,111 @@ bool IntersectionTests::IntersectLineSegmentLineSegment(const LineSegment& L1, c
 
 bool IntersectionTests::IntersectOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2)
 {
-	LineSegment Edge = OrientedRectangleEdge(Box1, 0);
+	LineSegment Edge = Box1.GetEdge(0);
 
-	if(SeparatingAxisForOrientedRectangle(Edge, Box2))
+	if(SeparatingAxisForOrientedBox(Edge, Box2))
 		return false;
 
-	Edge = OrientedRectangleEdge(Box1, 1);
-	if(SeparatingAxisForOrientedRectangle(Edge, Box2))
+	Edge = Box1.GetEdge(1);
+	if(SeparatingAxisForOrientedBox(Edge, Box2))
 		return false;
 
-	Edge = OrientedRectangleEdge(Box2, 0);
-	if(SeparatingAxisForOrientedRectangle(Edge, Box1))
+	Edge = Box2.GetEdge(0);
+	if(SeparatingAxisForOrientedBox(Edge, Box1))
 		return false;
 
-	Edge = OrientedRectangleEdge(Box2, 1);
+	Edge = Box2.GetEdge(1);
 
-	return !SeparatingAxisForOrientedRectangle(Edge, Box1);
+	return !SeparatingAxisForOrientedBox(Edge, Box1);
+}
+
+bool IntersectionTests::IntersectRayAlignedBox(const Ray& R, const AlignedBoxShape& B)
+{
+	sf::Vector2f N = MathUtils::GetVectorNormal(R.GetDirection());
+
+	sf::Vector2f C1 = B.GetCornerPosition();
+	sf::Vector2f C2 = C1 + B.GetSize();
+	sf::Vector2f C3(C2.x, C1.y);
+	sf::Vector2f C4(C1.x, C2.y);
+
+	C1 = C1 - R.GetPosition();
+	C2 = C2 - R.GetPosition();
+	C3 = C3 - R.GetPosition();
+	C4 = C4 - R.GetPosition();
+
+	float Dp1 = MathUtils::DotProduct(N, C1);
+	float Dp2 = MathUtils::DotProduct(N, C2);
+	float Dp3 = MathUtils::DotProduct(N, C3);
+	float Dp4 = MathUtils::DotProduct(N, C4);
+
+	return (Dp1 * Dp2 <= 0) || (Dp2 * Dp3 <= 0) || (Dp3 * Dp4 <= 0);
+}
+
+bool IntersectionTests::IntersectRayLineSegment(const Ray& R, const LineSegment& L)
+{
+	return !IsSegmentOnOneSide(R, L);
+}
+
+bool IntersectionTests::IntersectRayOrientedBox(const Ray& R, const OrientedBoxShape& B)
+{
+	AlignedBoxShape AlignedB(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(B.GetHalfExtents().x * 2, B.GetHalfExtents().y * 2));
+
+	sf::Vector2f RotatedRPos = R.GetPosition() - B.GetCenter();
+	RotatedRPos = MathUtils::RotateVector(RotatedRPos, -B.GetRotation());
+	RotatedRPos = RotatedRPos + B.GetHalfExtents();
+
+	sf::Vector2f RotatedRDir = MathUtils::RotateVector(R.GetDirection(), -B.GetRotation());
+
+	Ray RotatedR(RotatedRPos, RotatedRDir);
+
+	return IntersectRayAlignedBox(RotatedR, AlignedB);
+}
+
+bool IntersectionTests::IntersectOrientedBoxAlignedBox(const OrientedBoxShape& OB, const AlignedBoxShape& AB)
+{
+	AlignedBoxShape Hull = OB.GetAlignedHull();
+
+	if(!IntersectAlignedBoxAlignedBox(Hull, AB))
+		return false;
+
+	LineSegment edge = OB.GetEdge(0);
+
+	if(SeparatingAxisForAlignedBox(edge, AB))
+		return false;
+
+	edge = OB.GetEdge(1);
+
+	return !SeparatingAxisForAlignedBox(edge, AB);
+}
+
+bool IntersectionTests::IntersectRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly)
+{
+	return true;
+}
+
+bool IntersectionTests::IntersectConvexPolygonConvexPolygon(const ConvexPolygonShape& Poly1, const ConvexPolygonShape& Poly2)
+{
+	for (size_t Idx0 = 0, Idx1 = Poly1.GetPointC() - 1; Idx0 < Poly1.GetPointC(); Idx1 = Idx0, ++Idx0) 
+	{
+		sf::Vector2f Edge = Poly1[Idx0] - Poly1[Idx1];
+		sf::Vector2f D = MathUtils::GetVectorNormal(Edge);
+		Range R1 = ComputeInterval(Poly1, D);
+		Range R2 = ComputeInterval(Poly2, D);
+		if (!R1.Overlap(R2))
+			return false;
+	}
+
+	for (size_t Idx0 = 0, Idx1 = Poly2.GetPointC() - 1; Idx0 < Poly2.GetPointC(); Idx1 = Idx0, ++Idx0)
+	{
+		sf::Vector2f Edge = Poly1[Idx0] - Poly1[Idx1];
+		sf::Vector2f D = MathUtils::GetVectorNormal(Edge);
+		Range R1 = ComputeInterval(Poly1, D);
+		Range R2 = ComputeInterval(Poly2, D);
+		if (!R1.Overlap(R2))
+			return false;
+	}
+
+	return true;
 }
 
 void IntersectionTests::Tests()
@@ -211,6 +305,43 @@ void IntersectionTests::Tests()
 		OrientedBoxShape b(sf::Vector2f(10.0f, 5.0f), sf::Vector2f(2.0f, 2.0f), -15.0f);
 
 		assert(IntersectOrientedBoxOrientedBox(a, b) == false);
+	}
+
+	//IntersectRayAlignedBox
+	{
+		Ray r(sf::Vector2f(6.0f, 8.0f), sf::Vector2f(2.0f, -3.0f));
+		AlignedBoxShape box(sf::Vector2f(3.0f, 2.0f), sf::Vector2f(6.0f, 4.0f));
+		
+		assert(IntersectRayAlignedBox(r, box) == true);
+	}
+
+	//IntersectRayLineSegment
+	{
+		sf::Vector2f base(3.0f, 4.0f);
+		sf::Vector2f direction(4.0f, -2.0f);
+		sf::Vector2f point1(8.0f, 4.0f);
+		sf::Vector2f point2(11.0f, 7.0f);
+		
+		LineSegment s(point1, point2);
+		Ray l(base, direction);
+
+		assert(IntersectRayLineSegment(l, s) == false);
+	}
+
+	//IntersectRayOrientedBox
+	{
+		Ray r(sf::Vector2f(7.0f, 3.0f), sf::Vector2f(2.0f, -1.0f));
+		OrientedBoxShape b(sf::Vector2f(5.0f, 4.0f), sf::Vector2f(3.0f, 2.0f), 30.0f);
+		
+		assert(IntersectRayOrientedBox(r, b) == true);
+	}
+
+	//IntersectOrientedBoxAlignedBox
+	{
+		AlignedBoxShape aar(sf::Vector2f(1.0f, 5.0f), sf::Vector2f(3.0f, 3.0f)); 
+		OrientedBoxShape or(sf::Vector2f(10.0f, 4.0f), sf::Vector2f(4.0f, 2.0f), 25.0f); 
+		
+		assert(IntersectOrientedBoxAlignedBox(or, aar) == false);
 	}
 }
 
