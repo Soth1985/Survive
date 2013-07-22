@@ -4,6 +4,7 @@
 #include <Survive/content_manager.h>
 #include <Survive/gui.h>
 #include <Survive/settings.h>
+#include <Survive/debug_render.h>
 #include <Survive/main_menu_state.h>
 #include <Survive/game_state.h>
 #include <SFML/Graphics.hpp>
@@ -21,6 +22,10 @@ m_UpdateFrequency(1.0f / 60.0f)
 	Settings* pSettings = new Settings();
 	m_pContext->SetRenderWindow(m_pRenderWindow.get());
 	m_pContext->SetContentManager(new ContentManager());
+
+	const sf::Font* pDefaultFont = m_pContext->GetContentManager()->LoadFont(eFontID::Arial);
+
+	m_pContext->SetDebugRender(new DebugRender(pDefaultFont));
 	m_pContext->SetGui(new Gui(pSettings));
 	//m_pContext->SetWorld(new World(m_pContext.get()));
 

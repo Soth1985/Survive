@@ -12,42 +12,61 @@ m_ContentMountPoint("../../../../content/")
 
 }
 
-BigTexture* ContentManager::LoadBigTexture(eBigTextureID::Val id)
+BigTexture* ContentManager::LoadBigTexture(eBigTextureID::Val Id)
 {
-	BigTexture* result = new BigTexture();
+	BigTexture* Result = new BigTexture();
 
 	ContentTemplate* Content = TemplateManager::Instance().GetTemplate<ContentTemplate>("Content");
 
-	std::string realPath = m_ContentMountPoint + Content->m_BigTextures[id];
+	std::string RealPath = m_ContentMountPoint + Content->m_BigTextures[Id];
 
-	if (!result->LoadFromFile(realPath))
+	if (!Result->LoadFromFile(RealPath))
 	{
-		delete result;
+		delete Result;
 		return 0;
 	}
 
-	m_BigTextures.Set(id, result);
+	m_BigTextures.Set(Id, Result);
 
-	return result;
+	return Result;
 }
 
-sf::Texture* ContentManager::LoadTexture(eTextureID::Val id)
+sf::Texture* ContentManager::LoadTexture(eTextureID::Val Id)
 {
-	sf::Texture* result = new sf::Texture();
+	sf::Texture* Result = new sf::Texture();
 
 	ContentTemplate* Content = TemplateManager::Instance().GetTemplate<ContentTemplate>("Content");
 
-	std::string realPath = m_ContentMountPoint + Content->m_Textures[id];
+	std::string RealPath = m_ContentMountPoint + Content->m_Textures[Id];
 
-	if (!result->loadFromFile(realPath))
+	if (!Result->loadFromFile(RealPath))
 	{
-		delete result;
+		delete Result;
 		return 0;
 	}
 
-	m_Textures.Set(id, result);
+	m_Textures.Set(Id, Result);
 
-	return result;
+	return Result;
+}
+
+sf::Font* ContentManager::LoadFont(eFontID::Val Id)
+{
+	sf::Font* Result = new sf::Font();
+
+	ContentTemplate* Content = TemplateManager::Instance().GetTemplate<ContentTemplate>("Content");
+
+	std::string RealPath = m_ContentMountPoint + Content->m_Fonts[Id];
+
+	if (!Result->loadFromFile(RealPath))
+	{
+		delete Result;
+		return 0;
+	}
+
+	m_Fonts.Set(Id, Result);
+
+	return Result;
 }
 
 }

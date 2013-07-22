@@ -17,6 +17,7 @@ public:
 
 	std::array<std::string, eBigTextureID::BigTextureCount> m_BigTextures;
 	std::array<std::string, eTextureID::TextureCount> m_Textures;
+	std::array<std::string, eFontID::FontCount> m_Fonts;
 };
 
 }

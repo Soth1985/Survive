@@ -33,6 +33,10 @@ public:
 
 	void SetSettings(Settings* pSettings);
 
+	DebugRender* GetDebugRender();
+
+	void SetDebugRender(DebugRender* pRender);
+
 private:
 	
 	sf::RenderWindow* m_pWindow;
@@ -40,6 +44,7 @@ private:
 	GuiPtr m_pGui;
 	WorldPtr m_pWorld;
 	SettingsPtr m_pSettings;
+	DebugRenderPtr m_pDebugRender;
 };
 
 }

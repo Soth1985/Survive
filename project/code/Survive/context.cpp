@@ -3,6 +3,7 @@
 #include <Survive/world.h>
 #include <Survive/content_manager.h>
 #include <Survive/settings.h>
+#include <Survive/debug_render.h>
 
 namespace Survive
 {
@@ -67,6 +68,16 @@ Settings* Context::GetSettings()
 void Context::SetSettings(Settings* pSettings)
 {
 	m_pSettings.reset(pSettings);
+}
+
+DebugRender* Context::GetDebugRender()
+{
+	return m_pDebugRender.get();
+}
+
+void Context::SetDebugRender(DebugRender* pRender)
+{
+	m_pDebugRender.reset(pRender);
 }
 
 }

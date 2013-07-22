@@ -4,6 +4,7 @@
 #include <Survive/big_texture.h>
 
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
 
 namespace Survive
 {
@@ -14,17 +15,23 @@ public:
 
 	typedef ContentHolder<BigTexture, eBigTextureID::Val> BigTexturesHolder;
 	typedef ContentHolder<sf::Texture, eTextureID::Val> TexturesHolder;
+	typedef ContentHolder<sf::Font, eFontID::Val> FontsHolder;
 
 	ContentManager();
 
-	BigTexturesHolder& BigTextures()
+	const BigTexturesHolder& BigTextures()const
 	{
 		return m_BigTextures;
 	}
 
-	TexturesHolder& Textures()
+	const TexturesHolder& Textures()const
 	{
 		return m_Textures;
+	}
+
+	const FontsHolder& Fonts()const
+	{
+		return m_Fonts;
 	}
 
 	const std::string& GetContentMountPoint()const
@@ -37,14 +44,17 @@ public:
 		m_ContentMountPoint = path;
 	}
 
-	BigTexture* LoadBigTexture(eBigTextureID::Val id);
+	BigTexture* LoadBigTexture(eBigTextureID::Val Id);
 
-	sf::Texture* LoadTexture(eTextureID::Val id);
+	sf::Texture* LoadTexture(eTextureID::Val Id);
+
+	sf::Font* LoadFont(eFontID::Val Id);
 
 private:
 
 	BigTexturesHolder m_BigTextures;
 	TexturesHolder m_Textures;
+	FontsHolder m_Fonts;
 	std::string m_ContentMountPoint;
 };
 

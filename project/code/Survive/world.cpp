@@ -3,6 +3,7 @@
 #include <Survive/content_manager.h>
 #include <Survive/scene_nodes/landscape_node.h>
 #include <Survive/scene_nodes/player_entity_node.h>
+#include <Survive/debug_render.h>
 
 #include <Survive/templates/template_manager.h>
 #include <Survive/templates/player_template.h>
@@ -61,6 +62,8 @@ void World::Init()
 
 void World::Update(float Dt)
 {
+	GetContext()->GetDebugRender()->Update(Dt);
+
 	float ScrollSpeed = 200.0f;
 	sf::Vector2f MoveDisp;
 
@@ -98,6 +101,10 @@ void World::Update(float Dt)
 	sf::Vector2i MousePos = sf::Mouse::getPosition(*GetContext()->GetRenderWindow());
 	sf::Vector2f WorldPos = GetContext()->GetRenderWindow()->mapPixelToCoords(MousePos);
 	sf::Vector2f Delta = WorldPos - m_pPlayer->GetLocalPosition();
+
+	GetContext()->GetDebugRender()->SetEnabled(true);
+	GetContext()->GetDebugRender()->AddLine(LineSegment(m_pPlayer->GetWorldPosition(), WorldPos), 0.01f);
+
 	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846f + 45.0f);
 
 	m_View.setCenter(ConstrainToWorld(m_View.getCenter(), m_View.getSize() * 0.5f));
@@ -109,6 +116,7 @@ void World::Draw(sf::RenderWindow* Window)
 {
 	Window->setView(m_View);
 	Window->draw(*m_pSceneRoot);
+	GetContext()->GetDebugRender()->Draw(Window);
 }
 
 sf::Vector2f World::ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize)

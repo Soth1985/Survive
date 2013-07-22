@@ -96,6 +96,9 @@ class LineSegment;
 class QuadTreeNode;
 typedef std::unique_ptr<QuadTreeNode> QuadTreeNodePtr;
 
+class DebugRender;
+typedef std::unique_ptr<DebugRender> DebugRenderPtr;
+
 struct eBigTextureID
 {
 	enum Val
@@ -116,6 +119,15 @@ struct eTextureID
 		ChaosLordPlasma,
 		ChaosLordMelta,
 		TextureCount
+	};
+};
+
+struct eFontID
+{
+	enum Val
+	{
+		Arial,
+		FontCount
 	};
 };
 

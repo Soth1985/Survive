@@ -14,6 +14,8 @@ ContentTemplate::ContentTemplate()
 	m_Textures[eTextureID::ChaosLordPlasma] = "Textures/chaos_lord/chaos_lord_plasma.png";
 	m_Textures[eTextureID::ChaosLordMelta] = "Textures/chaos_lord/chaos_lord_melta.png";
 	m_Textures[eTextureID::ChaosLordSword] = "Textures/chaos_lord/chaos_lord_sword.png";
+
+	m_Fonts[eFontID::Arial] = "Fonts/arial.ttf";
 }
 
 Type* ContentTemplate::GetType()const

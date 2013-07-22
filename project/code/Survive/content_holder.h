@@ -10,7 +10,7 @@ class ContentHolder
 {
 public:
 
-	const ResT* Get(const IdT& id)
+	const ResT* Get(const IdT& id)const
 	{
 		ResourcesMap::const_iterator It = m_Resources.find(id);
 

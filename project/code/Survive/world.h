@@ -23,14 +23,6 @@ public:
 
 	void Draw(sf::RenderWindow* Window);
 
-	//void RayTrace(const Ray& R);
-
-	//void OverlapBox(AlignedBox);
-
-	//void OverlapBox(OrientedBox)
-
-	//void SweepBox(OrientedBox)
-
 	Context* GetContext()
 	{
 		return m_pContext;
