@@ -43,11 +43,12 @@ void World::Init()
 	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordBody);
 	const BigTexture* LandscapeTex = m_pContext->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape);
 
-	m_WorldSize.top = 0.0f;
-	m_WorldSize.left = 0.0f;
 	sf::Vector2u texSize = LandscapeTex->GetSize();
-	m_WorldSize.height = texSize.y;
-	m_WorldSize.width = texSize.x;
+
+	m_WorldBound.SetSize(sf::Vector2f(texSize.x, texSize.y));
+
+	m_pQuadTree.reset(new QuadTreeNode(m_WorldBound, 0, 1, 0));
+
 	LandscapeNode* Landscape = CreateNode<LandscapeNode>(GetLayerRoot(eWorldLayer::LandscapeLayer));
 	Landscape->SetTexture(LandscapeTex);
 
@@ -94,6 +95,8 @@ void World::Update(float Dt)
 
 	sf::FloatRect PlayerBounds = m_pPlayer->GetBounds();
 	sf::Vector2f PlayerHalfSize(PlayerBounds.width * 0.5f, PlayerBounds.height * 0.5f);
+	sf::Vector2f pl = m_pPlayer->GetLocalPosition();
+	sf::Vector2f pw = m_pPlayer->GetWorldPosition();
 	m_pPlayer->SetLocalPosition(ConstrainToWorld(m_pPlayer->GetLocalPosition(), PlayerHalfSize));
 
 	m_View.setCenter(m_pPlayer->GetWorldPosition());
@@ -102,8 +105,10 @@ void World::Update(float Dt)
 	sf::Vector2f WorldPos = GetContext()->GetRenderWindow()->mapPixelToCoords(MousePos);
 	sf::Vector2f Delta = WorldPos - m_pPlayer->GetLocalPosition();
 
-	GetContext()->GetDebugRender()->SetEnabled(true);
+	GetContext()->GetDebugRender()->AddLine(LineSegment(m_pPlayer->GetLocalPosition(), WorldPos), 0.01f);
 	GetContext()->GetDebugRender()->AddLine(LineSegment(m_pPlayer->GetWorldPosition(), WorldPos), 0.01f);
+	GetContext()->GetDebugRender()->AddAlignedBox(*((AlignedBoxShape*)m_pPlayer->GetCollisionShape()), m_pPlayer->GetWorldTransform(), 0.01f);
+
 
 	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846f + 45.0f);
 
@@ -130,18 +135,18 @@ sf::Vector2f World::ConstrainToWorld(const sf::Vector2f& Center, const sf::Vecto
 	{
 		Result.x = HalfSize.x;
 	}
-	else if (BottomRight.x > m_WorldSize.width)
+	else if (BottomRight.x > m_WorldBound.GetSize().x)
 	{
-		Result.x = m_WorldSize.width - HalfSize.x;
+		Result.x = m_WorldBound.GetSize().x - HalfSize.x;
 	}
 
 	if (TopLeft.y < 0.0f)
 	{
 		Result.y = HalfSize.y;
 	}
-	else if (BottomRight.y > m_WorldSize.height)
+	else if (BottomRight.y > m_WorldBound.GetSize().y)
 	{
-		Result.y = m_WorldSize.height - HalfSize.y;
+		Result.y = m_WorldBound.GetSize().y - HalfSize.y;
 	}
 
 	return Result;

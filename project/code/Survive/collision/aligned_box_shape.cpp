@@ -134,10 +134,10 @@ void AlignedBoxShape::TransformShape(const sf::Transform& Tf)
 		sf::Vector2f Translate = MathUtils::GetTranslation(Tf);
 		m_CornerPosition += Translate;
 
-		sf::Vector2f Scale = MathUtils::GetScale(Tf);
+		//sf::Vector2f Scale = MathUtils::GetScale(Tf);
 
-		m_Size.x *= Scale.x;
-		m_Size.y *= Scale.y;
+		//m_Size.x *= Scale.x;
+		//m_Size.y *= Scale.y;
 	}
 }
 

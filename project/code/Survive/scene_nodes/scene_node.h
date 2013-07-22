@@ -38,15 +38,9 @@ public:
 
 	sf::Vector2f GetWorldPosition()const;
 
-	const sf::Vector2f& GetLocalPosition()const
-	{
-		return m_Transform.getPosition();
-	}
+	const sf::Vector2f& GetLocalPosition()const;
 
-	void SetLocalPosition(const sf::Vector2f& Position)
-	{
-		m_Transform.setPosition(Position);
-	}
+	void SetLocalPosition(const sf::Vector2f& Position);
 
 	float GetLocalRotation()const
 	{

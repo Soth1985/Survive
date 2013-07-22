@@ -69,9 +69,6 @@
     <ClCompile Include="..\code\Survive\rtti_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\code\Survive\quad_tree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\code\Survive\xml_archive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -171,6 +168,15 @@
     <ClCompile Include="..\code\Survive\collision\sweep_tests.cpp">
       <Filter>Source Files\collision</Filter>
     </ClCompile>
+    <ClCompile Include="..\code\Survive\quad_tree_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\hit_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\debug_render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\code\Survive\application.h">
@@ -222,9 +228,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\code\Survive\type_lists.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\code\Survive\quad_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\code\Survive\xml_archive.h">
@@ -325,6 +328,15 @@
     </ClInclude>
     <ClInclude Include="..\code\Survive\collision\sweep_tests.h">
       <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\quad_tree_node.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\hit_info.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\debug_render.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

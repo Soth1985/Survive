@@ -4,6 +4,7 @@
 #include <Survive/scene_nodes/character_entity_node.h>
 #include <Survive/templates/character_template.h>
 
+
 #include <SFML/Graphics.hpp>
 
 namespace Survive
@@ -24,6 +25,8 @@ void CharacterEntityNode::InitFromTemplate(Template* Tmpl)
 			m_Body.setTexture(*BodyTex);
 			sf::Vector2f HalfSize(m_Body.getLocalBounds().width / 2.0f, m_Body.getLocalBounds().height / 2.0f);
 			m_Body.setOrigin(HalfSize);
+			m_Collision.SetCornerPosition(-HalfSize);
+			m_Collision.SetSize(HalfSize * 2.0f);
 		}
 		else
 			GetWorld()->GetContext()->GetGui()->MessageBox("Error", "Body texture not found.");
@@ -32,6 +35,11 @@ void CharacterEntityNode::InitFromTemplate(Template* Tmpl)
 	{
 		GetWorld()->GetContext()->GetGui()->MessageBox("Error", "Invalid character template type.");
 	}
+}
+
+const CollisionShape* CharacterEntityNode::GetCollisionShape()const
+{
+	return &m_Collision;
 }
 
 void CharacterEntityNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const

@@ -20,13 +20,13 @@ public:
 
 	void GetObjects(const sf::Vector2f& Pos, HitList& Objects);
 
-	void GetObjects(const AlignedBoxShape& Box, const sf::Transform& BoxTf, HitList& Objects);
+	void GetObjects(const CollisionShape& Shape, const sf::Transform& ShapeTf, HitList& Objects);
 
 	void RayTrace(const Ray& R, HitList& Objects);
 
 	void RayTraceClosest(const Ray& R, HitInfo& Result);
 
-	void SweepAlignedBoxClosest(const AlignedBoxShape& Box, const sf::Transform& BoxTf, const sf::Vector2f& V, float Tmax, HitInfo& Result);
+	void SweepShapeClosest(const CollisionShape& Shape, const sf::Transform& ShapeTf, const sf::Vector2f& V, float Tmax, HitInfo& Result);
 
 	void AddObject(SceneNode* pObject);
 	bool Remove(SceneNode* pObject);

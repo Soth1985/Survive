@@ -15,6 +15,8 @@ class CollisionShape: public Rtti
 {
 public:
 
+	CollisionShape();
+
 	virtual Type* GetType()const;
 
 	virtual void GetAlignedHull(AlignedBoxShape* pHull)const = 0;
@@ -28,6 +30,20 @@ public:
 	virtual void TransformShape(const sf::Transform& Tf) = 0;
 
 	virtual sf::Vector2f GetShapeCenter()const = 0;
+
+	int GetCollisionGroup()const
+	{
+		return m_CollisionGroup;
+	}
+
+	void SetCollisionGroup(int Group)
+	{
+		m_CollisionGroup = Group;
+	}
+
+private:
+
+	int m_CollisionGroup;
 };
 
 }

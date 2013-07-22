@@ -27,15 +27,14 @@ m_UpdateFrequency(1.0f / 60.0f)
 
 	m_pContext->SetDebugRender(new DebugRender(pDefaultFont));
 	m_pContext->SetGui(new Gui(pSettings));
-	//m_pContext->SetWorld(new World(m_pContext.get()));
 
 	m_pRenderWindow->create(sf::VideoMode(pSettings->GetRenderWindowWidth(), pSettings->GetRenderWindowHeight()), "Survive", sf::Style::Close);
 
 	m_StateStack.RegisterState<MainMenuState>(eStateID::MainMenu);
 	m_StateStack.RegisterState<GameState>(eStateID::Game);
 
-	//m_StateStack.PushState(eStateID::Game);
-	m_StateStack.PushState(eStateID::MainMenu);
+	m_StateStack.PushState(eStateID::Game);
+	//m_StateStack.PushState(eStateID::MainMenu);
 }
 
 Application::~Application()

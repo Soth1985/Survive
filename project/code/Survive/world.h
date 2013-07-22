@@ -3,6 +3,7 @@
 #include <Survive/forward.h>
 #include <Survive/context.h>
 #include <Survive/type_info.h>
+#include <Survive/quad_tree_node.h>
 
 #include <SFML/Graphics/View.hpp>
 
@@ -33,9 +34,9 @@ public:
 		return m_pSceneRoot.get();
 	}
 
-	const sf::FloatRect& GetWorldSize()const
+	const AlignedBoxShape& GetWorldBound()const
 	{
-		return m_WorldSize;
+		return m_WorldBound;
 	}
 
 	SceneNode* GetLayerRoot(eWorldLayer::Val Layer)
@@ -61,6 +62,11 @@ public:
 
 			m_TypeNodeCache[NodeType].push_back(Result);
 
+			if (Result->GetCollisionShape())
+			{
+				m_pQuadTree->AddObject(Result);
+			}
+
 			return Result;
 		}
 		else
@@ -78,8 +84,9 @@ private:
 	sf::Vector2f ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize);
 
 	sf::View m_View;
-	sf::FloatRect m_WorldSize;
+	AlignedBoxShape m_WorldBound;
 	SceneNodePtr m_pSceneRoot;
+	QuadTreeNodePtr m_pQuadTree;
 	PlayerEntityNode* m_pPlayer;
 	TypeNodeCache m_TypeNodeCache;
 	std::array<SceneNode*, eWorldLayer::LayerCount> m_pLayers;

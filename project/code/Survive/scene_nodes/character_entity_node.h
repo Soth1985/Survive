@@ -2,6 +2,7 @@
 
 #include <Survive/forward.h>
 #include <Survive/scene_nodes/dynamic_entity_node.h>
+#include <Survive/collision/aligned_box_shape.h>
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -18,6 +19,8 @@ public:
 
 	virtual sf::FloatRect GetBounds();
 
+	virtual const CollisionShape* GetCollisionShape()const;
+
 protected:
 
 	virtual void OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const;
@@ -27,6 +30,7 @@ protected:
 private:
 
 	sf::Sprite m_Body;	
+	AlignedBoxShape m_Collision;
 };
 
 }

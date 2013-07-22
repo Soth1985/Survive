@@ -2,6 +2,7 @@
 #include <Survive/world.h>
 #include <Survive/gui.h>
 #include <Survive/context.h>
+#include <Survive/debug_render.h>
 
 namespace Survive
 {
@@ -77,6 +78,11 @@ bool GameState::HandleEvent(const sf::Event& Event)
 		{
 			m_Paused = true;
 			m_pMenuWindow->Show(true);
+		}
+
+		if (Event.key.code == sf::Keyboard::F2)
+		{
+			GetContext()->GetDebugRender()->SetEnabled(!GetContext()->GetDebugRender()->IsEnabled());
 		}
 	}
 

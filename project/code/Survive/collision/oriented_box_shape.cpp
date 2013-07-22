@@ -123,12 +123,12 @@ void OrientedBoxShape::TransformShape(const sf::Transform& Tf)
 		sf::Vector2f Translate = MathUtils::GetTranslation(Tf);
 		m_Center += Translate;
 
-		sf::Vector2f Scale = MathUtils::GetScale(Tf);
+		//sf::Vector2f Scale = MathUtils::GetScale(Tf);
 
-		m_HalfExtents.x *= Scale.x;
-		m_HalfExtents.y *= Scale.y;
+		//m_HalfExtents.x *= Scale.x;
+		//m_HalfExtents.y *= Scale.y;
 
-		m_Rotation = MathUtils::GetRotation(Tf);
+		m_Rotation += MathUtils::GetRotation(Tf);
 	}
 }
 

@@ -120,4 +120,14 @@ const CollisionShape* SceneNode::GetCollisionShape()const
 	return 0;
 }
 
+const sf::Vector2f& SceneNode::GetLocalPosition()const
+{
+	return m_Transform.getPosition();
+}
+
+void SceneNode::SetLocalPosition(const sf::Vector2f& Position)
+{
+	m_Transform.setPosition(Position);
+}
+
 }

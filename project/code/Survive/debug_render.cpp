@@ -34,7 +34,7 @@ void DrawShapeList(std::list<T>& List, sf::RenderWindow* pWindow)
 		else
 			It->m_Shape.setFillColor(sf::Color::Transparent);
 
-		//It->m_Shape.setOutlineThickness(2);
+		It->m_Shape.setOutlineThickness(2);
 		It->m_Shape.setOutlineColor(It->m_Color);
 		pWindow->draw(It->m_Shape);
 	}
@@ -43,8 +43,8 @@ void DrawShapeList(std::list<T>& List, sf::RenderWindow* pWindow)
 template <class SfShapeT>
 void ApplyTransform(SfShapeT& Shape, const sf::Transform& Tf)
 {
-	Shape.setPosition(MathUtils::GetTranslation(Tf));
-	Shape.setScale(MathUtils::GetScale(Tf));
+	Shape.setPosition(Shape.getPosition() + MathUtils::GetTranslation(Tf));
+	//Shape.setScale(MathUtils::GetScale(Tf));
 	Shape.setRotation(MathUtils::GetRotation(Tf));
 }
 
@@ -80,6 +80,7 @@ void DebugRender::AddAlignedBox(const AlignedBoxShape& Box, const sf::Transform&
 		return;
 
 	m_AlignedBoxes.push_back(ShapeHolder<sf::RectangleShape>(sf::RectangleShape(Box.GetSize()), LifeTime, Color, Fill));
+	m_AlignedBoxes.back().m_Shape.setPosition(Box.GetCornerPosition());
 	ApplyTransform(m_AlignedBoxes.back().m_Shape, Tf);
 }
 	
