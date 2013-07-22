@@ -14,17 +14,19 @@ class SweepTests
 {
 public:
 
-	int SweepConvexPolygonConvexPolygon(const ConvexPolygonShape& P1, const ConvexPolygonShape& P2, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
-	int SweepAlignedBoxConvexPolygon(const AlignedBoxShape& Box, const ConvexPolygonShape& P, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
-	int SweepOrientedBoxConvexPolygon(const OrientedBoxShape& Box, const ConvexPolygonShape& P, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
-	int SweepOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
-	int SweepAlignedBoxAlignedBox(const AlignedBoxShape& Box1, const AlignedBoxShape& Box2, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
-	int SweepAlignedBoxOrientedBox(const AlignedBoxShape& Box1, const OrientedBoxShape& Box2, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
+	static int SweepConvexPolygonConvexPolygon(const ConvexPolygonShape& InP1, const sf::Transform& P1Tf, const ConvexPolygonShape& InP2, const sf::Transform& P2Tf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
 
-private:
-
-	static ConvexPolygonShape m_TempShape1;
-	static ConvexPolygonShape m_TempShape2;
+	static int SweepAlignedBoxConvexPolygon(const AlignedBoxShape& InBox, const sf::Transform& BoxTf, const ConvexPolygonShape& InP, const sf::Transform& PTf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
+	
+	static int SweepOrientedBoxConvexPolygon(const OrientedBoxShape& InBox, const sf::Transform& BoxTf, const ConvexPolygonShape& InP, const sf::Transform& PTf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
+	
+	static int SweepOrientedBoxOrientedBox(const OrientedBoxShape& InBox1, const sf::Transform& Box1Tf, const OrientedBoxShape& InBox2, const sf::Transform& Box2Tf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
+	
+	static int SweepAlignedBoxAlignedBox(const AlignedBoxShape& InBox1, const sf::Transform& Box1Tf, const AlignedBoxShape& InBox2, const sf::Transform& Box2Tf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
+	
+	static int SweepAlignedBoxOrientedBox(const AlignedBoxShape& InBox1, const sf::Transform& Box1Tf, const OrientedBoxShape& InBox2, const sf::Transform& Box2Tf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
+	
+	static int SweepShapeShape(const CollisionShape& Shape1, const sf::Transform& Shape1Tf, const CollisionShape& Shape2, const sf::Transform& Shape2Tf, const sf::Vector2f& V1, const sf::Vector2f& V2, float Tmax, float& Tfirst, float& Tlast);
 };
 
 };

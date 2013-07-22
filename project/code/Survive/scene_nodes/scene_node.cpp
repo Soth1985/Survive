@@ -1,4 +1,5 @@
 #include <Survive/scene_nodes/scene_node.h>
+#include <Survive/math_utils.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -69,9 +70,7 @@ sf::Vector2f SceneNode::GetWorldPosition()const
 {
 	sf::Transform T = GetWorldTransform();
 
-	const float* pMat = T.getMatrix();
-
-	return sf::Vector2f(pMat[12], pMat[13]);
+	return MathUtils::GetTranslation(T);
 }
 
 void SceneNode::draw(sf::RenderTarget& Target, sf::RenderStates States)const
@@ -114,6 +113,11 @@ Type* SceneNode::GetType()const
 sf::FloatRect SceneNode::GetBounds()
 {
 	return sf::FloatRect();
+}
+
+const CollisionShape* SceneNode::GetCollisionShape()const
+{
+	return 0;
 }
 
 }

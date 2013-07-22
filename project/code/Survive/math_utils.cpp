@@ -87,4 +87,55 @@ float MathUtils::RadToDeg(float Rad)
 	return Rad * 180.0f / Pi;
 }
 
+sf::Vector2f MathUtils::GetTranslation(const sf::Transform& Tf)
+{
+	const float* pMat = Tf.getMatrix();
+
+	return sf::Vector2f(pMat[12], pMat[13]);
+}
+
+sf::Vector2f MathUtils::GetScale(const sf::Transform& Tf)
+{
+	const float* pMat = Tf.getMatrix();
+
+	return sf::Vector2f(pMat[0], pMat[5]);
+}
+
+float MathUtils::GetRotation(const sf::Transform& Tf)
+{
+	sf::Vector2f Dir(1.0f, 0.0f);
+
+	Tf.transformPoint(Dir);
+
+	if (AreClose(Dir.x, 0.0f))
+	{
+		if (AreClose(Dir.y, 0.0f))
+			return 0.0f;
+
+		if (Dir.y > 0.0f)
+			return 90.0f;
+		else
+			return -90.0f;
+	}
+	else
+		return RadToDeg(atan2f(Dir.y, Dir.x));
+}
+
+bool MathUtils::IsIdentity(const sf::Transform& Tf)
+{
+	if (&Tf == &sf::Transform::Identity)
+		return true;
+
+	const float* IdnMtx = sf::Transform::Identity.getMatrix();
+	const float* Mtx = Tf.getMatrix();
+
+	for (size_t Idx = 0; Idx < 16; ++Idx)
+	{
+		if (IdnMtx[Idx] != Mtx[Idx])
+			return false;
+	}
+
+	return true;
+}
+
 }

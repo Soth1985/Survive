@@ -20,9 +20,9 @@ public:
 
 	}
 
-	AlignedBoxShape(const sf::Vector2f& CorenerPosition, const sf::Vector2f& Size)
+	AlignedBoxShape(const sf::Vector2f& CornerPosition, const sf::Vector2f& Size)
 		:
-	m_CornerPosition(CorenerPosition),
+	m_CornerPosition(CornerPosition),
 	m_Size(Size)
 	{
 
@@ -48,11 +48,32 @@ public:
 		m_Size = Size;
 	}
 
+	sf::Vector2f GetCenter()const
+	{
+		return m_CornerPosition + m_Size * 0.5f;
+	}
+
 	void Extend(const sf::Vector2f& Point);
 
 	void Extend(const AlignedBoxShape& Box);
 
-	bool Contains(const sf::Vector2f& Point)const;
+	bool Contains(const AlignedBoxShape& Box)const;
+
+	bool Contains(const AlignedBoxShape& Box, const sf::Transform& BoxTf)const;
+
+	void ToConvex(ConvexPolygonShape* pPoly)const;
+
+	virtual bool Contains(const sf::Vector2f& Point)const;
+
+	virtual bool Contains(const sf::Vector2f& Point, const sf::Transform& Tf)const;
+
+	virtual void GetAlignedHull(AlignedBoxShape* pHull)const;
+
+	virtual eCollisionShapeKind::Val GetShapeKind()const;
+
+	virtual void TransformShape(const sf::Transform& Tf);
+
+	virtual sf::Vector2f GetShapeCenter()const;
 
 	sf::Vector2f GetCorner(int CornerIdx)const;
 

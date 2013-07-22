@@ -2,6 +2,7 @@
 
 #include <Survive/forward.h>
 #include <Survive/rtti.h>
+#include <Survive/collision/collision_shape.h>
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -93,6 +94,8 @@ public:
 
 	virtual Type* GetType()const;
 
+	virtual const CollisionShape* GetCollisionShape()const;
+
 protected:
 
 	friend class World;
@@ -111,17 +114,31 @@ protected:
 		return m_Layer;
 	}
 
+	const sf::Vector2f& GetVelocity()const
+	{
+		return m_Velocity;
+	}
+
+	void SetVelocity(const sf::Vector2f& Velocity)
+	{
+		m_Velocity = Velocity;
+	}
+
 private:
 
 	virtual void draw(sf::RenderTarget& Target, sf::RenderStates States)const;
 
+	friend class QuadTreeNode;
+
 	sf::Transformable m_Transform;
+	sf::Vector2f m_Velocity;
 	std::vector<SceneNodePtr> m_pChildren;
 	SceneNode* m_pParent;
 	eWorldLayer::Val m_Layer;
 	World* m_pWorld;
 	int m_Id;
 	int m_Flags;
+	QuadTreeNode* m_pQuadTreeNode;
 };
 
 }

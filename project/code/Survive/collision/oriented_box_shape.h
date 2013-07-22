@@ -2,7 +2,6 @@
 
 #include <Survive/forward.h>
 #include <Survive/collision/collision_shape.h>
-#include <Survive/collision/aligned_box_shape.h>
 
 namespace Survive
 {
@@ -61,13 +60,23 @@ public:
 		m_Rotation = Rotation;
 	}
 
-	bool Contains(const sf::Vector2f& Point)const;
-
 	sf::Vector2f GetCorner(int CornerIdx)const;
 
 	LineSegment GetEdge(int EdgeIdx)const;
 
-	AlignedBoxShape GetAlignedHull()const;
+	void ToConvex(ConvexPolygonShape* pPoly)const;
+
+	virtual bool Contains(const sf::Vector2f& Point)const;
+
+	virtual bool Contains(const sf::Vector2f& Point, const sf::Transform& Tf)const;
+
+	virtual void GetAlignedHull(AlignedBoxShape* pHull)const;
+
+	virtual eCollisionShapeKind::Val GetShapeKind()const;
+
+	virtual void TransformShape(const sf::Transform& Tf);
+
+	virtual sf::Vector2f GetShapeCenter()const;
 
 private:
 

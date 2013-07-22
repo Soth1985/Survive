@@ -3,6 +3,7 @@
 #include <Survive/forward.h>
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 namespace Survive
 {
@@ -34,6 +35,14 @@ public:
 	static float DegToRad(float Deg);
 
 	static float RadToDeg(float Rad);
+
+	static sf::Vector2f GetTranslation(const sf::Transform& Tf);
+
+	static sf::Vector2f GetScale(const sf::Transform& Tf);
+
+	static float GetRotation(const sf::Transform& Tf);
+
+	static bool IsIdentity(const sf::Transform& Tf);
 };
 
 }

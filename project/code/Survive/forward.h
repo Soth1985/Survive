@@ -93,6 +93,9 @@ class ConvexPolygonShape;
 class Ray;
 class LineSegment;
 
+class QuadTreeNode;
+typedef std::unique_ptr<QuadTreeNode> QuadTreeNodePtr;
+
 struct eBigTextureID
 {
 	enum Val
@@ -142,6 +145,16 @@ struct eSceneNodeFlags
 	enum Val
 	{
 		MarkToDelete = 1 << 0
+	};
+};
+
+struct eCollisionShapeKind
+{
+	enum Val
+	{
+		AlignedBox,
+		OrientedBox,
+		ConvexPolygon
 	};
 };
 

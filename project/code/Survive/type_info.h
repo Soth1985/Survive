@@ -319,7 +319,7 @@ static bool IsConvertible(Type* From, Type* To)
 }
 
 template <class TgtT, class SrcT>
-TgtT* TypeCast(SrcT Src)
+TgtT* TypeCast(SrcT* Src)
 {
 	TgtT* Result=0;
 
@@ -331,6 +331,25 @@ TgtT* TypeCast(SrcT Src)
 		if( IsConvertible(SrcType, TgtType) )
 		{
 			Result = static_cast<TgtT*>(Src);
+		}
+	}
+
+	return Result;
+}
+
+template <class TgtT, class SrcT>
+const TgtT* TypeCast(const SrcT* Src)
+{
+	const TgtT* Result=0;
+
+	if(Src)
+	{
+		Type* SrcType = Src->GetType();
+		Type* TgtType = TypeImpl<TgtT>::Instance();
+
+		if( IsConvertible(SrcType, TgtType) )
+		{
+			Result = static_cast<const TgtT*>(Src);
 		}
 	}
 

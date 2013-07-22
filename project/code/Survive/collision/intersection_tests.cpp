@@ -121,8 +121,13 @@ Range IntersectionTests::ComputeInterval(const ConvexPolygonShape& C, const sf::
 	return Range(Min, Max);
 }
 
-bool IntersectionTests::HasIntersectionAlignedBoxAlignedBox(const AlignedBoxShape& A, const AlignedBoxShape& B)
+bool IntersectionTests::HasIntersectionAlignedBoxAlignedBox(const AlignedBoxShape& InA, const sf::Transform& ATf, const AlignedBoxShape& InB, const sf::Transform& BTf)
 {
+	AlignedBoxShape A(InA);
+	A.TransformShape(ATf);
+	AlignedBoxShape B(InB);
+	B.TransformShape(BTf);
+
 	float LeftA = A.GetCornerPosition().x;
 	float RightA = LeftA + A.GetSize().x;
 	float LeftB = B.GetCornerPosition().x;
@@ -148,7 +153,7 @@ bool IntersectionTests::HasIntersectionRayRay(const Ray& R1, const Ray& R2)
 		return true;
 }
 
-bool IntersectionTests::HasIntersectioLineSegmentLineSegment(const LineSegment& L1, const LineSegment& L2)
+bool IntersectionTests::HasIntersectionLineSegmentLineSegment(const LineSegment& L1, const LineSegment& L2)
 {
 	Ray Axis1(L1.GetPoint1(), L1.GetPoint2() - L1.GetPoint1());
 
@@ -175,8 +180,13 @@ bool IntersectionTests::HasIntersectioLineSegmentLineSegment(const LineSegment& 
 		return true;
 }
 
-bool IntersectionTests::HasIntersectionOrientedBoxOrientedBox(const OrientedBoxShape& Box1, const OrientedBoxShape& Box2)
+bool IntersectionTests::HasIntersectionOrientedBoxOrientedBox(const OrientedBoxShape& InBox1, const sf::Transform& Box1Tf, const OrientedBoxShape& InBox2, const sf::Transform& Box2Tf)
 {
+	OrientedBoxShape Box1(InBox1);
+	Box1.TransformShape(Box1Tf);
+	OrientedBoxShape Box2(InBox2);
+	Box1.TransformShape(Box2Tf);
+
 	LineSegment Edge = Box1.GetEdge(0);
 
 	if(SeparatingAxisForOrientedBox(Edge, Box2))
@@ -195,8 +205,11 @@ bool IntersectionTests::HasIntersectionOrientedBoxOrientedBox(const OrientedBoxS
 	return !SeparatingAxisForOrientedBox(Edge, Box1);
 }
 
-bool IntersectionTests::HasIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& B)
+bool IntersectionTests::HasIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& InB, const sf::Transform& BTf)
 {
+	AlignedBoxShape B(InB);
+	B.TransformShape(BTf);
+
 	sf::Vector2f N = MathUtils::GetVectorNormal(R.GetDirection());
 
 	sf::Vector2f C1 = B.GetCornerPosition();
@@ -222,8 +235,11 @@ bool IntersectionTests::HasIntersectionRayLineSegment(const Ray& R, const LineSe
 	return !IsSegmentOnOneSide(R, L);
 }
 
-bool IntersectionTests::HasIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& B)
+bool IntersectionTests::HasIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& InB, const sf::Transform& BTf)
 {
+	OrientedBoxShape B(InB);
+	B.TransformShape(BTf);
+
 	AlignedBoxShape AlignedB(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(B.GetHalfExtents().x * 2, B.GetHalfExtents().y * 2));
 
 	sf::Vector2f RotatedRPos = R.GetPosition() - B.GetCenter();
@@ -234,14 +250,21 @@ bool IntersectionTests::HasIntersectionRayOrientedBox(const Ray& R, const Orient
 
 	Ray RotatedR(RotatedRPos, RotatedRDir);
 
-	return HasIntersectionRayAlignedBox(RotatedR, AlignedB);
+	return HasIntersectionRayAlignedBox(RotatedR, AlignedB, sf::Transform::Identity);
 }
 
-bool IntersectionTests::HasIntersectionOrientedBoxAlignedBox(const OrientedBoxShape& OB, const AlignedBoxShape& AB)
+bool IntersectionTests::HasIntersectionOrientedBoxAlignedBox(const OrientedBoxShape& InOB, const sf::Transform& OBTf, const AlignedBoxShape& InAB, const sf::Transform& ABTf)
 {
-	AlignedBoxShape Hull = OB.GetAlignedHull();
+	OrientedBoxShape OB(InOB);
+	OB.TransformShape(OBTf);
+	AlignedBoxShape AB(InAB);
+	AB.TransformShape(ABTf);
 
-	if(!HasIntersectionAlignedBoxAlignedBox(Hull, AB))
+	AlignedBoxShape Hull;
+	
+	OB.GetAlignedHull(&Hull);
+
+	if(!HasIntersectionAlignedBoxAlignedBox(Hull, sf::Transform::Identity, AB, sf::Transform::Identity))
 		return false;
 
 	LineSegment edge = OB.GetEdge(0);
@@ -254,13 +277,29 @@ bool IntersectionTests::HasIntersectionOrientedBoxAlignedBox(const OrientedBoxSh
 	return !SeparatingAxisForAlignedBox(edge, AB);
 }
 
-bool IntersectionTests::HasIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly)
+bool IntersectionTests::HasIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& InPoly, const sf::Transform& PolyTf)
 {
-	return true;
+	ConvexPolygonShape Poly(InPoly);
+	Poly.TransformShape(PolyTf);
+
+	for (size_t Idx0 = 0, Idx1 = Poly.GetPointC() - 1; Idx0 < Poly.GetPointC(); Idx1 = Idx0, ++Idx0) 
+	{
+		if (HasIntersectionRayLineSegment(R, LineSegment(Poly[Idx0], Poly[Idx1])))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
-bool IntersectionTests::HasIntersectionConvexPolygonConvexPolygon(const ConvexPolygonShape& Poly1, const ConvexPolygonShape& Poly2)
+bool IntersectionTests::HasIntersectionConvexPolygonConvexPolygon(const ConvexPolygonShape& InPoly1, const sf::Transform& Poly1Tf, const ConvexPolygonShape& InPoly2, const sf::Transform& Poly2Tf)
 {
+	ConvexPolygonShape Poly1(InPoly1);
+	Poly1.TransformShape(Poly1Tf);
+	ConvexPolygonShape Poly2(InPoly2);
+	Poly2.TransformShape(Poly2Tf);
+
 	for (size_t Idx0 = 0, Idx1 = Poly1.GetPointC() - 1; Idx0 < Poly1.GetPointC(); Idx1 = Idx0, ++Idx0) 
 	{
 		sf::Vector2f Edge = Poly1[Idx0] - Poly1[Idx1];
@@ -294,8 +333,11 @@ int IntersectionTests::FindIntersectionRayLineSegment(const Ray& R, const LineSe
 	return result;
 }
 
-int IntersectionTests::FindIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& Box, float& Param)
+int IntersectionTests::FindIntersectionRayAlignedBox(const Ray& R, const AlignedBoxShape& InBox, const sf::Transform& BoxTf, bool Closest, float& Param)
 {
+	AlignedBoxShape Box(InBox);
+	Box.TransformShape(BoxTf);
+
 	int Result = 0;
 
 	float ClosestCollision = FLT_MAX;
@@ -309,6 +351,9 @@ int IntersectionTests::FindIntersectionRayAlignedBox(const Ray& R, const Aligned
 		{
 			if (Param < ClosestCollision)
 				ClosestCollision = Param;
+
+			if (!Closest)
+				return 1;
 		}
 		else
 			Result = 0;
@@ -317,8 +362,11 @@ int IntersectionTests::FindIntersectionRayAlignedBox(const Ray& R, const Aligned
 	return Result;
 }
 
-int IntersectionTests::FindIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& Box, float& Param)
+int IntersectionTests::FindIntersectionRayOrientedBox(const Ray& R, const OrientedBoxShape& InBox, const sf::Transform& BoxTf, bool Closest, float& Param)
 {
+	OrientedBoxShape Box(InBox);
+	Box.TransformShape(BoxTf);
+
 	AlignedBoxShape AlignedB(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(Box.GetHalfExtents().x * 2.0f, Box.GetHalfExtents().y * 2.0f));
 
 	sf::Vector2f RotatedRPos = R.GetPosition() - Box.GetCenter();
@@ -329,11 +377,14 @@ int IntersectionTests::FindIntersectionRayOrientedBox(const Ray& R, const Orient
 
 	Ray RotatedR(RotatedRPos, RotatedRDir);
 
-	return FindIntersectionRayAlignedBox(R, AlignedB, Param);
+	return FindIntersectionRayAlignedBox(R, AlignedB, sf::Transform::Identity, Closest, Param);
 }
 
-int IntersectionTests::FindIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& Poly, float& Param)
+int IntersectionTests::FindIntersectionRayConvexPolygon(const Ray& R, const ConvexPolygonShape& InPoly, const sf::Transform& PolyTf, bool Closest, float& Param)
 {
+	ConvexPolygonShape Poly(InPoly);
+	Poly.TransformShape(PolyTf);
+
 	int Result = 0;
 
 	float ClosestCollision = FLT_MAX;
@@ -347,12 +398,118 @@ int IntersectionTests::FindIntersectionRayConvexPolygon(const Ray& R, const Conv
 		{
 			if (Param < ClosestCollision)
 				ClosestCollision = Param;
+
+			if (!Closest)
+				return 1;
 		}
 		else
 			Result = 0;
 	}
 
 	return Result;
+}
+
+int IntersectionTests::FindIntersectionRayShape(const Ray& R, const CollisionShape& Shape, const sf::Transform& ShapeTf, bool Closest, float& Param)
+{
+	const AlignedBoxShape* Aligned = TypeCast<AlignedBoxShape>(&Shape);
+
+	if (Aligned)
+		return FindIntersectionRayAlignedBox(R, *Aligned, ShapeTf, Closest, Param);
+
+	const ConvexPolygonShape* Convex = TypeCast<ConvexPolygonShape>(&Shape);
+
+	if (Convex)
+		return FindIntersectionRayConvexPolygon(R, *Convex, ShapeTf, Closest, Param);
+
+	const OrientedBoxShape* Oriented = TypeCast<OrientedBoxShape>(&Shape);
+
+	if (Oriented)
+		return FindIntersectionRayOrientedBox(R, *Oriented, ShapeTf, Closest, Param);
+
+	return 0;
+}
+
+bool IntersectionTests::HasIntersectionShapeShape(const CollisionShape& Shape1, const sf::Transform& Shape1Tf, const CollisionShape& Shape2, const sf::Transform& Shape2Tf)
+{
+	const AlignedBoxShape* Aligned1 = TypeCast<AlignedBoxShape>(&Shape1);
+
+	if (Aligned1)
+	{
+		const AlignedBoxShape* Aligned2 = TypeCast<AlignedBoxShape>(&Shape2);
+
+		if (Aligned2)
+			return HasIntersectionAlignedBoxAlignedBox(*Aligned1, Shape1Tf, *Aligned2, Shape2Tf);
+
+		const ConvexPolygonShape* Convex2 = TypeCast<ConvexPolygonShape>(&Shape2);
+
+		if (Convex2)
+		{
+			ConvexPolygonShape TempShape(4);
+			Aligned1->ToConvex(&TempShape);
+			return HasIntersectionConvexPolygonConvexPolygon(TempShape, Shape1Tf, *Convex2, Shape2Tf);
+		}
+
+		const OrientedBoxShape* Oriented2 = TypeCast<OrientedBoxShape>(&Shape2);
+
+		if (Oriented2)
+			return HasIntersectionOrientedBoxAlignedBox(*Oriented2, Shape2Tf, *Aligned1, Shape1Tf); 
+	}
+
+	const ConvexPolygonShape* Convex1 = TypeCast<ConvexPolygonShape>(&Shape1);
+
+	if (Convex1)
+	{
+		const AlignedBoxShape* Aligned2 = TypeCast<AlignedBoxShape>(&Shape2);
+
+		if (Aligned2)
+		{
+			ConvexPolygonShape TempShape(4);
+			Aligned2->ToConvex(&TempShape);
+			return HasIntersectionConvexPolygonConvexPolygon(*Convex1, Shape1Tf, TempShape, Shape2Tf);
+		}
+
+		const ConvexPolygonShape* Convex2 = TypeCast<ConvexPolygonShape>(&Shape2);
+
+		if (Convex2)
+		{
+			return HasIntersectionConvexPolygonConvexPolygon(*Convex1, Shape1Tf, *Convex2, Shape2Tf);
+		}
+
+		const OrientedBoxShape* Oriented2 = TypeCast<OrientedBoxShape>(&Shape2);
+
+		if (Oriented2)
+		{
+			ConvexPolygonShape TempShape(4);
+			Oriented2->ToConvex(&TempShape);
+			return HasIntersectionConvexPolygonConvexPolygon(*Convex1, Shape1Tf, TempShape, Shape2Tf);
+		}
+	}
+
+	const OrientedBoxShape* Oriented1 = TypeCast<OrientedBoxShape>(&Shape1);
+
+	if (Oriented1)
+	{
+		const AlignedBoxShape* Aligned2 = TypeCast<AlignedBoxShape>(&Shape2);
+
+		if (Aligned2)
+			return HasIntersectionOrientedBoxAlignedBox(*Oriented1, Shape1Tf, *Aligned2, Shape2Tf);
+
+		const ConvexPolygonShape* Convex2 = TypeCast<ConvexPolygonShape>(&Shape2);
+
+		if (Convex2)
+		{
+			ConvexPolygonShape TempShape(4);
+			Oriented1->ToConvex(&TempShape);
+			return HasIntersectionConvexPolygonConvexPolygon(TempShape, Shape1Tf, *Convex2, Shape2Tf);
+		}
+
+		const OrientedBoxShape* Oriented2 = TypeCast<OrientedBoxShape>(&Shape2);
+
+		if (Oriented2)
+			return HasIntersectionOrientedBoxOrientedBox(*Oriented1, Shape1Tf, *Oriented2, Shape2Tf); 
+	}
+
+	return false;
 }
 
 void IntersectionTests::Tests()
@@ -363,9 +520,9 @@ void IntersectionTests::Tests()
 		AlignedBoxShape B(sf::Vector2f(2.0f, 2.0f), sf::Vector2f(5.0f, 5.0f));
 		AlignedBoxShape C(sf::Vector2f(6.0f, 4.0f), sf::Vector2f(4.0f, 2.0f));
 
-		assert(HasIntersectionAlignedBoxAlignedBox(A, B) == true);
-		assert(HasIntersectionAlignedBoxAlignedBox(B, C) == true);
-		assert(HasIntersectionAlignedBoxAlignedBox(A, C) == false);
+		assert(HasIntersectionAlignedBoxAlignedBox(A, sf::Transform::Identity, B, sf::Transform::Identity) == true);
+		assert(HasIntersectionAlignedBoxAlignedBox(B, sf::Transform::Identity, C, sf::Transform::Identity) == true);
+		assert(HasIntersectionAlignedBoxAlignedBox(A, sf::Transform::Identity, C, sf::Transform::Identity) == false);
 	}
 
 	//IntersectRayRay
@@ -397,7 +554,7 @@ void IntersectionTests::Tests()
 		LineSegment s1(a, b);
 		LineSegment s2(c, d);
 		
-		assert(HasIntersectioLineSegmentLineSegment( s1, s2)==false); 
+		assert(HasIntersectionLineSegmentLineSegment( s1, s2)==false); 
 	}
 
 	//IntersectOrientedBoxOrientedBox
@@ -405,7 +562,7 @@ void IntersectionTests::Tests()
 		OrientedBoxShape a(sf::Vector2f(3.0f, 5.0f), sf::Vector2f(1.0f, 3.0f), 15.0f);
 		OrientedBoxShape b(sf::Vector2f(10.0f, 5.0f), sf::Vector2f(2.0f, 2.0f), -15.0f);
 
-		assert(HasIntersectionOrientedBoxOrientedBox(a, b) == false);
+		assert(HasIntersectionOrientedBoxOrientedBox(a, sf::Transform::Identity, b, sf::Transform::Identity) == false);
 	}
 
 	//IntersectRayAlignedBox
@@ -413,7 +570,7 @@ void IntersectionTests::Tests()
 		Ray r(sf::Vector2f(6.0f, 8.0f), sf::Vector2f(2.0f, -3.0f));
 		AlignedBoxShape box(sf::Vector2f(3.0f, 2.0f), sf::Vector2f(6.0f, 4.0f));
 		
-		assert(HasIntersectionRayAlignedBox(r, box) == true);
+		assert(HasIntersectionRayAlignedBox(r, box, sf::Transform::Identity) == true);
 	}
 
 	//IntersectRayLineSegment
@@ -434,7 +591,7 @@ void IntersectionTests::Tests()
 		Ray r(sf::Vector2f(7.0f, 3.0f), sf::Vector2f(2.0f, -1.0f));
 		OrientedBoxShape b(sf::Vector2f(5.0f, 4.0f), sf::Vector2f(3.0f, 2.0f), 30.0f);
 		
-		assert(HasIntersectionRayOrientedBox(r, b) == true);
+		assert(HasIntersectionRayOrientedBox(r, b, sf::Transform::Identity) == true);
 	}
 
 	//IntersectOrientedBoxAlignedBox
@@ -442,7 +599,7 @@ void IntersectionTests::Tests()
 		AlignedBoxShape aar(sf::Vector2f(1.0f, 5.0f), sf::Vector2f(3.0f, 3.0f)); 
 		OrientedBoxShape or(sf::Vector2f(10.0f, 4.0f), sf::Vector2f(4.0f, 2.0f), 25.0f); 
 		
-		assert(HasIntersectionOrientedBoxAlignedBox(or, aar) == false);
+		assert(HasIntersectionOrientedBoxAlignedBox(or, sf::Transform::Identity, aar, sf::Transform::Identity) == false);
 	}
 
 	//FindIntersectionRayLineSegment

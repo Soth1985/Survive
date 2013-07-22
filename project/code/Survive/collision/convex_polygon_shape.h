@@ -2,7 +2,6 @@
 
 #include <Survive/forward.h>
 #include <Survive/collision/collision_shape.h>
-#include <Survive/collision/aligned_box_shape.h>
 
 namespace Survive
 {
@@ -43,15 +42,27 @@ public:
 
 	sf::Vector2f& operator[](size_t Idx)
 	{
+		assert(Idx < m_PointC);
 		return m_Points[Idx];
 	}
 
 	const sf::Vector2f& operator[](size_t Idx)const
 	{
+		assert(Idx < m_PointC);
 		return m_Points[Idx];
 	}
 
-	AlignedBoxShape GetAlignedHull()const;
+	virtual bool Contains(const sf::Vector2f& Point)const;
+
+	virtual bool Contains(const sf::Vector2f& Point, const sf::Transform& Tf)const;
+
+	virtual void GetAlignedHull(AlignedBoxShape* pHull)const;
+
+	virtual eCollisionShapeKind::Val GetShapeKind()const;
+
+	virtual void TransformShape(const sf::Transform& Tf);
+
+	virtual sf::Vector2f GetShapeCenter()const;
 
 	int GetMaxPointC()const
 	{
@@ -63,7 +74,7 @@ private:
 	static const int MaxPointC = 15;
 
 	std::array<sf::Vector2f, MaxPointC> m_Points;
-	int m_PointC;
+	size_t m_PointC;
 	//std::vector<sf::Vector2f> m_Points;
 };
 

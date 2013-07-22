@@ -98,7 +98,7 @@ void World::Update(float Dt)
 	sf::Vector2i MousePos = sf::Mouse::getPosition(*GetContext()->GetRenderWindow());
 	sf::Vector2f WorldPos = GetContext()->GetRenderWindow()->mapPixelToCoords(MousePos);
 	sf::Vector2f Delta = WorldPos - m_pPlayer->GetLocalPosition();
-	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846 + 45.0f);
+	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846f + 45.0f);
 
 	m_View.setCenter(ConstrainToWorld(m_View.getCenter(), m_View.getSize() * 0.5f));
 

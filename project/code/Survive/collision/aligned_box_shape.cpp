@@ -1,4 +1,6 @@
 #include <Survive/collision/aligned_box_shape.h>
+#include <Survive/collision/convex_polygon_shape.h>
+#include <Survive/math_utils.h>
 
 namespace Survive
 {
@@ -85,6 +87,63 @@ LineSegment AlignedBoxShape::GetEdge(int EdgeIdx)const
 	}
 
 	return LineSegment(P1, P2);
+}
+
+void AlignedBoxShape::GetAlignedHull(AlignedBoxShape* pHull)const
+{
+	*pHull = *this;
+}
+
+bool AlignedBoxShape::Contains(const AlignedBoxShape& Box)const
+{
+	return Contains(Box.GetCorner(1)) && Contains(Box.GetCorner(3));
+}
+
+bool AlignedBoxShape::Contains(const AlignedBoxShape& Box, const sf::Transform& BoxTf)const
+{
+	AlignedBoxShape Temp(Box);
+	Temp.TransformShape(BoxTf);
+	return Contains(Temp);
+}
+
+bool AlignedBoxShape::Contains(const sf::Vector2f& Point, const sf::Transform& Tf)const
+{
+	AlignedBoxShape Temp(*this);
+	Temp.TransformShape(Tf);
+	return Temp.Contains(Point);
+}
+
+void AlignedBoxShape::ToConvex(ConvexPolygonShape* pPoly)const
+{
+	pPoly->SetPointC(4);
+	(*pPoly)[0] = GetCorner(0);
+	(*pPoly)[1] = GetCorner(1);
+	(*pPoly)[2] = GetCorner(2);
+	(*pPoly)[3] = GetCorner(3);
+}
+
+eCollisionShapeKind::Val AlignedBoxShape::GetShapeKind()const
+{
+	return eCollisionShapeKind::AlignedBox;
+}
+
+void AlignedBoxShape::TransformShape(const sf::Transform& Tf)
+{
+	if (!MathUtils::IsIdentity(Tf))
+	{
+		sf::Vector2f Translate = MathUtils::GetTranslation(Tf);
+		m_CornerPosition += Translate;
+
+		sf::Vector2f Scale = MathUtils::GetScale(Tf);
+
+		m_Size.x *= Scale.x;
+		m_Size.y *= Scale.y;
+	}
+}
+
+sf::Vector2f AlignedBoxShape::GetShapeCenter()const
+{
+	return m_CornerPosition + m_Size * 0.5f;
 }
 
 }
