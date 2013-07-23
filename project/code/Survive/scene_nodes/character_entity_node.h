@@ -14,7 +14,7 @@ class CharacterEntityNode : public DynamicEntityNode
 {
 public:
 
-	void InitFromTemplate(Template* Tmpl);
+	void InitFromTemplate(const Template* Tmpl);
 
 	virtual Type* GetType()const;
 

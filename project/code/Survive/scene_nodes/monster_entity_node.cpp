@@ -16,14 +16,14 @@ Type* MonsterEntityNode::GetType()const
 	return TypeImpl<MonsterEntityNode>::Instance();
 }
 
-void MonsterEntityNode::InitFromTemplate(Template* pTmpl)
+void MonsterEntityNode::InitFromTemplate(const Template* pTmpl)
 {
 	CharacterEntityNode::InitFromTemplate(pTmpl);
 
 	if(GetCollisionShape())
 		GetCollisionShapeModify()->SetCollisionGroup(eCollisionGroup::Monster);
 
-	MonsterTemplate* pMonsterTmpl = TypeCast<MonsterTemplate>(pTmpl);
+	const MonsterTemplate* pMonsterTmpl = TypeCast<MonsterTemplate>(pTmpl);
 
 	if (pMonsterTmpl)
 	{

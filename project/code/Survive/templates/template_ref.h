@@ -23,7 +23,7 @@ public:
 
 	}
 
-	T* GetTemplate()
+	const T* GetTemplate()const
 	{
 		return TemplateManager::Instance().GetTemplate<T>(m_TemplateName);
 	}

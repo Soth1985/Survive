@@ -14,7 +14,9 @@ SceneNode::SceneNode()
 m_pParent(0),
 m_Id((int)this),
 m_Flags(0),
-m_Layer(eWorldLayer::LayerCount)
+m_Layer(eWorldLayer::LayerCount),
+m_pQuadTreeNode(0),
+m_pWorld(0)
 {
 
 }
@@ -67,7 +69,7 @@ sf::Transform SceneNode::GetWorldTransform()const
 	return Result;
 }
 
-void SceneNode::InitFromTemplate(Template* Tmpl)
+void SceneNode::InitFromTemplate(const Template* Tmpl)
 {
 
 }

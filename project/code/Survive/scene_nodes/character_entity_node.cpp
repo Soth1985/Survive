@@ -18,9 +18,9 @@ Type* CharacterEntityNode::GetType()const
 	return TypeImpl<CharacterEntityNode>::Instance();
 }
 	
-void CharacterEntityNode::InitFromTemplate(Template* Tmpl)
+void CharacterEntityNode::InitFromTemplate(const Template* Tmpl)
 {
-	CharacterTemplate* CharTmpl = TypeCast<CharacterTemplate>(Tmpl);
+	const CharacterTemplate* CharTmpl = TypeCast<CharacterTemplate>(Tmpl);
 
 	if (CharTmpl)
 	{

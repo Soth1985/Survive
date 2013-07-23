@@ -81,6 +81,22 @@ public:
 		}
 	}
 
+	template <class T>
+	size_t GetNodeCount()
+	{
+		TypeNodeCache::iterator It = m_TypeNodeCache.find(TypeImpl<T>::Instance());
+
+		if (It != m_TypeNodeCache.end())
+			return It->second.size();
+		else 
+			return 0;
+	}
+
+	QuadTreeNode* GetQuadTree()
+	{
+		return m_pQuadTree.get();
+	}
+
 private:
 
 	typedef std::vector<SceneNode*> NodeList;

@@ -189,7 +189,8 @@ struct eCollisionGroup
 		Player = 1 << 1,
 		Monster = 1 << 2,
 		Pickup = 1 << 3,
-		Dynamic = Player | Monster | Pickup,
+		Characters = Player | Monster,
+		Dynamic = Player | Monster | Pickup,		
 		Static = 1 << 4,
 		All = 0xffffffff
 	};

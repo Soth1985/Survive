@@ -1,16 +1,18 @@
 #include <Survive/world.h>
 #include <Survive/math_utils.h>
-#include <Survive/scene_nodes/scene_node.h>
+#include <Survive/debug_render.h>
 #include <Survive/content_manager.h>
+#include <Survive/scene_nodes/scene_node.h>
 #include <Survive/scene_nodes/landscape_node.h>
 #include <Survive/scene_nodes/player_entity_node.h>
 #include <Survive/scene_nodes/monster_entity_node.h>
-#include <Survive/debug_render.h>
+#include <Survive/scene_nodes/respawn_node.h>
 
 #include <Survive/collision/ray.h>
 #include <Survive/templates/template_manager.h>
 #include <Survive/templates/player_template.h>
 #include <Survive/templates/monster_template.h>
+#include <Survive/templates/respawn_template.h>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -87,6 +89,11 @@ void World::Init()
 	MonsterTemplate* pMonsterTmpl = TemplateManager::Instance().GetTemplate<MonsterTemplate>("OrkBoyChoppa");
 	pMonster->InitFromTemplate(pMonsterTmpl);
 	pMonster->SetLocalPosition(sf::Vector2f(100.0f, 200.0f));
+
+	RespawnNode* pRespawn = CreateNode<RespawnNode>(GetLayerRoot(eWorldLayer::GroundLayer));
+	RespawnTemplate* pRespawnTmpl = TemplateManager::Instance().GetTemplate<RespawnTemplate>("MonsterRespawn");
+	pRespawn->InitFromTemplate(pRespawnTmpl);
+	pRespawn->SetLocalPosition(sf::Vector2f(300.0f, 300.0f));
 }
 
 void World::Update(float Dt)

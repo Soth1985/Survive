@@ -21,10 +21,16 @@ public:
 		return m_RenderWindowWidth;
 	}
 
+	int GetMaxMonsterC()const
+	{
+		return m_MaxMonsterC;
+	}
+
 private:
 
 	int m_RenderWindowHeight;
 	int m_RenderWindowWidth;
+	int m_MaxMonsterC;
 };
 
 }

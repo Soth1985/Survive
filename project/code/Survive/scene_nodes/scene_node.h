@@ -83,7 +83,7 @@ protected:
 
 	virtual void OnUpdate(float Dt);
 
-	virtual void InitFromTemplate(Template* Tmpl);
+	virtual void InitFromTemplate(const Template* Tmpl);
 
 	World* GetWorld()
 	{
@@ -106,6 +106,11 @@ protected:
 	}
 
 	void UpdateQuadTreeLocation();
+
+	QuadTreeNode* GetQuadTreeNode()
+	{
+		return m_pQuadTreeNode;
+	}
 
 	CollisionShape* GetCollisionShapeModify();
 

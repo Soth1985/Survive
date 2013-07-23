@@ -23,6 +23,7 @@ m_UpdateFrequency(1.0f / 60.0f)
 	MathUtils::RandomInit();
 
 	Settings* pSettings = new Settings();
+	m_pContext->SetSettings(pSettings);
 	m_pContext->SetRenderWindow(m_pRenderWindow.get());
 	m_pContext->SetContentManager(new ContentManager());
 

@@ -303,7 +303,9 @@ void QuadTreeNode::CreateChildren()
 void QuadTreeNode::MoveObjects()
 {
 	AlignedBoxShape Temp;
-	for (ObjectSet::iterator It = m_pObjects.begin(); It != m_pObjects.end(); ++It)
+	ObjectSet::iterator It = m_pObjects.begin();
+
+	while (It != m_pObjects.end())
 	{
 		SceneNode* pObject = *It;
 		pObject->GetCollisionShape()->GetAlignedHull(&Temp);
@@ -314,8 +316,10 @@ void QuadTreeNode::MoveObjects()
 			{
 				m_pChildren[Idx]->AddObject(pObject);
 				pObject->m_pQuadTreeNode = m_pChildren[Idx].get();
-				m_pObjects.erase(It);
+				It = m_pObjects.erase(It);
 			}
+			else 
+				++It;
 		}
 	}
 }

@@ -134,7 +134,7 @@ bool IntersectionTests::HasIntersectionAlignedBoxAlignedBox(const AlignedBoxShap
 	float RightB = LeftB + B.GetSize().x;
 	float BottomA = A.GetCornerPosition().y;
 	float TopA = BottomA + A.GetSize().y; 
-	float BottomB = B.GetSize().y;
+	float BottomB = B.GetCornerPosition().y;
 	float TopB = BottomB + B.GetSize().y;
 
 	Range R11(LeftA, RightA);

@@ -12,7 +12,7 @@ class MonsterEntityNode : public CharacterEntityNode
 {
 public:
 
-	virtual void InitFromTemplate(Template* pTmpl);
+	virtual void InitFromTemplate(const Template* pTmpl);
 
 	virtual Type* GetType()const;
 

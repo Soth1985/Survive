@@ -10,7 +10,7 @@ Type* PlayerEntityNode::GetType()const
 	return TypeImpl<PlayerEntityNode>::Instance();
 }
 
-void PlayerEntityNode::InitFromTemplate(Template* Tmpl)
+void PlayerEntityNode::InitFromTemplate(const Template* Tmpl)
 {
 	CharacterEntityNode::InitFromTemplate(Tmpl);
 
