@@ -84,9 +84,13 @@ void TemplateManager::CreateDefaultTemplates()
 		pContentTmpl->m_Textures[eTextureID::BloodSplash2] = "Textures/blood/blood_2.png";
 		pContentTmpl->m_Textures[eTextureID::BloodSplash3] = "Textures/blood/blood_3.png";
 		pContentTmpl->m_Textures[eTextureID::BloodSplash4] = "Textures/blood/blood_4.png";
-		pContentTmpl->m_Textures[eTextureID::BloodSplash4] = "Textures/blood/blood_5.png";
-		pContentTmpl->m_Textures[eTextureID::BloodSplash5] = "Textures/blood/blood_6.png";
-		pContentTmpl->m_Textures[eTextureID::BloodSplash6] = "Textures/blood/blood_7.png";
+		pContentTmpl->m_Textures[eTextureID::BloodSplash5] = "Textures/blood/blood_5.png";
+		pContentTmpl->m_Textures[eTextureID::BloodSplash6] = "Textures/blood/blood_6.png";
+		pContentTmpl->m_Textures[eTextureID::TerrainOrkFortress] = "Textures/terrain/terrain_ork_fortress.png";
+		pContentTmpl->m_Textures[eTextureID::TerrainOrkWatchtower] = "Textures/terrain/terrain_ork_watchtower.png";
+		pContentTmpl->m_Textures[eTextureID::TerrainOrkBuilding] = "Textures/terrain/terrain_ork_building.png";
+		pContentTmpl->m_Textures[eTextureID::TerrainOrkGarage] = "Textures/terrain/terrain_ork_garage.png";
+		pContentTmpl->m_Textures[eTextureID::TerrainOrkHut] = "Textures/terrain/terrain_ork_hut.png";
 
 		pContentTmpl->m_Fonts[eFontID::Arial] = "Fonts/arial.ttf";
 
@@ -140,7 +144,7 @@ void TemplateManager::CreateDefaultTemplates()
 		pRespawnTmpl->m_Spawns.push_back(RespawnTemplate::SpawnPair(RespawnTemplate::Spawn("OrkBoyChoppa"), 1.0f));
 		pRespawnTmpl->m_Spawns.push_back(RespawnTemplate::SpawnPair(RespawnTemplate::Spawn("OrkBoyShoota"), 0.4f));
 		pRespawnTmpl->m_Spawns.push_back(RespawnTemplate::SpawnPair(RespawnTemplate::Spawn("OrkBadrukk"), 0.1f));
-		pRespawnTmpl->m_Spawns.push_back(RespawnTemplate::SpawnPair(RespawnTemplate::Spawn("OrkBadrukk"), 0.1f));
+		pRespawnTmpl->m_Spawns.push_back(RespawnTemplate::SpawnPair(RespawnTemplate::Spawn("OrkThraka"), 0.1f));
 		AddTemplate<RespawnTemplate>("MonsterRespawn", pRespawnTmpl);
 	}
 	

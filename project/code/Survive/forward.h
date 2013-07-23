@@ -66,6 +66,8 @@ typedef std::unique_ptr<SceneNode> SceneNodePtr;
 
 class DynamicEntityNode;
 class StaticEntityNode;
+class StaticSpriteNode;
+class StaticConvexNode;
 class CharacterEntityNode;
 class MonsterEntityNode;
 class PickupEntityNode;
@@ -85,6 +87,11 @@ class MonsterTemplate;
 class PickupTemplate;
 class PlayerTemplate;
 class StaticObjectTemplate;
+class StaticSpriteTemplate;
+class StaticConvexTemplate;
+class WeaponTemplate;
+class RangedWeaponTemplate;
+class CloseCombatWeaponTemplate;
 class RespawnTemplate;
 
 class CollisionShape;
@@ -139,6 +146,11 @@ struct eTextureID
 		BloodSplash4,
 		BloodSplash5,
 		BloodSplash6,
+		TerrainOrkFortress,
+		TerrainOrkWatchtower,
+		TerrainOrkBuilding,
+		TerrainOrkGarage,
+		TerrainOrkHut,
 		TextureCount
 	};
 };

@@ -10,4 +10,9 @@ Type* DynamicEntityNode::GetType()const
 	return TypeImpl<DynamicEntityNode>::Instance();
 }
 
+void DynamicEntityNode::DynamicMove(sf::Vector2f& Disp)
+{
+
+}
+
 }

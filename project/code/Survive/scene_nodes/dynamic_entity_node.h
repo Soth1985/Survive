@@ -14,6 +14,8 @@ public:
 
 	virtual Type* GetType()const;
 
+	virtual void DynamicMove(sf::Vector2f& Disp);
+
 private:
 
 	sf::Vector2f m_Velocity;

@@ -46,30 +46,10 @@ void World::Init()
 		m_pLayers[Idx]->m_Layer = (eWorldLayer::Val)Idx;
 	}
 
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordBody);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordWeaponBolter);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordWeaponPlasma);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBadrukkBody);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkThrakaBody);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody1);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody2);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody3);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody4);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody1);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody2);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody3);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody4);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkWarbossBody);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkWarbossWeaponShoota);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::ProjectileBullet);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::ProjectilePlasma);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash1);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash2);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash3);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash4);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash4);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash5);
-	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash6);
+	for (size_t Idx = eTextureID::ChaosLordBody; Idx < eTextureID::TextureCount; ++Idx)
+	{
+		m_pContext->GetContentManager()->LoadTexture((eTextureID::Val)Idx);
+	}
 
 	const BigTexture* LandscapeTex = m_pContext->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape);
 	sf::Vector2u texSize = LandscapeTex->GetSize();

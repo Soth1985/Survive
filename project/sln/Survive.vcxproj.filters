@@ -183,6 +183,27 @@
     <ClCompile Include="..\code\Survive\scene_nodes\respawn_node.cpp">
       <Filter>Source Files\scene_nodes</Filter>
     </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\static_convex_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\static_sprite_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\static_convex_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\static_sprite_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\close_combat_weapon_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\ranged_weapon_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\weapon_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\code\Survive\application.h">
@@ -352,6 +373,27 @@
     </ClInclude>
     <ClInclude Include="..\code\Survive\scene_nodes\respawn_node.h">
       <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\static_convex_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\static_sprite_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\static_convex_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\static_sprite_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\close_combat_weapon_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\ranged_weapon_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\weapon_template.h">
+      <Filter>Source Files\templates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
