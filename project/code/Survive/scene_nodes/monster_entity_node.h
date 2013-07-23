@@ -11,7 +11,14 @@ SURVIVE_DECL_TYPE(Survive::MonsterEntityNode);
 class MonsterEntityNode : public CharacterEntityNode
 {
 public:
-private:
+
+	virtual void InitFromTemplate(Template* pTmpl);
+
+	virtual Type* GetType()const;
+
+protected:
+
+	virtual void OnUpdate(float Dt);
 };
 
 }

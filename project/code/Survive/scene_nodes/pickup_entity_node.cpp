@@ -5,4 +5,9 @@ namespace Survive
 
 SURVIVE_REG_TYPE(PickupEntityNode, SURVIVE_TYPELIST_1(DynamicEntityNode))
 
+Type* PickupEntityNode::GetType()const
+{
+	return TypeImpl<PickupEntityNode>::Instance();
+}
+
 }

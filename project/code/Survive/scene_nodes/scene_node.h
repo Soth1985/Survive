@@ -3,6 +3,7 @@
 #include <Survive/forward.h>
 #include <Survive/rtti.h>
 #include <Survive/collision/collision_shape.h>
+#include <Survive/collision/aligned_box_shape.h>
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -57,32 +58,16 @@ public:
 		return m_Transform.getScale();
 	}
 
-	void SetLocalScale(const sf::Vector2f& Scale)
-	{
-		m_Transform.setScale(Scale);
-	}
+	void SetLocalScale(const sf::Vector2f& Scale);
 
-	const sf::Vector2f& GetOrigin()const
-	{
-		return m_Transform.getOrigin();
-	}
-
-	void SetOrigin(const sf::Vector2f& Origin)
-	{
-		m_Transform.setOrigin(Origin);
-	}
-
-	void Move(const sf::Vector2f& Disp)
-	{
-		m_Transform.move(Disp);
-	}
+	void Move(const sf::Vector2f& Disp);
 
 	void Rotate(float AngleDegrees)
 	{
 		m_Transform.rotate(AngleDegrees);
 	}
 
-	virtual sf::FloatRect GetBounds();
+	virtual AlignedBoxShape GetBounds();
 
 	void Update(float Dt);
 
@@ -97,6 +82,8 @@ protected:
 	virtual void OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const;
 
 	virtual void OnUpdate(float Dt);
+
+	virtual void InitFromTemplate(Template* Tmpl);
 
 	World* GetWorld()
 	{
@@ -117,6 +104,10 @@ protected:
 	{
 		m_Velocity = Velocity;
 	}
+
+	void UpdateQuadTreeLocation();
+
+	CollisionShape* GetCollisionShapeModify();
 
 private:
 

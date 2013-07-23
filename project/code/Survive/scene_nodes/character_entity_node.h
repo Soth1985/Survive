@@ -2,7 +2,6 @@
 
 #include <Survive/forward.h>
 #include <Survive/scene_nodes/dynamic_entity_node.h>
-#include <Survive/collision/aligned_box_shape.h>
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -17,7 +16,9 @@ public:
 
 	void InitFromTemplate(Template* Tmpl);
 
-	virtual sf::FloatRect GetBounds();
+	virtual Type* GetType()const;
+
+	virtual AlignedBoxShape GetBounds();
 
 	virtual const CollisionShape* GetCollisionShape()const;
 

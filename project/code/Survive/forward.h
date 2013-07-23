@@ -85,6 +85,7 @@ class MonsterTemplate;
 class PickupTemplate;
 class PlayerTemplate;
 class StaticObjectTemplate;
+class RespawnTemplate;
 
 class CollisionShape;
 class AlignedBoxShape;
@@ -114,10 +115,30 @@ struct eTextureID
 	{
 		MainMenuBackground,
 		ChaosLordBody,
-		ChaosLordSword,
-		ChaosLordBolter,
-		ChaosLordPlasma,
-		ChaosLordMelta,
+		ChaosLordWeaponSword,
+		ChaosLordWeaponBolter,
+		ChaosLordWeaponPlasma,
+		ChaosLordWeaponMelta,
+		OrkBadrukkBody,
+		OrkThrakaBody,
+		OrkBoyChoppaBody1,
+		OrkBoyChoppaBody2,
+		OrkBoyChoppaBody3,
+		OrkBoyChoppaBody4,
+		OrkBoyShootaBody1,
+		OrkBoyShootaBody2,
+		OrkBoyShootaBody3,
+		OrkBoyShootaBody4,
+		OrkWarbossBody,
+		OrkWarbossWeaponShoota,
+		ProjectileBullet,
+		ProjectilePlasma,
+		BloodSplash1,
+		BloodSplash2,
+		BloodSplash3,
+		BloodSplash4,
+		BloodSplash5,
+		BloodSplash6,
 		TextureCount
 	};
 };

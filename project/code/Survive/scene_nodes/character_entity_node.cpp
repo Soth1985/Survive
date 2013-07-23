@@ -3,7 +3,8 @@
 #include <Survive/gui.h>
 #include <Survive/scene_nodes/character_entity_node.h>
 #include <Survive/templates/character_template.h>
-
+#include <Survive/math_utils.h>
+#include <Survive/debug_render.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -12,19 +13,26 @@ namespace Survive
 
 SURVIVE_REG_TYPE(CharacterEntityNode, SURVIVE_TYPELIST_1(DynamicEntityNode))
 
+Type* CharacterEntityNode::GetType()const
+{
+	return TypeImpl<CharacterEntityNode>::Instance();
+}
+	
 void CharacterEntityNode::InitFromTemplate(Template* Tmpl)
 {
 	CharacterTemplate* CharTmpl = TypeCast<CharacterTemplate>(Tmpl);
 
 	if (CharTmpl)
 	{
-		const sf::Texture* BodyTex = GetWorld()->GetContext()->GetContentManager()->Textures().Get(CharTmpl->m_BodyTexture);
+		eTextureID::Val BodyTexId = MathUtils::GetRandomItem(CharTmpl->m_BodyTextures);
+		const sf::Texture* BodyTex = GetWorld()->GetContext()->GetContentManager()->Textures().Get(BodyTexId);
 
 		if (BodyTex)
 		{
 			m_Body.setTexture(*BodyTex);
 			sf::Vector2f HalfSize(m_Body.getLocalBounds().width / 2.0f, m_Body.getLocalBounds().height / 2.0f);
 			m_Body.setOrigin(HalfSize);
+			//HalfSize *= sqrtf(2.0f);
 			m_Collision.SetCornerPosition(-HalfSize);
 			m_Collision.SetSize(HalfSize * 2.0f);
 		}
@@ -49,12 +57,12 @@ void CharacterEntityNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates Stat
 
 void CharacterEntityNode::OnUpdate(float Dt)
 {
-
+	GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(m_Collision, GetWorldTransform(), 0.01f);
 }
 
-sf::FloatRect CharacterEntityNode::GetBounds()
+AlignedBoxShape CharacterEntityNode::GetBounds()
 {
-	return m_Body.getGlobalBounds();
+	return m_Collision;
 }
 
 }

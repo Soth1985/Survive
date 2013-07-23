@@ -36,14 +36,19 @@ public:
 		return m_CollisionGroup;
 	}
 
-	void SetCollisionGroup(int Group)
+	void SetCollisionGroup(unsigned int Group)
 	{
 		m_CollisionGroup = Group;
 	}
 
+	bool CheckCollisionGroup(unsigned int Mask)const
+	{
+		return (m_CollisionGroup & Mask) != 0;
+	}
+
 private:
 
-	int m_CollisionGroup;
+	unsigned int m_CollisionGroup;
 };
 
 }

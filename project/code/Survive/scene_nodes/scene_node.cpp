@@ -1,4 +1,5 @@
 #include <Survive/scene_nodes/scene_node.h>
+#include <Survive/quad_tree_node.h>
 #include <Survive/math_utils.h>
 
 #include <SFML/Graphics.hpp>
@@ -66,6 +67,11 @@ sf::Transform SceneNode::GetWorldTransform()const
 	return Result;
 }
 
+void SceneNode::InitFromTemplate(Template* Tmpl)
+{
+
+}
+
 sf::Vector2f SceneNode::GetWorldPosition()const
 {
 	sf::Transform T = GetWorldTransform();
@@ -110,14 +116,19 @@ Type* SceneNode::GetType()const
 	return TypeImpl<SceneNode>::Instance();
 }
 
-sf::FloatRect SceneNode::GetBounds()
+AlignedBoxShape SceneNode::GetBounds()
 {
-	return sf::FloatRect();
+	return AlignedBoxShape();
 }
 
 const CollisionShape* SceneNode::GetCollisionShape()const
 {
 	return 0;
+}
+
+CollisionShape* SceneNode::GetCollisionShapeModify()
+{
+	return const_cast<CollisionShape*>(GetCollisionShape());
 }
 
 const sf::Vector2f& SceneNode::GetLocalPosition()const
@@ -127,7 +138,31 @@ const sf::Vector2f& SceneNode::GetLocalPosition()const
 
 void SceneNode::SetLocalPosition(const sf::Vector2f& Position)
 {
-	m_Transform.setPosition(Position);
+	if (!MathUtils::AreClose(Position, m_Transform.getPosition()))
+	{
+		m_Transform.setPosition(Position);
+		UpdateQuadTreeLocation();
+	}	
+}
+
+void SceneNode::UpdateQuadTreeLocation()
+{
+	const CollisionShape* pShape = GetCollisionShape();
+
+	if (pShape && m_pQuadTreeNode)
+	{
+		m_pQuadTreeNode->Update(this);
+	}	
+}
+
+void SceneNode::SetLocalScale(const sf::Vector2f& Scale)
+{
+	m_Transform.setScale(Scale);
+}
+
+void SceneNode::Move(const sf::Vector2f& Disp)
+{
+	m_Transform.move(Disp);
 }
 
 }

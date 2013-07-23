@@ -29,14 +29,15 @@ void QuadTreeNode::GetNodesIntersectingAlignedBox(const AlignedBoxShape& Box, co
 	}
 }
 
-void QuadTreeNode::GetObjects(const sf::Vector2f& Pos, HitList& Objects)
+void QuadTreeNode::GetObjects(const sf::Vector2f& Pos, unsigned int Mask, HitList& Objects)
 {
 	for (ObjectSet::iterator It = m_pObjects.begin(); It != m_pObjects.end(); ++It)
 	{
 		SceneNode* pObject = *It;
-		if (pObject->GetCollisionShape()->Contains(Pos, pObject->GetWorldTransform()))
+		const CollisionShape* pShape = pObject->GetCollisionShape();
+		if (pShape->CheckCollisionGroup(Mask) && pShape->Contains(Pos, pObject->GetWorldTransform()))
 		{
-			Objects.push_back(HitInfo(*It));
+			Objects.push_back(HitInfo(pObject));
 		}
 	}
 
@@ -46,18 +47,19 @@ void QuadTreeNode::GetObjects(const sf::Vector2f& Pos, HitList& Objects)
 		{
 			if (m_pChildren[Idx]->GetBounds().Contains(Pos))
 			{
-				m_pChildren[Idx]->GetObjects(Pos, Objects);
+				m_pChildren[Idx]->GetObjects(Pos, Mask, Objects);
 			}
 		}
 	}
 }
 
-void QuadTreeNode::GetObjects(const CollisionShape& Shape, const sf::Transform& ShapeTf, HitList& Objects)
+void QuadTreeNode::GetObjects(const CollisionShape& Shape, const sf::Transform& ShapeTf, unsigned int Mask, HitList& Objects)
 {
 	for (ObjectSet::iterator It = m_pObjects.begin(); It != m_pObjects.end(); ++It)
 	{
 		SceneNode* pObject = *It;
-		if (IntersectionTests::HasIntersectionShapeShape(*pObject->GetCollisionShape(), pObject->GetWorldTransform(), Shape, ShapeTf))
+		const CollisionShape* pShape = pObject->GetCollisionShape();
+		if (pShape->CheckCollisionGroup(Mask) && IntersectionTests::HasIntersectionShapeShape(*pShape, pObject->GetWorldTransform(), Shape, ShapeTf))
 		{
 			Objects.push_back(HitInfo(pObject));
 		}
@@ -72,20 +74,21 @@ void QuadTreeNode::GetObjects(const CollisionShape& Shape, const sf::Transform& 
 		{
 			if (IntersectionTests::HasIntersectionAlignedBoxAlignedBox(Temp, ShapeTf, m_pChildren[Idx]->GetBounds(), sf::Transform::Identity))
 			{
-				m_pChildren[Idx]->GetObjects(Shape, ShapeTf, Objects);
+				m_pChildren[Idx]->GetObjects(Shape, ShapeTf, Mask, Objects);
 			}
 		}
 	}
 }
 
-void QuadTreeNode::RayTrace(const Ray& R, HitList& Objects)
+void QuadTreeNode::RayTrace(const Ray& R, unsigned int Mask, HitList& Objects)
 {
 	for (ObjectSet::iterator It = m_pObjects.begin(); It != m_pObjects.end(); ++It)
 	{ 
 		float Param = 0.0f;
 		SceneNode* pObject = *It;
+		const CollisionShape* pShape = pObject->GetCollisionShape();
 
-		if (IntersectionTests::FindIntersectionRayShape(R, *pObject->GetCollisionShape(), pObject->GetWorldTransform(), false, Param) == 1)
+		if (pShape->CheckCollisionGroup(Mask) && IntersectionTests::FindIntersectionRayShape(R, *pShape, pObject->GetWorldTransform(), false, Param) == 1)
 		{
 			Objects.push_back(HitInfo(pObject, Param));
 		}
@@ -97,13 +100,13 @@ void QuadTreeNode::RayTrace(const Ray& R, HitList& Objects)
 		{
 			if (IntersectionTests::HasIntersectionRayAlignedBox(R, m_pChildren[Idx]->GetBounds(), sf::Transform::Identity))
 			{
-				m_pChildren[Idx]->RayTrace(R, Objects);
+				m_pChildren[Idx]->RayTrace(R, Mask, Objects);
 			}
 		}
 	}
 }
 
-void QuadTreeNode::RayTraceClosest(const Ray& R, HitInfo& Result)
+void QuadTreeNode::RayTraceClosest(const Ray& R, unsigned int Mask, HitInfo& Result)
 {
 	if (!m_pParent)
 		Result.m_Param = FLT_MAX;
@@ -112,8 +115,9 @@ void QuadTreeNode::RayTraceClosest(const Ray& R, HitInfo& Result)
 	{ 
 		float Param = FLT_MAX;
 		SceneNode* pObject = *It;
+		const CollisionShape* pShape = pObject->GetCollisionShape();
 
-		if (IntersectionTests::FindIntersectionRayShape(R, *pObject->GetCollisionShape(), pObject->GetWorldTransform(), true, Param) == 1)
+		if (pShape->CheckCollisionGroup(Mask) && IntersectionTests::FindIntersectionRayShape(R, *pShape, pObject->GetWorldTransform(), true, Param) == 1)
 		{
 			if (Param < Result.m_Param)
 			{
@@ -129,13 +133,13 @@ void QuadTreeNode::RayTraceClosest(const Ray& R, HitInfo& Result)
 		{
 			if (IntersectionTests::HasIntersectionRayAlignedBox(R, m_pChildren[Idx]->GetBounds(), sf::Transform::Identity))
 			{
-				m_pChildren[Idx]->RayTraceClosest(R, Result);
+				m_pChildren[Idx]->RayTraceClosest(R, Mask, Result);
 			}
 		}
 	}
 }
 
-void QuadTreeNode::SweepShapeClosest(const CollisionShape& Shape, const sf::Transform& ShapeTf, const sf::Vector2f& V, float Tmax, HitInfo& Result)
+void QuadTreeNode::SweepShapeClosest(const CollisionShape& Shape, const sf::Transform& ShapeTf, const sf::Vector2f& V, float Tmax, unsigned int Mask, HitInfo& Result)
 {
 	if (!m_pParent)
 		Result.m_Param = FLT_MAX;
@@ -145,10 +149,11 @@ void QuadTreeNode::SweepShapeClosest(const CollisionShape& Shape, const sf::Tran
 		float Tfirst = FLT_MAX;
 		float Tlast = FLT_MAX;
 		SceneNode* pObject = *It;
+		const CollisionShape* pShape = pObject->GetCollisionShape();
 
-		if (SweepTests::SweepShapeShape(Shape, ShapeTf, *pObject->GetCollisionShape(), pObject->GetWorldTransform(), V, pObject->GetVelocity(), Tmax, Tfirst, Tlast) == 1)
+		if (pShape->CheckCollisionGroup(Mask) && SweepTests::SweepShapeShape(Shape, ShapeTf, *pShape, pObject->GetWorldTransform(), V, pObject->GetVelocity(), Tmax, Tfirst, Tlast) == 1)
 		{
-			if (Tfirst < Result.m_Param)
+			if (Tfirst < Result.m_Param && Tfirst < Tlast)
 			{
 				Result.m_Object = pObject;
 				Result.m_Param = Tfirst;
@@ -167,7 +172,7 @@ void QuadTreeNode::SweepShapeClosest(const CollisionShape& Shape, const sf::Tran
 		{
 			if (IntersectionTests::HasIntersectionAlignedBoxAlignedBox(ShapeTrace, sf::Transform::Identity, m_pChildren[Idx]->GetBounds(), sf::Transform::Identity))
 			{
-				m_pChildren[Idx]->SweepShapeClosest(Shape, ShapeTf, V, Tmax, Result);
+				m_pChildren[Idx]->SweepShapeClosest(Shape, ShapeTf, V, Tmax, Mask, Result);
 			}
 		}
 	}

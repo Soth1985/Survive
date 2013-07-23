@@ -15,7 +15,8 @@ public:
 
 	virtual Type* GetType()const;
 
-	eTextureID::Val m_BodyTexture;
+	typedef std::pair<eTextureID::Val, float> TexIdPair;
+	std::vector< TexIdPair > m_BodyTextures;
 	int m_MaxHealth;
 };
 

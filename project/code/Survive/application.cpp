@@ -7,6 +7,7 @@
 #include <Survive/debug_render.h>
 #include <Survive/main_menu_state.h>
 #include <Survive/game_state.h>
+#include <Survive/math_utils.h>
 #include <SFML/Graphics.hpp>
 
 namespace Survive
@@ -19,6 +20,8 @@ m_pContext(new Context()),
 m_StateStack(m_pContext.get()),
 m_UpdateFrequency(1.0f / 60.0f)
 {
+	MathUtils::RandomInit();
+
 	Settings* pSettings = new Settings();
 	m_pContext->SetRenderWindow(m_pRenderWindow.get());
 	m_pContext->SetContentManager(new ContentManager());

@@ -11,6 +11,7 @@ SURVIVE_DECL_TYPE(Survive::PickupEntityNode);
 class PickupEntityNode : public DynamicEntityNode
 {
 public:
+	virtual Type* GetType()const;
 private:
 };
 

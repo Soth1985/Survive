@@ -58,7 +58,8 @@ void ConvexPolygonShape::TransformShape(const sf::Transform& Tf)
 	{
 		for (size_t Idx = 0; Idx < GetPointC(); ++Idx)
 		{
-			Tf.transformPoint(m_Points[Idx]);
+			//m_Points[Idx] = Tf.transformPoint(m_Points[Idx]);
+			m_Points[Idx] += MathUtils::GetTranslation(Tf);
 		}
 	}
 }

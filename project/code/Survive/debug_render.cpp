@@ -1,6 +1,11 @@
 #include <Survive/debug_render.h>
 #include <Survive/math_utils.h>
 
+#include <Survive/collision/aligned_box_shape.h>
+#include <Survive/collision/oriented_box_shape.h>
+#include <Survive/collision/convex_polygon_shape.h>
+#include <Survive/collision/ray.h>
+
 #include <SFML/Graphics.hpp>
 
 namespace Survive
@@ -56,6 +61,11 @@ m_IsEnabled(false)
 
 }
 
+DebugRender::~DebugRender()
+{
+
+}
+
 void DebugRender::AddRay(const Ray& R, float Len, float LifeTime, const sf::Color& Color)
 {
 	if (!m_IsEnabled)
@@ -79,9 +89,19 @@ void DebugRender::AddAlignedBox(const AlignedBoxShape& Box, const sf::Transform&
 	if (!m_IsEnabled)
 		return;
 
-	m_AlignedBoxes.push_back(ShapeHolder<sf::RectangleShape>(sf::RectangleShape(Box.GetSize()), LifeTime, Color, Fill));
-	m_AlignedBoxes.back().m_Shape.setPosition(Box.GetCornerPosition());
-	ApplyTransform(m_AlignedBoxes.back().m_Shape, Tf);
+	m_Boxes.push_back(ShapeHolder<sf::RectangleShape>(sf::RectangleShape(Box.GetSize()), LifeTime, Color, Fill));
+	m_Boxes.back().m_Shape.setPosition(Box.GetCornerPosition());
+	ApplyTransform(m_Boxes.back().m_Shape, Tf);
+}
+
+void DebugRender::AddOrientedBox(const OrientedBoxShape& Box, const sf::Transform& Tf, float LifeTime, const sf::Color& Color, bool Fill)
+{
+	if (!m_IsEnabled)
+		return;
+
+	m_Boxes.push_back(ShapeHolder<sf::RectangleShape>(sf::RectangleShape(Box.GetHalfExtents() * 2.0f), LifeTime, Color, Fill));
+	m_Boxes.back().m_Shape.setPosition(Box.GetCenter());
+	ApplyTransform(m_Boxes.back().m_Shape, Tf);
 }
 	
 void DebugRender::AddConvexPolygon(const ConvexPolygonShape& Poly, const sf::Transform& Tf, float LifeTime, const sf::Color& Color, bool Fill)
@@ -99,13 +119,13 @@ void DebugRender::AddConvexPolygon(const ConvexPolygonShape& Poly, const sf::Tra
 	ApplyTransform(m_ConvexPolygons.back().m_Shape, Tf);
 }
 	
-void DebugRender::AddCircle(const sf::Transform& Tf, float Radius, float LifeTime, const sf::Color& Color, bool Fill)
+void DebugRender::AddCircle(const sf::Vector2f& Pos, float Radius, float LifeTime, const sf::Color& Color, bool Fill)
 {
 	if (!m_IsEnabled)
 		return;
 
 	m_Circles.push_back(ShapeHolder<sf::CircleShape>(sf::CircleShape(Radius), LifeTime, Color, Fill));
-	ApplyTransform(m_Circles.back().m_Shape, Tf);
+	m_Circles.back().m_Shape.setPosition(Pos - sf::Vector2f(Radius, Radius));
 }
 	
 void DebugRender::AddText(const std::string& Text, const sf::Transform& Tf, unsigned int CharacterSize, float LifeTime, const sf::Color& Color, bool Fill)
@@ -124,7 +144,7 @@ void DebugRender::Update(float Dt)
 
 	UpdateShapeList(m_Texts, Dt);
 	UpdateShapeList(m_Lines, Dt);
-	UpdateShapeList(m_AlignedBoxes, Dt);
+	UpdateShapeList(m_Boxes, Dt);
 	UpdateShapeList(m_ConvexPolygons, Dt);
 	UpdateShapeList(m_Circles, Dt);
 }
@@ -146,7 +166,7 @@ void DebugRender::Draw(sf::RenderWindow* pWindow)
 	}
 
 	DrawShapeList(m_Circles, pWindow);
-	DrawShapeList(m_AlignedBoxes, pWindow);
+	DrawShapeList(m_Boxes, pWindow);
 	DrawShapeList(m_ConvexPolygons, pWindow);
 
 	for (auto It = m_Texts.begin(); It != m_Texts.end(); ++It)

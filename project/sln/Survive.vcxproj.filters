@@ -177,6 +177,12 @@
     <ClCompile Include="..\code\Survive\debug_render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\code\Survive\templates\respawn_template.cpp">
+      <Filter>Source Files\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\Survive\scene_nodes\respawn_node.cpp">
+      <Filter>Source Files\scene_nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\code\Survive\application.h">
@@ -337,6 +343,15 @@
     </ClInclude>
     <ClInclude Include="..\code\Survive\debug_render.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\respawn_template.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\templates\template_ref.h">
+      <Filter>Source Files\templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\code\Survive\scene_nodes\respawn_node.h">
+      <Filter>Source Files\scene_nodes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

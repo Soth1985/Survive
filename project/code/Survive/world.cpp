@@ -1,12 +1,16 @@
 #include <Survive/world.h>
+#include <Survive/math_utils.h>
 #include <Survive/scene_nodes/scene_node.h>
 #include <Survive/content_manager.h>
 #include <Survive/scene_nodes/landscape_node.h>
 #include <Survive/scene_nodes/player_entity_node.h>
+#include <Survive/scene_nodes/monster_entity_node.h>
 #include <Survive/debug_render.h>
 
+#include <Survive/collision/ray.h>
 #include <Survive/templates/template_manager.h>
 #include <Survive/templates/player_template.h>
+#include <Survive/templates/monster_template.h>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -41,10 +45,32 @@ void World::Init()
 	}
 
 	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordBody);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordWeaponBolter);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::ChaosLordWeaponPlasma);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBadrukkBody);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkThrakaBody);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody1);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody2);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody3);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyChoppaBody4);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody1);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody2);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody3);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkBoyShootaBody4);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkWarbossBody);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::OrkWarbossWeaponShoota);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::ProjectileBullet);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::ProjectilePlasma);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash1);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash2);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash3);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash4);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash4);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash5);
+	m_pContext->GetContentManager()->LoadTexture(eTextureID::BloodSplash6);
+
 	const BigTexture* LandscapeTex = m_pContext->GetContentManager()->LoadBigTexture(eBigTextureID::Landscape);
-
 	sf::Vector2u texSize = LandscapeTex->GetSize();
-
 	m_WorldBound.SetSize(sf::Vector2f(texSize.x, texSize.y));
 
 	m_pQuadTree.reset(new QuadTreeNode(m_WorldBound, 0, 1, 0));
@@ -53,12 +79,14 @@ void World::Init()
 	Landscape->SetTexture(LandscapeTex);
 
 	m_pPlayer = CreateNode<PlayerEntityNode>(GetLayerRoot(eWorldLayer::GroundLayer));
-
-	PlayerTemplate* PlayerTmpl = TemplateManager::Instance().GetTemplate<PlayerTemplate>("Player");
-
-	m_pPlayer->InitFromTemplate(PlayerTmpl);
-
+	PlayerTemplate* pPlayerTmpl = TemplateManager::Instance().GetTemplate<PlayerTemplate>("Player");
+	m_pPlayer->InitFromTemplate(pPlayerTmpl);
 	m_pPlayer->SetLocalPosition(sf::Vector2f(100.0f, 100.0f));
+
+	MonsterEntityNode* pMonster = CreateNode<MonsterEntityNode>(GetLayerRoot(eWorldLayer::GroundLayer));
+	MonsterTemplate* pMonsterTmpl = TemplateManager::Instance().GetTemplate<MonsterTemplate>("OrkBoyChoppa");
+	pMonster->InitFromTemplate(pMonsterTmpl);
+	pMonster->SetLocalPosition(sf::Vector2f(100.0f, 200.0f));
 }
 
 void World::Update(float Dt)
@@ -91,10 +119,18 @@ void World::Update(float Dt)
 		MoveDisp *= 1.0f / sqrtf(2.0f);
 	}	
 
+	HitInfo swh;
+	m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), MoveDisp, 1.0f, eCollisionGroup::Monster, swh);
+
+	if(swh.m_Object)
+	{
+		MoveDisp *= 0.0f;
+	}
+
 	m_pPlayer->Move(MoveDisp);
 
-	sf::FloatRect PlayerBounds = m_pPlayer->GetBounds();
-	sf::Vector2f PlayerHalfSize(PlayerBounds.width * 0.5f, PlayerBounds.height * 0.5f);
+	AlignedBoxShape PlayerBounds = m_pPlayer->GetBounds();
+	sf::Vector2f PlayerHalfSize(PlayerBounds.GetSize() * 0.5f);
 	sf::Vector2f pl = m_pPlayer->GetLocalPosition();
 	sf::Vector2f pw = m_pPlayer->GetWorldPosition();
 	m_pPlayer->SetLocalPosition(ConstrainToWorld(m_pPlayer->GetLocalPosition(), PlayerHalfSize));
@@ -106,8 +142,17 @@ void World::Update(float Dt)
 	sf::Vector2f Delta = WorldPos - m_pPlayer->GetLocalPosition();
 
 	GetContext()->GetDebugRender()->AddLine(LineSegment(m_pPlayer->GetLocalPosition(), WorldPos), 0.01f);
-	GetContext()->GetDebugRender()->AddLine(LineSegment(m_pPlayer->GetWorldPosition(), WorldPos), 0.01f);
-	GetContext()->GetDebugRender()->AddAlignedBox(*((AlignedBoxShape*)m_pPlayer->GetCollisionShape()), m_pPlayer->GetWorldTransform(), 0.01f);
+
+	Delta = MathUtils::Normalize(Delta);
+
+	HitInfo tr;
+	m_pQuadTree->RayTraceClosest(Ray(m_pPlayer->GetWorldPosition(), Delta), eCollisionGroup::Monster, tr);
+
+	if(tr.m_Object)
+	{
+		sf::Vector2f hitp = m_pPlayer->GetWorldPosition() + Delta * tr.m_Param;
+		GetContext()->GetDebugRender()->AddCircle(hitp, 10.0f, 0.01f);
+	}
 
 
 	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846f + 45.0f);

@@ -46,6 +46,7 @@
     <ClCompile Include="..\code\Survive\scene_nodes\monster_entity_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\pickup_entity_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\player_entity_node.cpp" />
+    <ClCompile Include="..\code\Survive\scene_nodes\respawn_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\scene_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\static_entity_node.cpp" />
     <ClCompile Include="..\code\Survive\settings.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="..\code\Survive\templates\monster_template.cpp" />
     <ClCompile Include="..\code\Survive\templates\pickup_template.cpp" />
     <ClCompile Include="..\code\Survive\templates\player_template.cpp" />
+    <ClCompile Include="..\code\Survive\templates\respawn_template.cpp" />
     <ClCompile Include="..\code\Survive\templates\static_object_template.cpp" />
     <ClCompile Include="..\code\Survive\templates\template.cpp" />
     <ClCompile Include="..\code\Survive\templates\template_manager.cpp" />
@@ -99,6 +101,7 @@
     <ClInclude Include="..\code\Survive\scene_nodes\monster_entity_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\pickup_entity_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\player_entity_node.h" />
+    <ClInclude Include="..\code\Survive\scene_nodes\respawn_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\scene_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\static_entity_node.h" />
     <ClInclude Include="..\code\Survive\settings.h" />
@@ -110,9 +113,11 @@
     <ClInclude Include="..\code\Survive\templates\monster_template.h" />
     <ClInclude Include="..\code\Survive\templates\pickup_template.h" />
     <ClInclude Include="..\code\Survive\templates\player_template.h" />
+    <ClInclude Include="..\code\Survive\templates\respawn_template.h" />
     <ClInclude Include="..\code\Survive\templates\static_object_template.h" />
     <ClInclude Include="..\code\Survive\templates\template.h" />
     <ClInclude Include="..\code\Survive\templates\template_manager.h" />
+    <ClInclude Include="..\code\Survive\templates\template_ref.h" />
     <ClInclude Include="..\code\Survive\type_info.h" />
     <ClInclude Include="..\code\Survive\type_lists.h" />
     <ClInclude Include="..\code\Survive\world.h" />

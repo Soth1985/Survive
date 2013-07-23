@@ -82,7 +82,7 @@ bool GameState::HandleEvent(const sf::Event& Event)
 
 		if (Event.key.code == sf::Keyboard::F2)
 		{
-			GetContext()->GetDebugRender()->SetEnabled(!GetContext()->GetDebugRender()->IsEnabled());
+			GetContext()->GetDebugRender()->SetEnabled(!GetContext()->GetDebugRender()->GetEnabled());
 		}
 	}
 

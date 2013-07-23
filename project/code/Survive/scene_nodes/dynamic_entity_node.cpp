@@ -5,4 +5,9 @@ namespace Survive
 
 SURVIVE_REG_TYPE(DynamicEntityNode, SURVIVE_TYPELIST_1(SceneNode))
 
+Type* DynamicEntityNode::GetType()const
+{
+	return TypeImpl<DynamicEntityNode>::Instance();
+}
+
 }

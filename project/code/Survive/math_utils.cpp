@@ -1,4 +1,5 @@
 #include <Survive/math_utils.h>
+#include <time.h>
 
 namespace Survive
 {
@@ -136,6 +137,26 @@ bool MathUtils::IsIdentity(const sf::Transform& Tf)
 	}
 
 	return true;
+}
+
+float MathUtils::RandomFloat()
+{
+	return (float)rand() / (float)RAND_MAX;
+}
+
+float MathUtils::RandomRange(float Low, float High)
+{
+	float Res = (float)rand();
+	Res /= RAND_MAX;
+	Res = (High - Low) * Res + Low;
+	return Res;
+}
+
+void MathUtils::RandomInit()
+{
+	time_t Seconds;
+    time(&Seconds);
+	srand((unsigned int)Seconds);
 }
 
 }

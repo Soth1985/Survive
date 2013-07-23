@@ -327,8 +327,21 @@ int IntersectionTests::FindIntersectionRayLineSegment(const Ray& R, const LineSe
 {
 	int result = FindIntersectionLineLine(R.GetPosition(), R.GetDirection(), L1.GetPoint1(), L1.GetPoint2() - L1.GetPoint1(), Param);
 
-	if (result == 1 && Param < 0.0f)
-		result = 0;
+	if (result == 1)
+	{
+		if(Param < 0.0f)
+			result = 0;
+		else
+		{
+			sf::Vector2f Point = R.GetPosition() + R.GetDirection() * Param;
+
+			sf::Vector2f V1 = Point - L1.GetPoint1();
+			sf::Vector2f V2 = Point - L1.GetPoint2();
+
+			if (MathUtils::DotProduct(V1, V2) > 0.0f)
+				result = 0;
+		}
+	}
 
 	return result;
 }
@@ -340,23 +353,22 @@ int IntersectionTests::FindIntersectionRayAlignedBox(const Ray& R, const Aligned
 
 	int Result = 0;
 
-	float ClosestCollision = FLT_MAX;
+	Param = FLT_MAX;
 
 	for(int EdgeIdx = 0; EdgeIdx < 4; ++EdgeIdx)
 	{
-		Param = FLT_MAX;
-		Result = FindIntersectionRayLineSegment(R, Box.GetEdge(EdgeIdx), Param);
+		float Tmp = FLT_MAX;
 
-		if (Result == 1)
+		if (FindIntersectionRayLineSegment(R, Box.GetEdge(EdgeIdx), Tmp) == 1)
 		{
-			if (Param < ClosestCollision)
-				ClosestCollision = Param;
+			Result = 1;
+
+			if (Tmp < Param)
+				Param = Tmp;
 
 			if (!Closest)
-				return 1;
+				return Result;
 		}
-		else
-			Result = 0;
 	}
 
 	return Result;
@@ -387,23 +399,22 @@ int IntersectionTests::FindIntersectionRayConvexPolygon(const Ray& R, const Conv
 
 	int Result = 0;
 
-	float ClosestCollision = FLT_MAX;
+	Param = FLT_MAX;
 
 	for (size_t Idx0 = 0, Idx1 = Poly.GetPointC() - 1; Idx0 < Poly.GetPointC(); Idx1 = Idx0, ++Idx0)
 	{
-		Param = FLT_MAX;
-		Result = FindIntersectionRayLineSegment(R, LineSegment(Poly[Idx0], Poly[Idx1]), Param);
+		float Tmp = FLT_MAX;
 
-		if (Result == 1)
+		if (FindIntersectionRayLineSegment(R, LineSegment(Poly[Idx0], Poly[Idx1]), Tmp) == 1)
 		{
-			if (Param < ClosestCollision)
-				ClosestCollision = Param;
+			Result = 1;
+
+			if (Tmp < Param)
+				Param = Tmp;
 
 			if (!Closest)
-				return 1;
+				return Result;
 		}
-		else
-			Result = 0;
 	}
 
 	return Result;

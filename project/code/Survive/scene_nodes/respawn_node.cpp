@@ -5,6 +5,9 @@ namespace Survive
 
 SURVIVE_REG_TYPE(RespawnNode, SURVIVE_TYPELIST_1(SceneNode))
 
-
+Type* RespawnNode::GetType()const
+{
+	return TypeImpl<RespawnNode>::Instance();
+}
 
 }

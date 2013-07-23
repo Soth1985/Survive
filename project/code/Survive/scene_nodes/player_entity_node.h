@@ -12,7 +12,8 @@ class PlayerEntityNode : public CharacterEntityNode
 {
 public:
 
-	//void InitFromTemplate(Template* Tmpl);
+	virtual void InitFromTemplate(Template* Tmpl);
+	virtual Type* GetType()const;
 
 private:
 };

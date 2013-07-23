@@ -2,10 +2,7 @@
 
 #include <Survive/forward.h>
 
-#include <Survive/collision/ray.h>
 #include <Survive/collision/line_segment.h>
-#include <Survive/collision/aligned_box_shape.h>
-#include <Survive/collision/convex_polygon_shape.h>
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -21,15 +18,19 @@ public:
 
 	DebugRender(const sf::Font* pTextFont);
 
+	~DebugRender();
+
 	void AddRay(const Ray& R, float Len, float LifeTime, const sf::Color& Color = sf::Color::White);
 
 	void AddLine(const LineSegment& L, float LifeTime, const sf::Color& Color = sf::Color::White);
 	
 	void AddAlignedBox(const AlignedBoxShape& Box, const sf::Transform& Tf, float LifeTime, const sf::Color& Color = sf::Color::White, bool Fill = false);
+
+	void AddOrientedBox(const OrientedBoxShape& Box, const sf::Transform& Tf, float LifeTime, const sf::Color& Color = sf::Color::White, bool Fill = false);
 	
 	void AddConvexPolygon(const ConvexPolygonShape& Poly, const sf::Transform& Tf, float LifeTime, const sf::Color& Color = sf::Color::White, bool Fill = false);
 	
-	void AddCircle(const sf::Transform& Tf, float Radius, float LifeTime, const sf::Color& Color = sf::Color::White, bool Fill = false);
+	void AddCircle(const sf::Vector2f& Pos, float Radius, float LifeTime, const sf::Color& Color = sf::Color::White, bool Fill = false);
 	
 	void AddText(const std::string& Text, const sf::Transform& Tf, unsigned int CharacterSize, float LifeTime, const sf::Color& Color = sf::Color::White, bool Fill = false);
 
@@ -37,7 +38,7 @@ public:
 
 	void Draw(sf::RenderWindow* pWindow);
 
-	bool IsEnabled()const
+	bool GetEnabled()const
 	{
 		return m_IsEnabled;
 	}
@@ -77,13 +78,13 @@ private:
 	};
 
 	typedef std::list< ShapeHolder<LineSegment> > Lines;
-	typedef std::list< ShapeHolder<sf::RectangleShape> > AlignedBoxes;
+	typedef std::list< ShapeHolder<sf::RectangleShape> > Boxes;
 	typedef std::list< ShapeHolder<sf::ConvexShape> > ConvexPolygons;
 	typedef std::list< ShapeHolder<sf::CircleShape> > Circles;
 	typedef std::list< ShapeHolder<sf::Text> > Texts;
 
 	Lines m_Lines;
-	AlignedBoxes m_AlignedBoxes;
+	Boxes m_Boxes;
 	ConvexPolygons m_ConvexPolygons;
 	Circles m_Circles;
 	Texts m_Texts;

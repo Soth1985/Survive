@@ -44,6 +44,11 @@ public:
 		return m_pLayers[Layer];
 	}
 
+	PlayerEntityNode* GetPlayer()
+	{
+		return m_pPlayer;
+	}
+
 	template <class T>
 	T* CreateNode(SceneNode* pParent)
 	{

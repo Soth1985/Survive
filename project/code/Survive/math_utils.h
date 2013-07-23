@@ -43,6 +43,45 @@ public:
 	static float GetRotation(const sf::Transform& Tf);
 
 	static bool IsIdentity(const sf::Transform& Tf);
+
+	static void RandomInit();
+
+	static float RandomRange(float Low, float High);
+
+	static float RandomFloat();
+
+	template <class T>
+	static const T& GetRandomItem(const std::vector< std::pair<T, float> >& Items)
+	{
+		float TotalWeight = 0.0f;
+
+		for (size_t Idx = 0; Idx < Items.size(); ++Idx)
+		{
+			TotalWeight += Items[Idx].second;
+		}
+
+		assert(Items.size() > 0 && TotalWeight > 0.0f);
+
+		TotalWeight = 1.0f / TotalWeight;
+
+		float Rnd = RandomFloat();
+
+		float CurWeight = 0.0f;
+
+		for (size_t Idx = 0; Idx < Items.size(); ++Idx)
+		{
+			CurWeight += Items[Idx].second * TotalWeight;
+
+			if (Rnd < CurWeight)
+			{
+				return Items[Idx].first;
+			}
+		}
+
+		assert(0);
+
+		return Items[0].first;
+	}
 };
 
 }
