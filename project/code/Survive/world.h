@@ -63,6 +63,7 @@ public:
 			if (pParent)
 			{
 				pParent->AddChild(Result);
+				Result->m_Layer = pParent->GetWorldLayer();
 			}
 
 			m_TypeNodeCache[NodeType].push_back(Result);
@@ -106,6 +107,25 @@ public:
 
 	sf::Vector2f ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize);
 
+	template <class T>
+	unsigned int RequestUpdatePhase(T* pSceneNode, unsigned int MaxPhase)
+	{
+		Type* NodeType = TypeImpl<T>::Instance();
+		Type* SceneNodeType = TypeImpl<SceneNode>::Instance();
+
+		if (IsConvertible(NodeType, SceneNodeType))
+		{
+			pSceneNode->m_UpdatePhase = RequestUpdatePhase(m_TypePhases[NodeType], pSceneNode->GetUpdateFrequency(), MaxPhase);
+		}
+		else
+		{
+			assert(0 && "Not a scene node");
+			return 0;
+		}
+	}
+
+	bool IsObjectInView(SceneNode* pSceneNode)const;
+
 private:
 
 	typedef std::vector<SceneNode*> NodeList;
@@ -113,7 +133,7 @@ private:
 	typedef std::map<unsigned int, unsigned int> PhaseMap;
 	typedef std::unordered_map<Type*, PhaseMap> TypePhasesMap;
 
-	int RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase);
+	unsigned int RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase);
 
 	sf::View m_View;
 	AlignedBoxShape m_WorldBound;
@@ -123,6 +143,7 @@ private:
 	TypeNodeCache m_TypeNodeCache;
 	TypePhasesMap m_TypePhases;
 	std::array<SceneNode*, eWorldLayer::LayerCount> m_pLayers;
+	QuadTreeNode::HitList m_InViewObjects;
 	Context* m_pContext;
 	unsigned int m_TickCounter;
 };

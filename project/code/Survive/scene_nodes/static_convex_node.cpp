@@ -50,12 +50,13 @@ const CollisionShape* StaticConvexNode::GetCollisionShape()const
 
 void StaticConvexNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
-	Target.draw(m_Shape, States);	
+	Target.draw(m_Shape, States);
+	GetWorld()->GetContext()->GetDebugRender()->AddConvexPolygon(m_Collision, States.transform, 0.01f, sf::Color::Black);
 }
 
 void StaticConvexNode::OnUpdate(float Dt)
 {
-	GetWorld()->GetContext()->GetDebugRender()->AddConvexPolygon(m_Collision, GetWorldTransform(), 0.01f, sf::Color::Black);
+	
 }
 
 AlignedBoxShape StaticConvexNode::GetBounds()

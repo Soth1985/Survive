@@ -68,6 +68,11 @@ public:
 		return m_UpdatePhase;
 	}
 
+	bool GetInFrustrum()const
+	{
+		return m_IsInFrustrum;
+	}
+
 	void SetLocalScale(const sf::Vector2f& Scale);
 
 	void Move(const sf::Vector2f& Disp);
@@ -95,7 +100,9 @@ protected:
 
 	virtual void InitFromTemplate(const Template* Tmpl);
 
-	World* GetWorld()
+	virtual void OnEnterLeaveFrustrum(bool NewFrustrumState);
+
+	World* GetWorld()const
 	{
 		return m_pWorld;
 	}
@@ -124,14 +131,25 @@ protected:
 
 	CollisionShape* GetCollisionShapeModify();
 
-	void SetUpdateFrequency(unsigned int Frequency)
+	void SetUpdateFrequency(unsigned int Frequency, unsigned int MaxPhase);
+
+	void SetInFrustrum(bool InFrustrum)
 	{
-		m_UpdateFrequency = Frequency;
+		if (InFrustrum != m_IsInFrustrum)
+		{
+			OnEnterLeaveFrustrum(InFrustrum);
+			m_IsInFrustrum = InFrustrum;
+		}
 	}
 
 private:
 
 	virtual void draw(sf::RenderTarget& Target, sf::RenderStates States)const;
+	
+	void SetQuadTreeNode(QuadTreeNode* pTreeNode)
+	{
+		m_pQuadTreeNode = pTreeNode;
+	}
 
 	friend class QuadTreeNode;
 
@@ -146,6 +164,7 @@ private:
 	QuadTreeNode* m_pQuadTreeNode;
 	unsigned int m_UpdateFrequency;
 	unsigned int m_UpdatePhase;
+	bool m_IsInFrustrum;
 	float m_TimeStepAccum;
 };
 

@@ -55,9 +55,10 @@ void GenerateObjects(World* pWorld, int ObjectC, const std::string& TemplateName
 
 			Objects.clear();
 			sf::Vector2f Pos;
+			sf::Vector2f HalfSize = pNode->GetBounds().GetSize() * 0.5f;
 			Pos.x = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().x);
 			Pos.y = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().y);
-			Pos = pWorld->ConstrainToWorld(Pos, pNode->GetBounds().GetSize() * 0.5f);
+			Pos = pWorld->ConstrainToWorld(Pos + HalfSize, HalfSize);
 			pNode->SetLocalPosition(Pos);
 			pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, Objects);
 		}
@@ -116,9 +117,9 @@ void World::Init()
 
 void World::Update(float Dt)
 {
+	GetContext()->GetDebugRender()->Update(Dt);
 	size_t ObjC = m_pQuadTree->GetObjectCount();
 	++m_TickCounter;
-	GetContext()->GetDebugRender()->Update(Dt);
 
 	float ScrollSpeed = 200.0f;
 	sf::Vector2f MoveDisp;
@@ -149,7 +150,7 @@ void World::Update(float Dt)
 	if (MoveDisp.x != 0.0f)
 	{
 		HitInfo swh;
-		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(MoveDisp.x, 0.0f), 1.05f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
+		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(MoveDisp.x, 0.0f), 1.1f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
 
 		if (swh.m_Object)
 		{
@@ -160,7 +161,7 @@ void World::Update(float Dt)
 	if (MoveDisp.y != 0.0f)
 	{
 		HitInfo swh;
-		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(0.0f, MoveDisp.y), 1.05f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
+		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(0.0f, MoveDisp.y), 1.1f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
 
 		if (swh.m_Object)
 		{
@@ -195,7 +196,6 @@ void World::Update(float Dt)
 		GetContext()->GetDebugRender()->AddCircle(hitp, 10.0f, 0.01f);
 	}
 
-
 	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846f + 45.0f);
 
 	m_View.setCenter(ConstrainToWorld(m_View.getCenter(), m_View.getSize() * 0.5f));
@@ -206,8 +206,29 @@ void World::Update(float Dt)
 void World::Draw(sf::RenderWindow* Window)
 {
 	Window->setView(m_View);
-	Window->draw(*m_pSceneRoot);
+	//Window->draw(*m_pSceneRoot);
+
+	sf::Vector2f ViewPos = m_View.getCenter();
+	sf::Vector2f ViewSize = m_View.getSize();
+
+	AlignedBoxShape ViewBox(ViewPos - ViewSize * 0.5f, ViewSize);
+	m_InViewObjects.clear();
+	GetQuadTree()->GetObjects(ViewBox, sf::Transform::Identity, eCollisionGroup::All, m_InViewObjects);
+
+	std::sort(m_InViewObjects.begin(), m_InViewObjects.end(), 
+		[](const HitInfo& Hit1, const HitInfo& Hit2)->bool
+		{
+			return Hit1.m_Object->GetWorldLayer() < Hit2.m_Object->GetWorldLayer();
+		}
+		);
+
+	for (size_t Idx = 0; Idx < m_InViewObjects.size(); ++Idx)
+	{
+		Window->draw(*m_InViewObjects[Idx].m_Object);
+	}
+
 	GetContext()->GetDebugRender()->Draw(Window);
+	
 }
 
 sf::Vector2f World::ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize)
@@ -238,13 +259,13 @@ sf::Vector2f World::ConstrainToWorld(const sf::Vector2f& Center, const sf::Vecto
 	return Result;
 }
 
-int World::RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase)
+unsigned int World::RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase)
 {
 	PhaseMap::iterator it = PhasesMap.find(Frequency);
 
 	if (it != PhasesMap.end())
 	{
-		int nextPhase = it->second + 1;
+		unsigned int nextPhase = it->second + 1;
 
 		if(nextPhase > MaxPhase)
 		{
@@ -263,6 +284,19 @@ int World::RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsig
 		PhasesMap[Frequency] = 0;
 		return 0;
 	}
+}
+
+bool World::IsObjectInView(SceneNode* pSceneNode)const
+{
+	for (size_t Idx = 0; Idx < m_InViewObjects.size(); ++Idx)
+	{
+		if (m_InViewObjects[Idx].m_Object == pSceneNode)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 }

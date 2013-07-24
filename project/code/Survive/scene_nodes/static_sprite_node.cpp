@@ -51,12 +51,13 @@ const CollisionShape* StaticSpriteNode::GetCollisionShape()const
 
 void StaticSpriteNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
-	Target.draw(m_Sprite, States);	
+	Target.draw(m_Sprite, States);
+	GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(m_Collision, States.transform, 0.01f, sf::Color::Black);
 }
 
 void StaticSpriteNode::OnUpdate(float Dt)
 {
-	GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(m_Collision, GetWorldTransform(), 0.01f, sf::Color::Black);
+	
 }
 
 AlignedBoxShape StaticSpriteNode::GetBounds()

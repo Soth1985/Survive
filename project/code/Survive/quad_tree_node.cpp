@@ -202,13 +202,13 @@ void QuadTreeNode::AddObject(SceneNode* pObject)
 		if (m_pObjects.size() + 1 <= CapacityToSplit || m_Level > MaxDepth)
 		{
 			m_pObjects.insert(pObject);
-			pObject->m_pQuadTreeNode = this;
+			pObject->SetQuadTreeNode(this);
 			return;
 		}
-		else
+		else if (!m_pChildren[0])
 		{
 			m_pObjects.insert(pObject);
-			pObject->m_pQuadTreeNode = this;
+			pObject->SetQuadTreeNode(this);
 
 			int oc = GetObjectCount();
 			CreateChildren();
@@ -220,17 +220,20 @@ void QuadTreeNode::AddObject(SceneNode* pObject)
 		}
 	}
 	
-	if (m_pParent == 0)
+	//if (m_pParent == 0)
 	{
 		m_pObjects.insert(pObject);
-		pObject->m_pQuadTreeNode = this;
+		pObject->SetQuadTreeNode(this);
 	}
+	//else
+	//	__asm int 3;
 }
 
 bool QuadTreeNode::Remove(SceneNode* pObject)
 {
 	if (m_pObjects.erase(pObject) != 0)
 	{
+		pObject->SetQuadTreeNode(0);
 		return true;
 	}
 	else
@@ -315,6 +318,7 @@ void QuadTreeNode::MoveObjects()
 	AlignedBoxShape Temp;
 	ObjectSet::iterator It = m_pObjects.begin();
 	size_t oc = GetObjectCount();
+
 	while (It != m_pObjects.end())
 	{
 		SceneNode* pObject = *It;
@@ -326,7 +330,7 @@ void QuadTreeNode::MoveObjects()
 			if (m_pChildren[Idx]->GetBounds().Contains(Temp, pObject->GetWorldTransform()))
 			{
 				m_pChildren[Idx]->AddObject(pObject);
-				pObject->m_pQuadTreeNode = m_pChildren[Idx].get();
+				//pObject->SetQuadTreeNode(m_pChildren[Idx].get());
 				It = m_pObjects.erase(It);
 				Increment = false;
 				assert(oc==GetObjectCount());

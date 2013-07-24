@@ -1,4 +1,5 @@
 #include <Survive/scene_nodes/monster_entity_node.h>
+#include <Survive/scene_nodes/player_entity_node.h>
 #include <Survive/content_manager.h>
 #include <Survive/gui.h>
 #include <Survive/world.h>
@@ -31,12 +32,17 @@ void MonsterEntityNode::InitFromTemplate(const Template* pTmpl)
 	}
 	else
 	{
-		GetWorld()->GetContext()->GetGui()->MessageBox("Error", "Invalid character template type.");
+		GetWorld()->GetContext()->GetGui()->MessageBox("Error", "Invalid monster template type.");
 	}
 }
 
 void MonsterEntityNode::OnUpdate(float Dt)
 {
+	sf::Vector2f ChaseDir = GetWorld()->GetPlayer()->GetLocalPosition() - GetLocalPosition();
+	ChaseDir = MathUtils::Normalize(ChaseDir);
+	ChaseDir *= 100.0f * Dt;
+	Move(ChaseDir);
+
 	CharacterEntityNode::OnUpdate(Dt);
 }
 

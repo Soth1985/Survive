@@ -54,11 +54,12 @@ const CollisionShape* CharacterEntityNode::GetCollisionShape()const
 void CharacterEntityNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
 	Target.draw(m_Body, States);	
+	GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(m_Collision, GetWorldTransform(), 0.01f);
 }
 
 void CharacterEntityNode::OnUpdate(float Dt)
 {
-	GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(m_Collision, GetWorldTransform(), 0.01f);
+	
 }
 
 AlignedBoxShape CharacterEntityNode::GetBounds()

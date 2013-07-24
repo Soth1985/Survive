@@ -20,9 +20,10 @@ m_pQuadTreeNode(0),
 m_pWorld(0),
 m_UpdateFrequency(1),
 m_UpdatePhase(0),
-m_TimeStepAccum(0.0f)
+m_TimeStepAccum(0.0f),
+m_IsInFrustrum(true)
 {
-
+	SetInFrustrum(false);
 }
 
 SceneNode::~SceneNode()
@@ -87,14 +88,17 @@ sf::Vector2f SceneNode::GetWorldPosition()const
 
 void SceneNode::draw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
-	States.transform *= m_Transform.getTransform();
+	/*States.transform *= m_Transform.getTransform();
 
 	OnDraw(Target, States);
 
 	for (size_t Idx = 0; Idx < m_pChildren.size(); ++Idx)
 	{
 		m_pChildren[Idx]->draw(Target, States);
-	}
+	}*/
+
+	States.transform = GetWorldTransform();
+	OnDraw(Target, States);
 }
 
 void SceneNode::Update(float Dt)
@@ -110,6 +114,15 @@ void SceneNode::Update(float Dt)
 	}
 	else
 	{
+		if (GetWorld()->IsObjectInView(this))
+		{
+			SetInFrustrum(true);
+		}
+		else
+		{
+			SetInFrustrum(false);
+		}
+
 		OnUpdate(std::max(m_TimeStepAccum, Dt));
 		m_TimeStepAccum = 0.0f;
 	}
@@ -172,10 +185,11 @@ void SceneNode::UpdateQuadTreeLocation()
 	if (pShape && m_pQuadTreeNode)
 	{
 		int oc = GetWorld()->GetQuadTree()->GetObjectCount();
-		/*m_pQuadTreeNode->Remove(this);
-		int oc2 = GetWorld()->GetQuadTree()->GetObjectCount();
-		GetWorld()->GetQuadTree()->AddObject(this);*/
-		m_pQuadTreeNode->Update(this);
+		m_pQuadTreeNode->Remove(this);
+		//int oc2 = GetWorld()->GetQuadTree()->GetObjectCount();
+		GetWorld()->GetQuadTree()->AddObject(this);
+		
+		//m_pQuadTreeNode->Update(this);
 		int oc1 = GetWorld()->GetQuadTree()->GetObjectCount();
 		assert(oc == oc1);
 	}	
@@ -189,6 +203,17 @@ void SceneNode::SetLocalScale(const sf::Vector2f& Scale)
 void SceneNode::Move(const sf::Vector2f& Disp)
 {
 	m_Transform.move(Disp);
+	UpdateQuadTreeLocation();
+}
+
+void SceneNode::OnEnterLeaveFrustrum(bool NewFrustrumState)
+{
+
+}
+
+void SceneNode::SetUpdateFrequency(unsigned int Frequency, unsigned int MaxPhase)
+{
+	m_UpdateFrequency = Frequency;
 }
 
 }
