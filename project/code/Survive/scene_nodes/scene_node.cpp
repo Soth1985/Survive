@@ -1,6 +1,7 @@
 #include <Survive/scene_nodes/scene_node.h>
 #include <Survive/quad_tree_node.h>
 #include <Survive/math_utils.h>
+#include <Survive/world.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -16,7 +17,10 @@ m_Id((int)this),
 m_Flags(0),
 m_Layer(eWorldLayer::LayerCount),
 m_pQuadTreeNode(0),
-m_pWorld(0)
+m_pWorld(0),
+m_UpdateFrequency(1),
+m_UpdatePhase(0),
+m_TimeStepAccum(0.0f)
 {
 
 }
@@ -95,7 +99,21 @@ void SceneNode::draw(sf::RenderTarget& Target, sf::RenderStates States)const
 
 void SceneNode::Update(float Dt)
 {
-	OnUpdate(Dt);
+	unsigned int freq = GetUpdateFrequency();
+	unsigned int phase = GetUpdatePhase();
+	unsigned int frame = freq + phase;
+	unsigned int tick = GetWorld()->GetTickCounter();
+
+	if ( tick % frame != 0 )
+	{
+		m_TimeStepAccum += Dt;
+	}
+	else
+	{
+		OnUpdate(std::max(m_TimeStepAccum, Dt));
+		m_TimeStepAccum = 0.0f;
+	}
+	
 
 	for (size_t Idx = 0; Idx < m_pChildren.size(); ++Idx)
 	{
@@ -153,7 +171,13 @@ void SceneNode::UpdateQuadTreeLocation()
 
 	if (pShape && m_pQuadTreeNode)
 	{
+		int oc = GetWorld()->GetQuadTree()->GetObjectCount();
+		/*m_pQuadTreeNode->Remove(this);
+		int oc2 = GetWorld()->GetQuadTree()->GetObjectCount();
+		GetWorld()->GetQuadTree()->AddObject(this);*/
 		m_pQuadTreeNode->Update(this);
+		int oc1 = GetWorld()->GetQuadTree()->GetObjectCount();
+		assert(oc == oc1);
 	}	
 }
 

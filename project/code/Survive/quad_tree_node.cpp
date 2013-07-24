@@ -196,7 +196,8 @@ void QuadTreeNode::AddObject(SceneNode* pObject)
 			}
 		}
 	}
-	else if (m_Bounds.Contains(Temp))
+	
+	if (m_Bounds.Contains(Temp))
 	{
 		if (m_pObjects.size() + 1 <= CapacityToSplit || m_Level > MaxDepth)
 		{
@@ -209,11 +210,17 @@ void QuadTreeNode::AddObject(SceneNode* pObject)
 			m_pObjects.insert(pObject);
 			pObject->m_pQuadTreeNode = this;
 
+			int oc = GetObjectCount();
 			CreateChildren();
 			MoveObjects();
+			int oc1 = GetObjectCount();
+
+			assert(oc==oc1);
+			return;
 		}
 	}
-	else if (m_pParent == 0)
+	
+	if (m_pParent == 0)
 	{
 		m_pObjects.insert(pObject);
 		pObject->m_pQuadTreeNode = this;
@@ -262,6 +269,9 @@ void QuadTreeNode::Update(SceneNode* pObject)
 	}
 	else
 	{
+		if (m_pParent)
+			m_pObjects.erase(pObject);
+
 		QuadTreeNode* pParent = m_pParent;
 		QuadTreeNode* pPrevParent = 0;
 
@@ -291,8 +301,8 @@ void QuadTreeNode::CreateChildren()
 
 	for (size_t Idx = 0; Idx < m_pChildren.size(); ++Idx)
 	{
-		Offset.x = ((Idx & 1) ? Step.x : -Step.x);
-		Offset.y = ((Idx & 2) ? Step.y : -Step.y);
+		Offset.x = ((Idx & 1) ? Step.x : 0);
+		Offset.y = ((Idx & 2) ? Step.y : 0);
 
 		sf::Vector2f Position = m_Bounds.GetCornerPosition() + Offset;
 
@@ -304,10 +314,11 @@ void QuadTreeNode::MoveObjects()
 {
 	AlignedBoxShape Temp;
 	ObjectSet::iterator It = m_pObjects.begin();
-
+	size_t oc = GetObjectCount();
 	while (It != m_pObjects.end())
 	{
 		SceneNode* pObject = *It;
+		bool Increment = true;
 		pObject->GetCollisionShape()->GetAlignedHull(&Temp);
 
 		for(size_t Idx = 0; Idx < m_pChildren.size(); ++Idx)
@@ -317,11 +328,30 @@ void QuadTreeNode::MoveObjects()
 				m_pChildren[Idx]->AddObject(pObject);
 				pObject->m_pQuadTreeNode = m_pChildren[Idx].get();
 				It = m_pObjects.erase(It);
+				Increment = false;
+				assert(oc==GetObjectCount());
+				break;
 			}
-			else 
-				++It;
+		}
+
+		if (Increment)
+			++It;
+	}
+}
+
+size_t QuadTreeNode::GetObjectCount()const
+{
+	size_t Result = m_pObjects.size();
+
+	if (m_pChildren[0])
+	{
+		for (size_t Idx = 0; Idx < m_pChildren.size(); ++Idx)
+		{
+			Result += m_pChildren[Idx]->GetObjectCount();
 		}
 	}
+
+	return Result;
 }
 
 }

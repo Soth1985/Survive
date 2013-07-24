@@ -2,6 +2,7 @@
 
 #include <Survive/forward.h>
 #include <Survive/scene_nodes/static_entity_node.h>
+#include <Survive/collision/convex_polygon_shape.h>
 
 namespace Survive
 {
@@ -11,8 +12,6 @@ SURVIVE_DECL_TYPE(Survive::StaticConvexNode);
 class StaticConvexNode : public StaticEntityNode
 {
 public:
-
-	StaticConvexNode();
 
 	virtual Type* GetType()const;
 

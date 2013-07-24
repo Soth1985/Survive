@@ -4,6 +4,10 @@
 #include <Survive/templates/player_template.h>
 #include <Survive/templates/monster_template.h>
 #include <Survive/templates/respawn_template.h>
+#include <Survive/templates/close_combat_weapon_template.h>
+#include <Survive/templates/ranged_weapon_template.h>
+#include <Survive/templates/static_convex_template.h>
+#include <Survive/templates/static_sprite_template.h>
 
 namespace Survive
 {
@@ -53,6 +57,30 @@ Type* TemplateManager::CheckType(Type* TmplType)
 
 void TemplateManager::CreateDefaultTemplates()
 {
+	{
+		ConvexPolygonShape S1(4);
+		S1[1] = sf::Vector2f(60.0f, 105.0f);
+		S1[2] = sf::Vector2f(150.0f, 135.0f);
+		S1[3] = sf::Vector2f(150.0f, -30.0f);
+
+		ConvexPolygonShape S2(3);
+		S2[1] = sf::Vector2f(90.0f, 90.0f);
+		S2[2] = sf::Vector2f(135.0f, -45.0f);
+
+		ConvexPolygonShape S3(6);
+		S3[1] = sf::Vector2f(60.0f, 60.0f);
+		S3[2] = sf::Vector2f(180.0f, 60.0f);
+		S3[3] = sf::Vector2f(240.0f, 0.0f);
+		S3[4] = sf::Vector2f(180.0f, -60.0f);
+		S3[5] = sf::Vector2f(60.0f, -60.0f);
+
+		StaticConvexTemplate* pConvexTmpl = new StaticConvexTemplate();
+		pConvexTmpl->m_Shapes.push_back(StaticConvexTemplate::ShapePair(S1, 1.0f));
+		pConvexTmpl->m_Shapes.push_back(StaticConvexTemplate::ShapePair(S2, 1.0f));
+		pConvexTmpl->m_Shapes.push_back(StaticConvexTemplate::ShapePair(S3, 1.0f));
+		AddTemplate<StaticConvexTemplate>("StaticConvexes", pConvexTmpl);
+	}
+
 	{
 		ContentTemplate* pContentTmpl = new ContentTemplate();
 
@@ -104,6 +132,16 @@ void TemplateManager::CreateDefaultTemplates()
 	}
 
 	{
+		StaticSpriteTemplate* pStaticSpriteTemplate = new StaticSpriteTemplate();
+		pStaticSpriteTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::TerrainOrkFortress, 0.2f));
+		pStaticSpriteTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::TerrainOrkWatchtower, 1.0f));
+		pStaticSpriteTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::TerrainOrkBuilding, 1.0f));
+		pStaticSpriteTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::TerrainOrkGarage, 1.0f));
+		pStaticSpriteTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::TerrainOrkHut, 1.0f));
+		AddTemplate<StaticSpriteTemplate>("StaticSprites", pStaticSpriteTemplate);
+	}
+
+	{
 		MonsterTemplate* pOrkBoyChoppaTmpl = new MonsterTemplate();
 		pOrkBoyChoppaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyChoppaBody1, 1.0f));
 		pOrkBoyChoppaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyChoppaBody2, 1.0f));
@@ -147,7 +185,6 @@ void TemplateManager::CreateDefaultTemplates()
 		pRespawnTmpl->m_Spawns.push_back(RespawnTemplate::SpawnPair(RespawnTemplate::Spawn("OrkThraka"), 0.1f));
 		AddTemplate<RespawnTemplate>("MonsterRespawn", pRespawnTmpl);
 	}
-	
 }
 
 }

@@ -57,6 +57,16 @@ void RespawnNode::OnUpdate(float Dt)
 	}
 }
 
+AlignedBoxShape RespawnNode::GetBounds()
+{
+	return m_Size;
+}
+
+const CollisionShape* RespawnNode::GetCollisionShape()const
+{
+	return &m_Size;
+}
+
 void RespawnNode::InitFromTemplate(const Template* pTmpl)
 {
 	const RespawnTemplate* pRespawnTmpl = TypeCast<RespawnTemplate>(pTmpl);
@@ -64,6 +74,8 @@ void RespawnNode::InitFromTemplate(const Template* pTmpl)
 	if (pRespawnTmpl)
 	{
 		m_pTemplate = pRespawnTmpl;
+		GetWorld()->GetQuadTree()->AddObject(this);
+		m_Size.SetCollisionGroup(eCollisionGroup::Respawn);
 	}
 	else
 	{

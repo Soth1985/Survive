@@ -204,6 +204,7 @@ struct eCollisionGroup
 		Characters = Player | Monster,
 		Dynamic = Player | Monster | Pickup,		
 		Static = 1 << 4,
+		Respawn = 1 << 5,
 		All = 0xffffffff
 	};
 };

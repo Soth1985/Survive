@@ -51,6 +51,8 @@ public:
 	{
 		return m_pParent;
 	}
+
+	size_t GetObjectCount()const;
 	
 private:
 

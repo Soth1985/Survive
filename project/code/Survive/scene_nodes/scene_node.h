@@ -58,6 +58,16 @@ public:
 		return m_Transform.getScale();
 	}
 
+	unsigned int GetUpdateFrequency()const
+	{
+		return m_UpdateFrequency;
+	}
+
+	unsigned int GetUpdatePhase()const
+	{
+		return m_UpdatePhase;
+	}
+
 	void SetLocalScale(const sf::Vector2f& Scale);
 
 	void Move(const sf::Vector2f& Disp);
@@ -114,6 +124,11 @@ protected:
 
 	CollisionShape* GetCollisionShapeModify();
 
+	void SetUpdateFrequency(unsigned int Frequency)
+	{
+		m_UpdateFrequency = Frequency;
+	}
+
 private:
 
 	virtual void draw(sf::RenderTarget& Target, sf::RenderStates States)const;
@@ -129,6 +144,9 @@ private:
 	int m_Id;
 	int m_Flags;
 	QuadTreeNode* m_pQuadTreeNode;
+	unsigned int m_UpdateFrequency;
+	unsigned int m_UpdatePhase;
+	float m_TimeStepAccum;
 };
 
 }

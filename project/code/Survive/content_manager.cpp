@@ -22,6 +22,7 @@ BigTexture* ContentManager::LoadBigTexture(eBigTextureID::Val Id)
 
 	if (!Result->LoadFromFile(RealPath))
 	{
+		assert(0);
 		delete Result;
 		return 0;
 	}
@@ -41,6 +42,7 @@ sf::Texture* ContentManager::LoadTexture(eTextureID::Val Id)
 
 	if (!Result->loadFromFile(RealPath))
 	{
+		assert(0);
 		delete Result;
 		return 0;
 	}
@@ -60,6 +62,7 @@ sf::Font* ContentManager::LoadFont(eFontID::Val Id)
 
 	if (!Result->loadFromFile(RealPath))
 	{
+		assert(0);
 		delete Result;
 		return 0;
 	}

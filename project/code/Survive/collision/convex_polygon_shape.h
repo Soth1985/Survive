@@ -15,6 +15,8 @@ public:
 	virtual Type* GetType()const;
 
 	ConvexPolygonShape()
+		:
+	m_PointC(0)
 	{
 
 	}

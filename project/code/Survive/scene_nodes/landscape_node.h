@@ -19,6 +19,10 @@ public:
 
 	void SetTexture(const BigTexture* tex);
 
+	virtual AlignedBoxShape GetBounds();
+
+	virtual const CollisionShape* GetCollisionShape()const;
+
 protected:
 
 	virtual void OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const;
@@ -28,6 +32,7 @@ protected:
 private:
 
 	BigSprite m_Sprite;
+	AlignedBoxShape m_Collision;
 };
 
 }

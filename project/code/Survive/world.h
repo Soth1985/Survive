@@ -67,10 +67,12 @@ public:
 
 			m_TypeNodeCache[NodeType].push_back(Result);
 
-			if (Result->GetCollisionShape())
+			Result->m_UpdatePhase = RequestUpdatePhase(m_TypePhases[NodeType], Result->GetUpdateFrequency(), 30);
+
+			/*if (Result->GetCollisionShape())
 			{
 				m_pQuadTree->AddObject(Result);
-			}
+			}*/
 
 			return Result;
 		}
@@ -97,12 +99,21 @@ public:
 		return m_pQuadTree.get();
 	}
 
+	unsigned int GetTickCounter()const
+	{
+		return m_TickCounter;
+	}
+
+	sf::Vector2f ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize);
+
 private:
 
 	typedef std::vector<SceneNode*> NodeList;
 	typedef std::unordered_map<Type*, NodeList> TypeNodeCache;
+	typedef std::map<unsigned int, unsigned int> PhaseMap;
+	typedef std::unordered_map<Type*, PhaseMap> TypePhasesMap;
 
-	sf::Vector2f ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize);
+	int RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase);
 
 	sf::View m_View;
 	AlignedBoxShape m_WorldBound;
@@ -110,8 +121,10 @@ private:
 	QuadTreeNodePtr m_pQuadTree;
 	PlayerEntityNode* m_pPlayer;
 	TypeNodeCache m_TypeNodeCache;
+	TypePhasesMap m_TypePhases;
 	std::array<SceneNode*, eWorldLayer::LayerCount> m_pLayers;
 	Context* m_pContext;
+	unsigned int m_TickCounter;
 };
 
 }

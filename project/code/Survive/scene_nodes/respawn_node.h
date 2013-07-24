@@ -18,6 +18,10 @@ public:
 
 	virtual void InitFromTemplate(const Template* pTmpl);
 
+	virtual AlignedBoxShape GetBounds();
+
+	virtual const CollisionShape* GetCollisionShape()const;
+
 protected:
 
 	virtual void OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const;

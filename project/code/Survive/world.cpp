@@ -2,17 +2,22 @@
 #include <Survive/math_utils.h>
 #include <Survive/debug_render.h>
 #include <Survive/content_manager.h>
+#include <Survive/collision/ray.h>
+
 #include <Survive/scene_nodes/scene_node.h>
 #include <Survive/scene_nodes/landscape_node.h>
 #include <Survive/scene_nodes/player_entity_node.h>
 #include <Survive/scene_nodes/monster_entity_node.h>
 #include <Survive/scene_nodes/respawn_node.h>
+#include <Survive/scene_nodes/static_sprite_node.h>
+#include <Survive/scene_nodes/static_convex_node.h>
 
-#include <Survive/collision/ray.h>
 #include <Survive/templates/template_manager.h>
 #include <Survive/templates/player_template.h>
 #include <Survive/templates/monster_template.h>
 #include <Survive/templates/respawn_template.h>
+#include <Survive/templates/static_sprite_template.h>
+#include <Survive/templates/static_convex_template.h>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -23,13 +28,50 @@
 namespace Survive
 {
 
+template <class NodeT, class TemplateT>
+void GenerateObjects(World* pWorld, int ObjectC, const std::string& TemplateName)
+{
+	for (int Idx = 0; Idx < ObjectC; ++Idx)
+	{
+		sf::Vector2f Pos;
+		Pos.x = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().x);
+		Pos.y = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().y);
+
+		NodeT* pNode = pWorld->CreateNode<NodeT>(pWorld->GetLayerRoot(eWorldLayer::GroundLayer));
+		TemplateT* pNodeTmpl = TemplateManager::Instance().GetTemplate<TemplateT>(TemplateName);
+		pNode->InitFromTemplate(pNodeTmpl);
+		Pos = pWorld->ConstrainToWorld(Pos, pNode->GetBounds().GetSize() * 0.5f);
+		pNode->SetLocalPosition(Pos);
+
+		QuadTreeNode::HitList Objects;
+
+		unsigned int CollisionMask = eCollisionGroup::Characters | eCollisionGroup::Static | eCollisionGroup::Respawn;
+		pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, Objects);
+
+		while (!Objects.empty())
+		{
+			if(Objects.size() == 1 && Objects[0].m_Object == pNode)
+				break;
+
+			Objects.clear();
+			sf::Vector2f Pos;
+			Pos.x = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().x);
+			Pos.y = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().y);
+			Pos = pWorld->ConstrainToWorld(Pos, pNode->GetBounds().GetSize() * 0.5f);
+			pNode->SetLocalPosition(Pos);
+			pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, Objects);
+		}
+	}
+}
+
 World::World(Context* pContext)
 	:
-m_pSceneRoot(new SceneNode()),
 m_pContext(pContext),
-m_pPlayer(0)
+m_pPlayer(0),
+m_TickCounter(0)
 {
 	m_View = m_pContext->GetRenderWindow()->getDefaultView();
+	m_pSceneRoot.reset(CreateNode<SceneNode>(0));
 }
 
 World::~World()
@@ -65,19 +107,17 @@ void World::Init()
 	m_pPlayer->InitFromTemplate(pPlayerTmpl);
 	m_pPlayer->SetLocalPosition(sf::Vector2f(100.0f, 100.0f));
 
-	MonsterEntityNode* pMonster = CreateNode<MonsterEntityNode>(GetLayerRoot(eWorldLayer::GroundLayer));
-	MonsterTemplate* pMonsterTmpl = TemplateManager::Instance().GetTemplate<MonsterTemplate>("OrkBoyChoppa");
-	pMonster->InitFromTemplate(pMonsterTmpl);
-	pMonster->SetLocalPosition(sf::Vector2f(100.0f, 200.0f));
-
-	RespawnNode* pRespawn = CreateNode<RespawnNode>(GetLayerRoot(eWorldLayer::GroundLayer));
-	RespawnTemplate* pRespawnTmpl = TemplateManager::Instance().GetTemplate<RespawnTemplate>("MonsterRespawn");
-	pRespawn->InitFromTemplate(pRespawnTmpl);
-	pRespawn->SetLocalPosition(sf::Vector2f(300.0f, 300.0f));
+	GenerateObjects<StaticSpriteNode, StaticSpriteTemplate>(this, 10, "StaticSprites");
+	GenerateObjects<StaticConvexNode, StaticConvexTemplate>(this, 10, "StaticConvexes");
+	size_t ObjC = m_pQuadTree->GetObjectCount();
+	GenerateObjects<RespawnNode, RespawnTemplate>(this, 50, "MonsterRespawn");
+	ObjC = m_pQuadTree->GetObjectCount();
 }
 
 void World::Update(float Dt)
 {
+	size_t ObjC = m_pQuadTree->GetObjectCount();
+	++m_TickCounter;
 	GetContext()->GetDebugRender()->Update(Dt);
 
 	float ScrollSpeed = 200.0f;
@@ -106,12 +146,26 @@ void World::Update(float Dt)
 		MoveDisp *= 1.0f / sqrtf(2.0f);
 	}	
 
-	HitInfo swh;
-	m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), MoveDisp, 1.0f, eCollisionGroup::Monster, swh);
-
-	if(swh.m_Object)
+	if (MoveDisp.x != 0.0f)
 	{
-		MoveDisp *= 0.0f;
+		HitInfo swh;
+		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(MoveDisp.x, 0.0f), 1.05f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
+
+		if (swh.m_Object)
+		{
+			MoveDisp.x = 0.0f;
+		}
+	}
+
+	if (MoveDisp.y != 0.0f)
+	{
+		HitInfo swh;
+		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(0.0f, MoveDisp.y), 1.05f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
+
+		if (swh.m_Object)
+		{
+			MoveDisp.y = 0.0f;
+		}
 	}
 
 	m_pPlayer->Move(MoveDisp);
@@ -133,7 +187,7 @@ void World::Update(float Dt)
 	Delta = MathUtils::Normalize(Delta);
 
 	HitInfo tr;
-	m_pQuadTree->RayTraceClosest(Ray(m_pPlayer->GetWorldPosition(), Delta), eCollisionGroup::Monster, tr);
+	m_pQuadTree->RayTraceClosest(Ray(m_pPlayer->GetWorldPosition(), Delta), eCollisionGroup::Monster | eCollisionGroup::Static, tr);
 
 	if(tr.m_Object)
 	{
@@ -182,6 +236,33 @@ sf::Vector2f World::ConstrainToWorld(const sf::Vector2f& Center, const sf::Vecto
 	}
 
 	return Result;
+}
+
+int World::RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase)
+{
+	PhaseMap::iterator it = PhasesMap.find(Frequency);
+
+	if (it != PhasesMap.end())
+	{
+		int nextPhase = it->second + 1;
+
+		if(nextPhase > MaxPhase)
+		{
+			nextPhase = 0;
+			it->second = 0;
+		}
+		else
+		{
+			it->second = nextPhase;
+		}
+
+		return nextPhase;
+	}
+	else
+	{
+		PhasesMap[Frequency] = 0;
+		return 0;
+	}
 }
 
 }

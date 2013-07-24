@@ -12,8 +12,6 @@ class StaticSpriteNode : public StaticEntityNode
 {
 public:
 
-	StaticSpriteNode();
-
 	virtual Type* GetType()const;
 
 	virtual void InitFromTemplate(const Template* pTmpl);

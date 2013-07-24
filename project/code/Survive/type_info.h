@@ -232,6 +232,9 @@ private:
 		{
 			m_Bases.insert( T->GetBaseAt(Idx) );
 		}
+
+		for(ClassList::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
+			(*It)->AddBase(T);
 	}	
 
 	template<class Parent>
@@ -310,7 +313,7 @@ Type* TypeOf()
 
 static bool IsConvertible(Type* From, Type* To)
 {
-	if( From == To || To->IsBaseOf(From) )
+	if( From == To || From->IsChildOf(To) )
 	{
 		return true;
 	}

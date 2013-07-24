@@ -35,6 +35,7 @@ void CharacterEntityNode::InitFromTemplate(const Template* Tmpl)
 			//HalfSize *= sqrtf(2.0f);
 			m_Collision.SetCornerPosition(-HalfSize);
 			m_Collision.SetSize(HalfSize * 2.0f);
+			GetWorld()->GetQuadTree()->AddObject(this);
 		}
 		else
 			GetWorld()->GetContext()->GetGui()->MessageBox("Error", "Body texture not found.");

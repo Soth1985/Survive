@@ -72,7 +72,7 @@ public:
 		{
 			CurWeight += Items[Idx].second * TotalWeight;
 
-			if (Rnd < CurWeight)
+			if (Rnd <= CurWeight)
 			{
 				return Items[Idx].first;
 			}
