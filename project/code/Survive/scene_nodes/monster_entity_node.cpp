@@ -5,12 +5,19 @@
 #include <Survive/world.h>
 #include <Survive/templates/monster_template.h>
 #include <Survive/math_utils.h>
+#include <Survive/settings.h>
 
 namespace Survive
 {
 
 SURVIVE_REG_TYPE(MonsterEntityNode, SURVIVE_TYPELIST_1(CharacterEntityNode))
 
+MonsterEntityNode::MonsterEntityNode()
+	:
+m_pMonsterTmpl(0)
+{
+
+}
 
 Type* MonsterEntityNode::GetType()const
 {
@@ -24,9 +31,9 @@ void MonsterEntityNode::InitFromTemplate(const Template* pTmpl)
 	if(GetCollisionShape())
 		GetCollisionShapeModify()->SetCollisionGroup(eCollisionGroup::Monster);
 
-	const MonsterTemplate* pMonsterTmpl = TypeCast<MonsterTemplate>(pTmpl);
+	m_pMonsterTmpl = TypeCast<MonsterTemplate>(pTmpl);
 
-	if (pMonsterTmpl)
+	if (m_pMonsterTmpl)
 	{
 		
 	}
@@ -38,12 +45,45 @@ void MonsterEntityNode::InitFromTemplate(const Template* pTmpl)
 
 void MonsterEntityNode::OnUpdate(float Dt)
 {
+	CharacterEntityNode::OnUpdate(Dt);
+
 	sf::Vector2f ChaseDir = GetWorld()->GetPlayer()->GetLocalPosition() - GetLocalPosition();
 	ChaseDir = MathUtils::Normalize(ChaseDir);
-	ChaseDir *= 100.0f * Dt;
-	Move(ChaseDir);
+	SetLocalRotation(MathUtils::RadToDeg(atan2f(ChaseDir.y, ChaseDir.x)) + 90.0f);
+	sf::Vector2f MoveDisp = ChaseDir * m_pMonsterTmpl->m_MoveSpeed * Dt;
+	DynamicMove(MoveDisp, false);
 
-	CharacterEntityNode::OnUpdate(Dt);
+	if (GetInFrustrum())
+		UseRangedWeapon(ChaseDir);
+}
+
+void MonsterEntityNode::OnEnterLeaveFrustrum(bool NewFrustrumState)
+{
+	if (NewFrustrumState)
+	{
+		SetUpdateFrequency(2, 4);
+	}
+	else
+	{
+		SetUpdateFrequency(20, 40);
+	}
+}
+
+unsigned int MonsterEntityNode::GetBulletTraceMask()const
+{
+	return eCollisionGroup::Player | eCollisionGroup::Static;
+}
+
+void MonsterEntityNode::OnHit(int Damage)
+{
+	CharacterEntityNode::OnHit(Damage);
+
+	if (GetHealth() <= 0)
+	{
+		GetWorld()->AddSceneNodeToRemove(this);
+		Settings* pSettings = GetWorld()->GetContext()->GetSettings();
+		pSettings->SetScore(pSettings->GetScore() + m_pMonsterTmpl->m_MaxHealth);
+	}
 }
 
 }

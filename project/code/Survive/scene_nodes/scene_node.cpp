@@ -23,12 +23,12 @@ m_UpdatePhase(0),
 m_TimeStepAccum(0.0f),
 m_IsInFrustrum(true)
 {
-	SetInFrustrum(false);
+	//SetInFrustrum(false);
 }
 
 SceneNode::~SceneNode()
 {
-	m_pParent = 0;
+	GetWorld()->UnregisterNode(this);
 }
 
 bool SceneNode::AddChild(SceneNode* Node)
@@ -213,7 +213,23 @@ void SceneNode::OnEnterLeaveFrustrum(bool NewFrustrumState)
 
 void SceneNode::SetUpdateFrequency(unsigned int Frequency, unsigned int MaxPhase)
 {
+	m_TimeStepAccum = 0.0f;
 	m_UpdateFrequency = Frequency;
+	GetWorld()->RequestUpdatePhase(this, MaxPhase);
+}
+
+void SceneNode::SetInFrustrum(bool InFrustrum)
+{
+	if (InFrustrum != m_IsInFrustrum)
+	{
+		OnEnterLeaveFrustrum(InFrustrum);
+		m_IsInFrustrum = InFrustrum;
+	}
+}
+
+void SceneNode::SetCollisionGroup(unsigned int Group)
+{
+	GetCollisionShapeModify()->SetCollisionGroup(Group);
 }
 
 }

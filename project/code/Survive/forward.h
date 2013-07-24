@@ -51,6 +51,7 @@ class StateStack;
 class GameState;
 class SandboxState;
 class MainMenuState;
+class GameOverState;
 
 class Context;
 typedef std::unique_ptr<Context> ContextPtr;
@@ -66,14 +67,15 @@ typedef std::unique_ptr<SceneNode> SceneNodePtr;
 
 class DynamicEntityNode;
 class StaticEntityNode;
-class StaticSpriteNode;
-class StaticConvexNode;
+class StaticSpriteEntityNode;
+class StaticConvexEntityNode;
 class CharacterEntityNode;
 class MonsterEntityNode;
 class PickupEntityNode;
 class PlayerEntityNode;
 class LandscapeNode;
-class RespawnNode;
+class RespawnEntityNode;
+class ProjectileEntityNode;
 
 class World;
 typedef std::unique_ptr<World> WorldPtr;
@@ -121,6 +123,7 @@ struct eTextureID
 	enum Val
 	{
 		MainMenuBackground,
+		GameOverBackground,
 		ChaosLordBody,
 		ChaosLordWeaponSword,
 		ChaosLordWeaponBolter,
@@ -171,6 +174,7 @@ struct eStateID
 		None,
 		MainMenu,
 		Game,
+		GameOver,
 		Sandbox
 	};
 };
@@ -181,6 +185,7 @@ struct eWorldLayer
 	{
 		LandscapeLayer,
 		GroundLayer,
+		ProjectilesLayer,
 		LayerCount
 	};	
 };
@@ -205,6 +210,8 @@ struct eCollisionGroup
 		Dynamic = Player | Monster | Pickup,		
 		Static = 1 << 4,
 		Respawn = 1 << 5,
+		Projectile = 1 << 6,
+		BloodSplash = 1 <<7,
 		All = 0xffffffff
 	};
 };

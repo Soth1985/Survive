@@ -13,9 +13,16 @@ class PlayerEntityNode : public CharacterEntityNode
 public:
 
 	virtual void InitFromTemplate(const Template* Tmpl);
+
+	virtual unsigned int GetBulletTraceMask()const;
+
 	virtual Type* GetType()const;
 
+	virtual void OnHit(int Damage);
+
 private:
+
+	const PlayerTemplate* m_pPlayerTmpl;
 };
 
 }

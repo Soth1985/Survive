@@ -82,10 +82,32 @@ void TemplateManager::CreateDefaultTemplates()
 	}
 
 	{
+		RangedWeaponTemplate* pPlayerBolter = new RangedWeaponTemplate();
+
+		pPlayerBolter->m_Texture = eTextureID::ChaosLordWeaponBolter;
+		pPlayerBolter->m_Damage = 20;
+		pPlayerBolter->m_ShootTime = 0.1f;
+		pPlayerBolter->m_ProjectileSpeed = 800.0f;
+		pPlayerBolter->m_ProjectileTexId = eTextureID::ProjectileBullet;
+		AddTemplate<RangedWeaponTemplate>("PlayerBolter", pPlayerBolter);
+	}
+
+	{
+		RangedWeaponTemplate* pOrkShoota = new RangedWeaponTemplate();
+
+		pOrkShoota->m_Damage = 20;
+		pOrkShoota->m_ShootTime = 0.1f;
+		pOrkShoota->m_ProjectileSpeed = 800.0f;
+		pOrkShoota->m_ProjectileTexId = eTextureID::ProjectileBullet;
+		AddTemplate<RangedWeaponTemplate>("OrkShoota", pOrkShoota);
+	}
+
+	{
 		ContentTemplate* pContentTmpl = new ContentTemplate();
 
 		pContentTmpl->m_BigTextures[eBigTextureID::Landscape] = "Textures/grass_map_150.jpg";
 
+		pContentTmpl->m_Textures[eTextureID::GameOverBackground] = "Textures/game_over.jpg";
 		pContentTmpl->m_Textures[eTextureID::MainMenuBackground] = "Textures/main_menu_background.jpg";
 
 		pContentTmpl->m_Textures[eTextureID::ChaosLordBody] = "Textures/chaos_lord/chaos_lord_body.png";
@@ -127,7 +149,10 @@ void TemplateManager::CreateDefaultTemplates()
 
 	{
 		PlayerTemplate* pPlayerTmpl = new PlayerTemplate();
+		pPlayerTmpl->m_MaxHealth = 1000;
+		pPlayerTmpl->m_MoveSpeed = 200.0f;
 		pPlayerTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::ChaosLordBody, 1.0f));
+		pPlayerTmpl->m_RangedWeapon.SetTemplateName("PlayerBolter");
 		AddTemplate<PlayerTemplate>("Player", pPlayerTmpl);
 	}
 
@@ -142,38 +167,60 @@ void TemplateManager::CreateDefaultTemplates()
 	}
 
 	{
+		StaticSpriteTemplate* pStaticSpriteBloodTemplate = new StaticSpriteTemplate();
+		pStaticSpriteBloodTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::BloodSplash1, 1.0f));
+		pStaticSpriteBloodTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::BloodSplash2, 1.0f));
+		pStaticSpriteBloodTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::BloodSplash3, 1.0f));
+		pStaticSpriteBloodTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::BloodSplash4, 1.0f));
+		pStaticSpriteBloodTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::BloodSplash5, 1.0f));
+		pStaticSpriteBloodTemplate->m_Textures.push_back(StaticSpriteTemplate::TexIdPair(eTextureID::BloodSplash6, 1.0f));
+		AddTemplate<StaticSpriteTemplate>("StaticSpritesBlood", pStaticSpriteBloodTemplate);
+	}
+
+	{
 		MonsterTemplate* pOrkBoyChoppaTmpl = new MonsterTemplate();
+		pOrkBoyChoppaTmpl->m_MaxHealth = 150;
 		pOrkBoyChoppaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyChoppaBody1, 1.0f));
 		pOrkBoyChoppaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyChoppaBody2, 1.0f));
 		pOrkBoyChoppaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyChoppaBody3, 1.0f));
 		pOrkBoyChoppaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyChoppaBody4, 1.0f));
+		pOrkBoyChoppaTmpl->m_RangedWeapon.SetTemplateName("OrkShoota");
 		AddTemplate<MonsterTemplate>("OrkBoyChoppa", pOrkBoyChoppaTmpl);
 	}
 
 	{
 		MonsterTemplate* pOrkBoyShootaTmpl = new MonsterTemplate();
+		pOrkBoyShootaTmpl->m_MaxHealth = 100;
 		pOrkBoyShootaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyShootaBody1, 1.0f));
 		pOrkBoyShootaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyShootaBody2, 1.0f));
 		pOrkBoyShootaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyShootaBody3, 1.0f));
 		pOrkBoyShootaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBoyShootaBody4, 1.0f));
+		pOrkBoyShootaTmpl->m_RangedWeapon.SetTemplateName("OrkShoota");
 		AddTemplate<MonsterTemplate>("OrkBoyShoota", pOrkBoyShootaTmpl);
 	}
 
 	{
 		MonsterTemplate* pOrkBadrukkTmpl = new MonsterTemplate();
+		pOrkBadrukkTmpl->m_MaxHealth = 300;
+		pOrkBadrukkTmpl->m_MoveSpeed = 150.0f;
 		pOrkBadrukkTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkBadrukkBody, 1.0f));
+		pOrkBadrukkTmpl->m_RangedWeapon.SetTemplateName("OrkShoota");
 		AddTemplate<MonsterTemplate>("OrkBadrukk", pOrkBadrukkTmpl);
 	}
 
 	{
 		MonsterTemplate* pOrkThrakaTmpl = new MonsterTemplate();
+		pOrkThrakaTmpl->m_MaxHealth = 300;
+		pOrkThrakaTmpl->m_MoveSpeed = 150.0f;
 		pOrkThrakaTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkThrakaBody, 1.0f));
+		pOrkThrakaTmpl->m_RangedWeapon.SetTemplateName("OrkShoota");
 		AddTemplate<MonsterTemplate>("OrkThraka", pOrkThrakaTmpl);
 	}
 
 	{
 		MonsterTemplate* pOrkWarbossTmpl = new MonsterTemplate();
 		pOrkWarbossTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkWarbossBody, 1.0f));
+		pOrkWarbossTmpl->m_RangedWeapon.SetTemplateName("OrkShoota");
 		AddTemplate<MonsterTemplate>("OrkWarboss", pOrkWarbossTmpl);
 	}
 

@@ -11,14 +11,14 @@
 namespace Survive
 {
 
-SURVIVE_REG_TYPE(StaticConvexNode, SURVIVE_TYPELIST_1(StaticEntityNode))
+SURVIVE_REG_TYPE(StaticConvexEntityNode, SURVIVE_TYPELIST_1(StaticEntityNode))
 
-Type* StaticConvexNode::GetType()const
+Type* StaticConvexEntityNode::GetType()const
 {
-	return TypeImpl<StaticConvexNode>::Instance();
+	return TypeImpl<StaticConvexEntityNode>::Instance();
 }
 	
-void StaticConvexNode::InitFromTemplate(const Template* Tmpl)
+void StaticConvexEntityNode::InitFromTemplate(const Template* Tmpl)
 {
 	const StaticConvexTemplate* pConvexTmpl = TypeCast<StaticConvexTemplate>(Tmpl);
 
@@ -43,23 +43,23 @@ void StaticConvexNode::InitFromTemplate(const Template* Tmpl)
 	}
 }
 
-const CollisionShape* StaticConvexNode::GetCollisionShape()const
+const CollisionShape* StaticConvexEntityNode::GetCollisionShape()const
 {
 	return &m_Collision;
 }
 
-void StaticConvexNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
+void StaticConvexEntityNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
 	Target.draw(m_Shape, States);
 	GetWorld()->GetContext()->GetDebugRender()->AddConvexPolygon(m_Collision, States.transform, 0.01f, sf::Color::Black);
 }
 
-void StaticConvexNode::OnUpdate(float Dt)
+void StaticConvexEntityNode::OnUpdate(float Dt)
 {
 	
 }
 
-AlignedBoxShape StaticConvexNode::GetBounds()
+AlignedBoxShape StaticConvexEntityNode::GetBounds()
 {
 	AlignedBoxShape Result;
 	m_Collision.GetAlignedHull(&Result);

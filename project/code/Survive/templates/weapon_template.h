@@ -11,7 +11,11 @@ class WeaponTemplate : public Template
 {
 public:
 
+	WeaponTemplate();
+
 	virtual Type* GetType()const;
+
+	eTextureID::Val m_Texture;
 };
 
 }

@@ -14,7 +14,7 @@ public:
 
 	virtual Type* GetType()const;
 
-	virtual void DynamicMove(sf::Vector2f& Disp);
+	virtual void DynamicMove(sf::Vector2f Disp, bool SweepBothDirections);
 
 private:
 

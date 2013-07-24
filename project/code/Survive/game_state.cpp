@@ -3,6 +3,7 @@
 #include <Survive/gui.h>
 #include <Survive/context.h>
 #include <Survive/debug_render.h>
+#include <Survive/scene_nodes/player_entity_node.h>
 
 namespace Survive
 {
@@ -63,7 +64,15 @@ void GameState::Draw()
 bool GameState::Update(float Dt)
 {
 	if (!m_Paused)
+	{
 		GetContext()->GetWorld()->Update(Dt);
+
+		if (GetContext()->GetWorld()->GetPlayer()->GetHealth() <= 0)
+		{
+			RequestStackPop();
+			RequestStackPush(eStateID::GameOver);
+		}
+	}
 
 	GetContext()->GetGui()->Update(Dt);
 	

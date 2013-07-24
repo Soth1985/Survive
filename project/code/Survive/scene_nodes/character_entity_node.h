@@ -14,13 +14,29 @@ class CharacterEntityNode : public DynamicEntityNode
 {
 public:
 
-	void InitFromTemplate(const Template* Tmpl);
+	CharacterEntityNode();
+
+	virtual void InitFromTemplate(const Template* Tmpl);
 
 	virtual Type* GetType()const;
 
 	virtual AlignedBoxShape GetBounds();
 
 	virtual const CollisionShape* GetCollisionShape()const;
+
+	virtual void OnHit(int Damage);
+
+	virtual unsigned int GetBulletTraceMask()const = 0;
+
+	void UseRangedWeapon(const sf::Vector2f& ShootDir);
+
+	void UseCloseCombatWeapon();
+
+	float GetSpeed()const;
+
+	int GetHealth()const;
+
+	int GetMaxHealth()const;
 
 protected:
 
@@ -32,6 +48,19 @@ private:
 
 	sf::Sprite m_Body;	
 	AlignedBoxShape m_Collision;
+	int m_Health;
+
+	const CharacterTemplate* m_pCharacterTmpl;
+
+	const RangedWeaponTemplate* m_pRangedWeaponTmpl;
+	sf::Sprite m_RangedWeaponSprite;
+	float m_RangedWeaponUseTimer;
+
+	const CloseCombatWeaponTemplate* m_pCloseCombatWeaponTmpl;
+	sf::Sprite m_CloseCombatSprite;
+	float m_CloseCombatWeaponUseTime;
+
+	const WeaponTemplate* m_pLastWeaponTmpl;
 };
 
 }

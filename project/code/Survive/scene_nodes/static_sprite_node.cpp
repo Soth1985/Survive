@@ -11,14 +11,14 @@
 namespace Survive
 {
 
-SURVIVE_REG_TYPE(StaticSpriteNode, SURVIVE_TYPELIST_1(StaticEntityNode))
+SURVIVE_REG_TYPE(StaticSpriteEntityNode, SURVIVE_TYPELIST_1(StaticEntityNode))
 
-Type* StaticSpriteNode::GetType()const
+Type* StaticSpriteEntityNode::GetType()const
 {
-	return TypeImpl<StaticSpriteNode>::Instance();
+	return TypeImpl<StaticSpriteEntityNode>::Instance();
 }
 	
-void StaticSpriteNode::InitFromTemplate(const Template* Tmpl)
+void StaticSpriteEntityNode::InitFromTemplate(const Template* Tmpl)
 {
 	const StaticSpriteTemplate* pSpriteTmpl = TypeCast<StaticSpriteTemplate>(Tmpl);
 
@@ -44,23 +44,23 @@ void StaticSpriteNode::InitFromTemplate(const Template* Tmpl)
 	}
 }
 
-const CollisionShape* StaticSpriteNode::GetCollisionShape()const
+const CollisionShape* StaticSpriteEntityNode::GetCollisionShape()const
 {
 	return &m_Collision;
 }
 
-void StaticSpriteNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
+void StaticSpriteEntityNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
 	Target.draw(m_Sprite, States);
 	GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(m_Collision, States.transform, 0.01f, sf::Color::Black);
 }
 
-void StaticSpriteNode::OnUpdate(float Dt)
+void StaticSpriteEntityNode::OnUpdate(float Dt)
 {
 	
 }
 
-AlignedBoxShape StaticSpriteNode::GetBounds()
+AlignedBoxShape StaticSpriteEntityNode::GetBounds()
 {
 	return m_Collision;
 }

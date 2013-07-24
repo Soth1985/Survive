@@ -46,11 +46,11 @@ void GenerateObjects(World* pWorld, int ObjectC, const std::string& TemplateName
 		QuadTreeNode::HitList Objects;
 
 		unsigned int CollisionMask = eCollisionGroup::Characters | eCollisionGroup::Static | eCollisionGroup::Respawn;
-		pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, Objects);
+		pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, 0, Objects);
 
 		while (!Objects.empty())
 		{
-			if(Objects.size() == 1 && Objects[0].m_Object == pNode)
+			if(Objects.size() == 1 && Objects[0].m_pObject == pNode)
 				break;
 
 			Objects.clear();
@@ -60,7 +60,7 @@ void GenerateObjects(World* pWorld, int ObjectC, const std::string& TemplateName
 			Pos.y = MathUtils::RandomRange(0, pWorld->GetWorldBound().GetSize().y);
 			Pos = pWorld->ConstrainToWorld(Pos + HalfSize, HalfSize);
 			pNode->SetLocalPosition(Pos);
-			pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, Objects);
+			pWorld->GetQuadTree()->GetObjects(pNode->GetBounds(), pNode->GetWorldTransform(), CollisionMask, 0, Objects);
 		}
 	}
 }
@@ -77,7 +77,8 @@ m_TickCounter(0)
 
 World::~World()
 {
-
+	m_pSceneRoot.reset(0);
+	m_pQuadTree.reset(0);
 }
 
 void World::Init()
@@ -108,20 +109,20 @@ void World::Init()
 	m_pPlayer->InitFromTemplate(pPlayerTmpl);
 	m_pPlayer->SetLocalPosition(sf::Vector2f(100.0f, 100.0f));
 
-	GenerateObjects<StaticSpriteNode, StaticSpriteTemplate>(this, 10, "StaticSprites");
-	GenerateObjects<StaticConvexNode, StaticConvexTemplate>(this, 10, "StaticConvexes");
-	size_t ObjC = m_pQuadTree->GetObjectCount();
-	GenerateObjects<RespawnNode, RespawnTemplate>(this, 50, "MonsterRespawn");
-	ObjC = m_pQuadTree->GetObjectCount();
+	GenerateObjects<StaticSpriteEntityNode, StaticSpriteTemplate>(this, 10, "StaticSprites");
+	GenerateObjects<StaticConvexEntityNode, StaticConvexTemplate>(this, 10, "StaticConvexes");
+	GenerateObjects<RespawnEntityNode, RespawnTemplate>(this, 200, "MonsterRespawn");
 }
 
 void World::Update(float Dt)
 {
+	RemoveNodes();
 	GetContext()->GetDebugRender()->Update(Dt);
 	size_t ObjC = m_pQuadTree->GetObjectCount();
+
 	++m_TickCounter;
 
-	float ScrollSpeed = 200.0f;
+	float ScrollSpeed = m_pPlayer->GetSpeed();
 	sf::Vector2f MoveDisp;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -145,31 +146,9 @@ void World::Update(float Dt)
 	if (MoveDisp.x && MoveDisp.y)
 	{
 		MoveDisp *= 1.0f / sqrtf(2.0f);
-	}	
-
-	if (MoveDisp.x != 0.0f)
-	{
-		HitInfo swh;
-		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(MoveDisp.x, 0.0f), 1.1f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
-
-		if (swh.m_Object)
-		{
-			MoveDisp.x = 0.0f;
-		}
 	}
 
-	if (MoveDisp.y != 0.0f)
-	{
-		HitInfo swh;
-		m_pQuadTree->SweepShapeClosest(*m_pPlayer->GetCollisionShape(), m_pPlayer->GetWorldTransform(), sf::Vector2f(0.0f, MoveDisp.y), 1.1f, eCollisionGroup::Monster | eCollisionGroup::Static, swh);
-
-		if (swh.m_Object)
-		{
-			MoveDisp.y = 0.0f;
-		}
-	}
-
-	m_pPlayer->Move(MoveDisp);
+	m_pPlayer->DynamicMove(MoveDisp, true);
 
 	AlignedBoxShape PlayerBounds = m_pPlayer->GetBounds();
 	sf::Vector2f PlayerHalfSize(PlayerBounds.GetSize() * 0.5f);
@@ -187,16 +166,21 @@ void World::Update(float Dt)
 
 	Delta = MathUtils::Normalize(Delta);
 
-	HitInfo tr;
-	m_pQuadTree->RayTraceClosest(Ray(m_pPlayer->GetWorldPosition(), Delta), eCollisionGroup::Monster | eCollisionGroup::Static, tr);
+	HitInfo Trace;
+	m_pQuadTree->RayTraceClosest(Ray(m_pPlayer->GetWorldPosition(), Delta), eCollisionGroup::Monster | eCollisionGroup::Static, m_pPlayer, Trace);
 
-	if(tr.m_Object)
+	if (Trace.m_pObject)
 	{
-		sf::Vector2f hitp = m_pPlayer->GetWorldPosition() + Delta * tr.m_Param;
-		GetContext()->GetDebugRender()->AddCircle(hitp, 10.0f, 0.01f);
+		sf::Vector2f HitPos = m_pPlayer->GetWorldPosition() + Delta * Trace.m_Param;
+		GetContext()->GetDebugRender()->AddCircle(HitPos, 10.0f, 0.01f);
 	}
 
-	m_pPlayer->SetLocalRotation(atan2f(Delta.y, Delta.x) * 180.0f / 3.14159265358979323846f + 45.0f);
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		m_pPlayer->UseRangedWeapon(Delta);
+	}
+
+	m_pPlayer->SetLocalRotation( MathUtils::RadToDeg(atan2f(Delta.y, Delta.x)) + 45.0f);
 
 	m_View.setCenter(ConstrainToWorld(m_View.getCenter(), m_View.getSize() * 0.5f));
 
@@ -213,18 +197,18 @@ void World::Draw(sf::RenderWindow* Window)
 
 	AlignedBoxShape ViewBox(ViewPos - ViewSize * 0.5f, ViewSize);
 	m_InViewObjects.clear();
-	GetQuadTree()->GetObjects(ViewBox, sf::Transform::Identity, eCollisionGroup::All, m_InViewObjects);
+	GetQuadTree()->GetObjects(ViewBox, sf::Transform::Identity, eCollisionGroup::All, 0, m_InViewObjects);
 
 	std::sort(m_InViewObjects.begin(), m_InViewObjects.end(), 
 		[](const HitInfo& Hit1, const HitInfo& Hit2)->bool
 		{
-			return Hit1.m_Object->GetWorldLayer() < Hit2.m_Object->GetWorldLayer();
+			return Hit1.m_pObject->GetWorldLayer() < Hit2.m_pObject->GetWorldLayer();
 		}
 		);
 
 	for (size_t Idx = 0; Idx < m_InViewObjects.size(); ++Idx)
 	{
-		Window->draw(*m_InViewObjects[Idx].m_Object);
+		Window->draw(*m_InViewObjects[Idx].m_pObject);
 	}
 
 	GetContext()->GetDebugRender()->Draw(Window);
@@ -286,11 +270,55 @@ unsigned int World::RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequen
 	}
 }
 
+void World::AddSceneNodeToRemove(SceneNode* pSceneNode)
+{
+	m_SceneNodesToRemove.insert(pSceneNode);
+	pSceneNode->m_Flags |= eSceneNodeFlags::MarkToDelete;
+}
+
+void World::UnregisterNode(SceneNode* pSceneNode)
+{
+
+	if (pSceneNode->m_pQuadTreeNode)
+		pSceneNode->m_pQuadTreeNode->Remove(pSceneNode);
+
+	Type* NodeType = pSceneNode->GetType();
+
+	if (NodeType != TypeImpl<SceneNode>::Instance())
+		m_TypeNodeCache[NodeType].erase(pSceneNode);
+}
+
+void World::RemoveNodes()
+{
+	typedef std::unordered_set<SceneNode*>::iterator iterator;
+
+	for (iterator It = m_SceneNodesToRemove.begin(); It != m_SceneNodesToRemove.end(); ++It)
+	{
+		SceneNode* pNode = *It;
+		SceneNode* pNodeParent = pNode->m_pParent;
+
+		if (!pNodeParent->IsMarkedForDelete())
+		{
+			for (size_t ChildIdx = 0; ChildIdx < pNode->m_pChildren.size(); ++ChildIdx)
+			{
+				if (!pNode->m_pChildren[ChildIdx]->IsMarkedForDelete())
+				{
+					pNodeParent->AddChild(pNode->m_pChildren[ChildIdx].release());
+				}
+			}
+		}
+
+		pNodeParent->RemoveNode(pNode);
+	}
+
+	m_SceneNodesToRemove.clear();
+}
+
 bool World::IsObjectInView(SceneNode* pSceneNode)const
 {
 	for (size_t Idx = 0; Idx < m_InViewObjects.size(); ++Idx)
 	{
-		if (m_InViewObjects[Idx].m_Object == pSceneNode)
+		if (m_InViewObjects[Idx].m_pObject == pSceneNode)
 		{
 			return true;
 		}

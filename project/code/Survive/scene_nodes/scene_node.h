@@ -26,6 +26,11 @@ public:
 		return m_pChildren.size();
 	}
 
+	bool IsMarkedForDelete()const
+	{
+		return m_Flags & eSceneNodeFlags::MarkToDelete;
+	}
+
 	bool AddChild(SceneNode* Node);
 
 	bool RemoveNode(SceneNode* Node);
@@ -90,6 +95,8 @@ public:
 
 	virtual const CollisionShape* GetCollisionShape()const;
 
+	void SetCollisionGroup(unsigned int Group);
+
 protected:
 
 	friend class World;
@@ -133,14 +140,7 @@ protected:
 
 	void SetUpdateFrequency(unsigned int Frequency, unsigned int MaxPhase);
 
-	void SetInFrustrum(bool InFrustrum)
-	{
-		if (InFrustrum != m_IsInFrustrum)
-		{
-			OnEnterLeaveFrustrum(InFrustrum);
-			m_IsInFrustrum = InFrustrum;
-		}
-	}
+	void SetInFrustrum(bool InFrustrum);
 
 private:
 

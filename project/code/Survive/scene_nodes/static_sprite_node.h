@@ -6,9 +6,9 @@
 namespace Survive
 {
 
-SURVIVE_DECL_TYPE(Survive::StaticSpriteNode);
+SURVIVE_DECL_TYPE(Survive::StaticSpriteEntityNode);
 
-class StaticSpriteNode : public StaticEntityNode
+class StaticSpriteEntityNode : public StaticEntityNode
 {
 public:
 

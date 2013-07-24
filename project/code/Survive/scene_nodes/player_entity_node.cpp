@@ -1,4 +1,5 @@
 #include <Survive/scene_nodes/player_entity_node.h>
+#include <Survive/templates/player_template.h>
 
 namespace Survive
 {
@@ -16,6 +17,18 @@ void PlayerEntityNode::InitFromTemplate(const Template* Tmpl)
 
 	if(GetCollisionShape())
 		GetCollisionShapeModify()->SetCollisionGroup(eCollisionGroup::Player);
+
+	m_pPlayerTmpl = TypeCast<PlayerTemplate>(Tmpl);
+}
+
+unsigned int PlayerEntityNode::GetBulletTraceMask()const
+{
+	return eCollisionGroup::Monster | eCollisionGroup::Static;
+}
+
+void PlayerEntityNode::OnHit(int Damage)
+{
+	CharacterEntityNode::OnHit(Damage);
 }
 
 }

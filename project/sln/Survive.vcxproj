@@ -29,6 +29,7 @@
     <ClCompile Include="..\code\Survive\content_manager.cpp" />
     <ClCompile Include="..\code\Survive\context.cpp" />
     <ClCompile Include="..\code\Survive\debug_render.cpp" />
+    <ClCompile Include="..\code\Survive\game_over_state.cpp" />
     <ClCompile Include="..\code\Survive\game_state.cpp" />
     <ClCompile Include="..\code\Survive\gui.cpp" />
     <ClCompile Include="..\code\Survive\hit_info.cpp" />
@@ -36,7 +37,6 @@
     <ClCompile Include="..\code\Survive\main_menu_state.cpp" />
     <ClCompile Include="..\code\Survive\math_utils.cpp" />
     <ClCompile Include="..\code\Survive\quad_tree_node.cpp" />
-    <ClCompile Include="..\code\Survive\render_queue.cpp" />
     <ClCompile Include="..\code\Survive\rtti.cpp" />
     <ClCompile Include="..\code\Survive\rtti_manager.cpp" />
     <ClCompile Include="..\code\Survive\sandbox_state.cpp" />
@@ -46,6 +46,7 @@
     <ClCompile Include="..\code\Survive\scene_nodes\monster_entity_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\pickup_entity_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\player_entity_node.cpp" />
+    <ClCompile Include="..\code\Survive\scene_nodes\projectile_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\respawn_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\scene_node.cpp" />
     <ClCompile Include="..\code\Survive\scene_nodes\static_convex_node.cpp" />
@@ -92,13 +93,13 @@
     <ClInclude Include="..\code\Survive\context.h" />
     <ClInclude Include="..\code\Survive\debug_render.h" />
     <ClInclude Include="..\code\Survive\forward.h" />
+    <ClInclude Include="..\code\Survive\game_over_state.h" />
     <ClInclude Include="..\code\Survive\game_state.h" />
     <ClInclude Include="..\code\Survive\gui.h" />
     <ClInclude Include="..\code\Survive\hit_info.h" />
     <ClInclude Include="..\code\Survive\main_menu_state.h" />
     <ClInclude Include="..\code\Survive\math_utils.h" />
     <ClInclude Include="..\code\Survive\quad_tree_node.h" />
-    <ClInclude Include="..\code\Survive\render_queue.h" />
     <ClInclude Include="..\code\Survive\rtti.h" />
     <ClInclude Include="..\code\Survive\rtti_manager.h" />
     <ClInclude Include="..\code\Survive\sandbox_state.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="..\code\Survive\scene_nodes\monster_entity_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\pickup_entity_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\player_entity_node.h" />
+    <ClInclude Include="..\code\Survive\scene_nodes\projectile_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\respawn_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\scene_node.h" />
     <ClInclude Include="..\code\Survive\scene_nodes\static_convex_node.h" />

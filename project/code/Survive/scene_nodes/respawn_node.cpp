@@ -10,9 +10,9 @@
 namespace Survive
 {
 
-SURVIVE_REG_TYPE(RespawnNode, SURVIVE_TYPELIST_1(SceneNode))
+SURVIVE_REG_TYPE(RespawnEntityNode, SURVIVE_TYPELIST_1(SceneNode))
 
-RespawnNode::RespawnNode()
+RespawnEntityNode::RespawnEntityNode()
 	:
 m_pTemplate(0),
 m_SpawnTimer(0.0f),
@@ -21,24 +21,27 @@ m_Size(sf::Vector2f(), sf::Vector2f(50.0f, 50.0f))
 
 }
 
-Type* RespawnNode::GetType()const
+Type* RespawnEntityNode::GetType()const
 {
-	return TypeImpl<RespawnNode>::Instance();
+	return TypeImpl<RespawnEntityNode>::Instance();
 }
 
-void RespawnNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
+void RespawnEntityNode::OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const
 {
 
 }
 
-void RespawnNode::OnUpdate(float Dt)
+void RespawnEntityNode::OnUpdate(float Dt)
 {
+	if (GetInFrustrum())
+		return;
+
 	if (m_pTemplate)
 	{
 		if (GetWorld()->GetNodeCount<MonsterEntityNode>() < GetWorld()->GetContext()->GetSettings()->GetMaxMonsterC())
 		{
 			QuadTreeNode::HitList Hits;
-			GetWorld()->GetQuadTree()->GetObjects(m_Size, GetWorldTransform(), eCollisionGroup::Characters | eCollisionGroup::Static, Hits);
+			GetWorld()->GetQuadTree()->GetObjects(m_Size, GetWorldTransform(), eCollisionGroup::Characters | eCollisionGroup::Static, this, Hits);
 
 			if (!Hits.empty())
 				return;
@@ -57,18 +60,19 @@ void RespawnNode::OnUpdate(float Dt)
 	}
 }
 
-AlignedBoxShape RespawnNode::GetBounds()
+AlignedBoxShape RespawnEntityNode::GetBounds()
 {
 	return m_Size;
 }
 
-const CollisionShape* RespawnNode::GetCollisionShape()const
+const CollisionShape* RespawnEntityNode::GetCollisionShape()const
 {
 	return &m_Size;
 }
 
-void RespawnNode::InitFromTemplate(const Template* pTmpl)
+void RespawnEntityNode::InitFromTemplate(const Template* pTmpl)
 {
+	SetUpdateFrequency(20, 50);
 	const RespawnTemplate* pRespawnTmpl = TypeCast<RespawnTemplate>(pTmpl);
 
 	if (pRespawnTmpl)

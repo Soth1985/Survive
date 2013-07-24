@@ -6,13 +6,13 @@
 namespace Survive
 {
 
-SURVIVE_DECL_TYPE(Survive::RespawnNode);
+SURVIVE_DECL_TYPE(Survive::RespawnEntityNode);
 
-class RespawnNode : public SceneNode
+class RespawnEntityNode : public SceneNode
 {
 public:
 
-	RespawnNode();
+	RespawnEntityNode();
 
 	virtual Type* GetType()const;
 

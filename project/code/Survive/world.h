@@ -66,7 +66,7 @@ public:
 				Result->m_Layer = pParent->GetWorldLayer();
 			}
 
-			m_TypeNodeCache[NodeType].push_back(Result);
+			m_TypeNodeCache[NodeType].insert(Result);
 
 			Result->m_UpdatePhase = RequestUpdatePhase(m_TypePhases[NodeType], Result->GetUpdateFrequency(), 30);
 
@@ -108,7 +108,7 @@ public:
 	sf::Vector2f ConstrainToWorld(const sf::Vector2f& Center, const sf::Vector2f& HalfSize);
 
 	template <class T>
-	unsigned int RequestUpdatePhase(T* pSceneNode, unsigned int MaxPhase)
+	void RequestUpdatePhase(T* pSceneNode, unsigned int MaxPhase)
 	{
 		Type* NodeType = TypeImpl<T>::Instance();
 		Type* SceneNodeType = TypeImpl<SceneNode>::Instance();
@@ -120,20 +120,25 @@ public:
 		else
 		{
 			assert(0 && "Not a scene node");
-			return 0;
 		}
 	}
 
 	bool IsObjectInView(SceneNode* pSceneNode)const;
 
+	void AddSceneNodeToRemove(SceneNode* pSceneNode);
+
+	void UnregisterNode(SceneNode* pSceneNode);
+
 private:
 
-	typedef std::vector<SceneNode*> NodeList;
+	typedef std::unordered_set<SceneNode*> NodeList;
 	typedef std::unordered_map<Type*, NodeList> TypeNodeCache;
 	typedef std::map<unsigned int, unsigned int> PhaseMap;
 	typedef std::unordered_map<Type*, PhaseMap> TypePhasesMap;
 
 	unsigned int RequestUpdatePhase(PhaseMap& PhasesMap, unsigned int Frequency, unsigned int MaxPhase);
+
+	void RemoveNodes();
 
 	sf::View m_View;
 	AlignedBoxShape m_WorldBound;
@@ -143,6 +148,7 @@ private:
 	TypeNodeCache m_TypeNodeCache;
 	TypePhasesMap m_TypePhases;
 	std::array<SceneNode*, eWorldLayer::LayerCount> m_pLayers;
+	std::unordered_set<SceneNode*> m_SceneNodesToRemove;
 	QuadTreeNode::HitList m_InViewObjects;
 	Context* m_pContext;
 	unsigned int m_TickCounter;

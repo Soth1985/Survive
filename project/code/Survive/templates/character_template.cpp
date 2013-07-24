@@ -7,7 +7,8 @@ SURVIVE_REG_TYPE(CharacterTemplate, SURVIVE_TYPELIST_1(Template))
 
 CharacterTemplate::CharacterTemplate()
 	:
-m_MaxHealth(100)
+m_MaxHealth(100),
+m_MoveSpeed(100.0f)
 {
 	
 }

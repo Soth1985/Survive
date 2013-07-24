@@ -12,7 +12,7 @@ State(pStack, pContext)
 {
 	sf::Texture* BackGroundTex = pContext->GetContentManager()->LoadTexture(eTextureID::MainMenuBackground);
 	m_Background.setTexture(*BackGroundTex);
-	sf::FloatRect Bounds = m_Background.getGlobalBounds();
+	sf::FloatRect Bounds = m_Background.getLocalBounds();
 	sf::Vector2u WindowSize = pContext->GetRenderWindow()->getSize();
 	sf::Vector2f Scale(WindowSize.x / Bounds.width, WindowSize.y / Bounds.height);
 	m_Background.setScale(Scale);

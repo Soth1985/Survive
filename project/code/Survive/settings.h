@@ -26,11 +26,22 @@ public:
 		return m_MaxMonsterC;
 	}
 
+	int GetScore()const
+	{
+		return m_Score;
+	}
+
+	void SetScore(int Score)
+	{
+		m_Score = Score;
+	}
+
 private:
 
 	int m_RenderWindowHeight;
 	int m_RenderWindowWidth;
 	int m_MaxMonsterC;
+	int m_Score;
 };
 
 }

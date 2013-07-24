@@ -7,6 +7,7 @@
 #include <Survive/debug_render.h>
 #include <Survive/main_menu_state.h>
 #include <Survive/game_state.h>
+#include <Survive/game_over_state.h>
 #include <Survive/math_utils.h>
 #include <SFML/Graphics.hpp>
 
@@ -36,7 +37,9 @@ m_UpdateFrequency(1.0f / 60.0f)
 
 	m_StateStack.RegisterState<MainMenuState>(eStateID::MainMenu);
 	m_StateStack.RegisterState<GameState>(eStateID::Game);
+	m_StateStack.RegisterState<GameOverState>(eStateID::GameOver);
 
+	//m_StateStack.PushState(eStateID::GameOver);
 	m_StateStack.PushState(eStateID::Game);
 	//m_StateStack.PushState(eStateID::MainMenu);
 }

@@ -7,9 +7,9 @@
 namespace Survive
 {
 
-SURVIVE_DECL_TYPE(Survive::StaticConvexNode);
+SURVIVE_DECL_TYPE(Survive::StaticConvexEntityNode);
 
-class StaticConvexNode : public StaticEntityNode
+class StaticConvexEntityNode : public StaticEntityNode
 {
 public:
 

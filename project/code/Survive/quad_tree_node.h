@@ -18,15 +18,15 @@ public:
 
 	void GetNodesIntersectingAlignedBox(const AlignedBoxShape& Box, const sf::Transform& BoxTf, NodeList& Nodes);
 
-	void GetObjects(const sf::Vector2f& Pos, unsigned int Mask, HitList& Objects);
+	void GetObjects(const sf::Vector2f& Pos, unsigned int Mask, const SceneNode* pSkip, HitList& Objects);
 
-	void GetObjects(const CollisionShape& Shape, const sf::Transform& ShapeTf, unsigned int Mask, HitList& Objects);
+	void GetObjects(const CollisionShape& Shape, const sf::Transform& ShapeTf, unsigned int Mask, const SceneNode* pSkip, HitList& Objects);
 
-	void RayTrace(const Ray& R, unsigned int Mask, HitList& Objects);
+	void RayTrace(const Ray& R, unsigned int Mask, const SceneNode* pSkip, HitList& Objects);
 
-	void RayTraceClosest(const Ray& R, unsigned int Mask, HitInfo& Result);
+	void RayTraceClosest(const Ray& R, unsigned int Mask, const SceneNode* pSkip, HitInfo& Result);
 
-	void SweepShapeClosest(const CollisionShape& Shape, const sf::Transform& ShapeTf, const sf::Vector2f& V, float Tmax, unsigned int Mask, HitInfo& Result);
+	void SweepShapeClosest(const CollisionShape& Shape, const sf::Transform& ShapeTf, const sf::Vector2f& V, float Tmax, unsigned int Mask, const SceneNode* pSkip, HitInfo& Result);
 
 	void AddObject(SceneNode* pObject);
 	bool Remove(SceneNode* pObject);
