@@ -23,7 +23,7 @@ State(pStack, pContext)
 	char Buf[32];
 	StringUtilities::ToString(pContext->GetSettings()->GetScore(), Buf, 31);
 	std::string Message("Your score is ");
-	Message = Message + Buf + "\nPress any key to continue";
+	Message = Message + Buf + "\nPress Escape to continue";
 	m_Text.setFont(*pFont);
 	m_Text.setCharacterSize(20);
 	m_Text.setString(Message);
@@ -56,7 +56,7 @@ bool GameOverState::Update(float Dt)
 
 bool GameOverState::HandleEvent(const sf::Event& Event)
 {	
-	if (Event.type == sf::Event::KeyPressed)
+	if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape)
 	{
 		RequestStackPop();
 		RequestStackPush(eStateID::MainMenu);
