@@ -3,7 +3,9 @@
 #include <Survive/gui.h>
 #include <Survive/context.h>
 #include <Survive/debug_render.h>
+#include <Survive/settings.h>
 #include <Survive/scene_nodes/player_entity_node.h>
+#include <Survive/string_utilities.h>
 
 namespace Survive
 {
@@ -16,6 +18,7 @@ m_Paused(false)
 	pContext->SetWorld(new World(pContext));
 	pContext->GetWorld()->Init();
 
+	//Menu
 	m_pMenuWindow = sfg::Window::Create(sfg::Window::NO_STYLE);
 
 	sfg::Label::Ptr WindowLabel(sfg::Label::Create("Menu"));
@@ -45,6 +48,19 @@ m_Paused(false)
 	Gui::PlaceToCenter(m_pMenuWindow, pContext->GetRenderWindow()->getSize().x, pContext->GetRenderWindow()->getSize().y);
 
 	m_pMenuWindow->Show(false);
+	//HUD
+	m_pHudWindow = sfg::Window::Create(sfg::Window::NO_STYLE);
+
+	m_pHealthLabel = sfg::Label::Create("");
+	m_pScoreLabel = sfg::Label::Create("");
+
+	sfg::Box::Ptr HudLayout(sfg::Box::Create(sfg::Box::HORIZONTAL, 5.0f));
+	HudLayout->Pack(m_pHealthLabel, false);
+	HudLayout->Pack(m_pScoreLabel, false);
+
+	m_pHudWindow->Add(HudLayout);
+	pContext->GetGui()->AddWindow(m_pHudWindow);
+	//m_pHudWindow->Show(true);
 
 	pContext->GetRenderWindow()->resetGLStates();
 }
@@ -71,6 +87,19 @@ bool GameState::Update(float Dt)
 		{
 			RequestStackPop();
 			RequestStackPush(eStateID::GameOver);
+			GetContext()->SetWorld(0);
+			GetContext()->GetDebugRender()->Clear();
+			sf::RenderWindow* pRenderWindow = GetContext()->GetRenderWindow();
+			pRenderWindow->setView(pRenderWindow->getDefaultView());
+		}
+		else
+		{
+			PlayerEntityNode* pPlayer = GetContext()->GetWorld()->GetPlayer();
+			char Buf[32];
+			StringUtilities::ToString(pPlayer->GetHealth(), Buf, 31);
+			m_pHealthLabel->SetText(std::string("Health: ") + Buf);
+			StringUtilities::ToString(GetContext()->GetSettings()->GetScore(), Buf, 31);
+			m_pScoreLabel->SetText(std::string("Score: ") + Buf);
 		}
 	}
 
@@ -87,6 +116,7 @@ bool GameState::HandleEvent(const sf::Event& Event)
 		{
 			m_Paused = true;
 			m_pMenuWindow->Show(true);
+			m_pHudWindow->Show(false);
 		}
 
 		if (Event.key.code == sf::Keyboard::F2)
@@ -102,6 +132,7 @@ bool GameState::HandleEvent(const sf::Event& Event)
 void GameState::OnMenuResumeClicked()
 {
 	m_pMenuWindow->Show(false);
+	m_pHudWindow->Show(true);
 	m_Paused = false;
 }
 

@@ -13,7 +13,7 @@ Type* DynamicEntityNode::GetType()const
 
 void DynamicEntityNode::DynamicMove(sf::Vector2f Disp, bool SweepBothDirections)
 {
-	unsigned int CollisionMask = eCollisionGroup::Monster | eCollisionGroup::Static | eCollisionGroup::Player;
+	unsigned int CollisionMask = eCollisionGroup::Monster | eCollisionGroup::Static | eCollisionGroup::Player | eCollisionGroup::Pickup;
 	float SweepTmax = 1.5f;
 
 	if (SweepBothDirections)
@@ -26,6 +26,7 @@ void DynamicEntityNode::DynamicMove(sf::Vector2f Disp, bool SweepBothDirections)
 			if (Hit.m_pObject)
 			{
 				Disp.x = 0.0f;
+				OnTouch(Hit.m_pObject);
 			}
 		}
 
@@ -37,6 +38,7 @@ void DynamicEntityNode::DynamicMove(sf::Vector2f Disp, bool SweepBothDirections)
 			if (Hit.m_pObject)
 			{
 				Disp.y = 0.0f;
+				OnTouch(Hit.m_pObject);
 			}
 		}
 	}
@@ -49,10 +51,16 @@ void DynamicEntityNode::DynamicMove(sf::Vector2f Disp, bool SweepBothDirections)
 		{
 			Disp.x = 0.0f;
 			Disp.y = 0.0f;
+			OnTouch(Hit.m_pObject);
 		}
 	}
 
 	Move(Disp);
+}
+
+void DynamicEntityNode::OnTouch(SceneNode* pOther)
+{
+
 }
 
 }

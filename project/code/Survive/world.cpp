@@ -179,6 +179,10 @@ void World::Update(float Dt)
 	{
 		m_pPlayer->UseRangedWeapon(Delta);
 	}
+	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		m_pPlayer->UseCloseCombatWeapon(eCollisionGroup::Monster);
+	}
 
 	m_pPlayer->SetLocalRotation( MathUtils::RadToDeg(atan2f(Delta.y, Delta.x)) + 45.0f);
 

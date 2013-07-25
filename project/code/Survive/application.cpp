@@ -40,8 +40,8 @@ m_UpdateFrequency(1.0f / 60.0f)
 	m_StateStack.RegisterState<GameOverState>(eStateID::GameOver);
 
 	//m_StateStack.PushState(eStateID::GameOver);
-	m_StateStack.PushState(eStateID::Game);
-	//m_StateStack.PushState(eStateID::MainMenu);
+	//m_StateStack.PushState(eStateID::Game);
+	m_StateStack.PushState(eStateID::MainMenu);
 }
 
 Application::~Application()

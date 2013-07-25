@@ -48,6 +48,8 @@ public:
 		m_IsEnabled = Enabled;
 	}
 
+	void Clear();
+
 private:
 
 	template<class T>

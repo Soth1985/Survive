@@ -11,7 +11,11 @@ class MonsterTemplate : public CharacterTemplate
 {
 public:
 
+	MonsterTemplate();
+
 	virtual Type* GetType()const;
+
+	float m_DropChance;
 };
 
 }

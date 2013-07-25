@@ -20,6 +20,10 @@ public:
 
 	virtual void OnHit(int Damage);
 
+protected:
+
+	virtual void OnTouch(SceneNode* pOther);
+
 private:
 
 	const PlayerTemplate* m_pPlayerTmpl;

@@ -154,6 +154,7 @@ struct eTextureID
 		TerrainOrkBuilding,
 		TerrainOrkGarage,
 		TerrainOrkHut,
+		PickupHealthPack,
 		TextureCount
 	};
 };
@@ -184,6 +185,7 @@ struct eWorldLayer
 	enum Val
 	{
 		LandscapeLayer,
+		PickupLayer,
 		GroundLayer,
 		ProjectilesLayer,
 		LayerCount

@@ -8,6 +8,7 @@
 #include <Survive/templates/ranged_weapon_template.h>
 #include <Survive/templates/static_convex_template.h>
 #include <Survive/templates/static_sprite_template.h>
+#include <Survive/templates/pickup_template.h>
 
 namespace Survive
 {
@@ -85,19 +86,29 @@ void TemplateManager::CreateDefaultTemplates()
 		RangedWeaponTemplate* pPlayerBolter = new RangedWeaponTemplate();
 
 		pPlayerBolter->m_Texture = eTextureID::ChaosLordWeaponBolter;
-		pPlayerBolter->m_Damage = 20;
-		pPlayerBolter->m_ShootTime = 0.1f;
-		pPlayerBolter->m_ProjectileSpeed = 800.0f;
+		pPlayerBolter->m_Damage = 50;
+		pPlayerBolter->m_ShootTime = 0.5f;
+		pPlayerBolter->m_ProjectileSpeed = 700.0f;
 		pPlayerBolter->m_ProjectileTexId = eTextureID::ProjectileBullet;
 		AddTemplate<RangedWeaponTemplate>("PlayerBolter", pPlayerBolter);
+	}
+
+	{
+		CloseCombatWeaponTemplate* pPlayerSword = new CloseCombatWeaponTemplate();
+
+		pPlayerSword->m_Texture = eTextureID::ChaosLordWeaponSword;
+		pPlayerSword->m_Damage = 75;
+		pPlayerSword->m_SwingTime = 0.75f;
+		pPlayerSword->m_SwingSize = sf::Vector2f(150.0f, 150.0f);
+		AddTemplate<CloseCombatWeaponTemplate>("PlayerSword", pPlayerSword);
 	}
 
 	{
 		RangedWeaponTemplate* pOrkShoota = new RangedWeaponTemplate();
 
 		pOrkShoota->m_Damage = 20;
-		pOrkShoota->m_ShootTime = 0.1f;
-		pOrkShoota->m_ProjectileSpeed = 800.0f;
+		pOrkShoota->m_ShootTime = 1.5f;
+		pOrkShoota->m_ProjectileSpeed = 600.0f;
 		pOrkShoota->m_ProjectileTexId = eTextureID::ProjectileBullet;
 		AddTemplate<RangedWeaponTemplate>("OrkShoota", pOrkShoota);
 	}
@@ -142,6 +153,8 @@ void TemplateManager::CreateDefaultTemplates()
 		pContentTmpl->m_Textures[eTextureID::TerrainOrkGarage] = "Textures/terrain/terrain_ork_garage.png";
 		pContentTmpl->m_Textures[eTextureID::TerrainOrkHut] = "Textures/terrain/terrain_ork_hut.png";
 
+		pContentTmpl->m_Textures[eTextureID::PickupHealthPack] = "Textures/pickups/health.png";
+
 		pContentTmpl->m_Fonts[eFontID::Arial] = "Fonts/arial.ttf";
 
 		AddTemplate<ContentTemplate>("Content", pContentTmpl);
@@ -149,10 +162,11 @@ void TemplateManager::CreateDefaultTemplates()
 
 	{
 		PlayerTemplate* pPlayerTmpl = new PlayerTemplate();
-		pPlayerTmpl->m_MaxHealth = 1000;
+		pPlayerTmpl->m_MaxHealth = 5000;
 		pPlayerTmpl->m_MoveSpeed = 200.0f;
 		pPlayerTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::ChaosLordBody, 1.0f));
 		pPlayerTmpl->m_RangedWeapon.SetTemplateName("PlayerBolter");
+		pPlayerTmpl->m_CloseCombatWeapon.SetTemplateName("PlayerSword");
 		AddTemplate<PlayerTemplate>("Player", pPlayerTmpl);
 	}
 
@@ -222,6 +236,13 @@ void TemplateManager::CreateDefaultTemplates()
 		pOrkWarbossTmpl->m_BodyTextures.push_back(CharacterTemplate::TexIdPair(eTextureID::OrkWarbossBody, 1.0f));
 		pOrkWarbossTmpl->m_RangedWeapon.SetTemplateName("OrkShoota");
 		AddTemplate<MonsterTemplate>("OrkWarboss", pOrkWarbossTmpl);
+	}
+
+	{
+		PickupTemplate* pPickupTmpl = new PickupTemplate();
+		pPickupTmpl->m_TexId = eTextureID::PickupHealthPack;
+		pPickupTmpl->m_HealthToGive = 250;
+		AddTemplate<PickupTemplate>("PickupHealth", pPickupTmpl);
 	}
 
 	{

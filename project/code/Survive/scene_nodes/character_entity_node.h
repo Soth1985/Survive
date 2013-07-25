@@ -30,7 +30,7 @@ public:
 
 	void UseRangedWeapon(const sf::Vector2f& ShootDir);
 
-	void UseCloseCombatWeapon();
+	void UseCloseCombatWeapon(unsigned int CollisionMask);
 
 	float GetSpeed()const;
 
@@ -39,6 +39,8 @@ public:
 	int GetMaxHealth()const;
 
 protected:
+
+	void AddHealth(int Health);
 
 	virtual void OnDraw(sf::RenderTarget& Target, sf::RenderStates States)const;
 

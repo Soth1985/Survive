@@ -11,7 +11,12 @@ class PickupTemplate : public Template
 {
 public:
 
+	PickupTemplate();
+
 	virtual Type* GetType()const;
+
+	eTextureID::Val m_TexId;
+	int m_HealthToGive;
 };
 
 }

@@ -136,12 +136,28 @@ void CharacterEntityNode::UseRangedWeapon(const sf::Vector2f& ShootDir)
 	}
 }
 
-void CharacterEntityNode::UseCloseCombatWeapon()
+void CharacterEntityNode::UseCloseCombatWeapon(unsigned int CollisionMask)
 {
-	if (m_pCloseCombatWeaponTmpl)
+	if (m_pCloseCombatWeaponTmpl && m_CloseCombatWeaponUseTime <= 0.0f)
 	{
 		m_CloseCombatWeaponUseTime = m_pCloseCombatWeaponTmpl->m_SwingTime;
 		m_pLastWeaponTmpl = m_pCloseCombatWeaponTmpl;
+
+		QuadTreeNode::HitList Objects;
+		AlignedBoxShape OverlapShape;
+		OverlapShape.SetCornerPosition(-0.5f * m_pCloseCombatWeaponTmpl->m_SwingSize);
+		OverlapShape.SetSize(m_pCloseCombatWeaponTmpl->m_SwingSize);
+		GetWorld()->GetQuadTree()->GetObjects(OverlapShape, GetWorldTransform(), CollisionMask, this, Objects);
+
+		GetWorld()->GetContext()->GetDebugRender()->AddAlignedBox(OverlapShape, GetWorldTransform(), 0.02f, sf::Color::Green);
+
+		for (size_t Idx = 0; Idx < Objects.size(); ++Idx)
+		{
+			CharacterEntityNode* pCharacter = TypeCast<CharacterEntityNode>(Objects[Idx].m_pObject);
+
+			if (pCharacter)
+				pCharacter->OnHit(m_pCloseCombatWeaponTmpl->m_Damage);
+		}		
 	}
 }
 
@@ -178,6 +194,14 @@ int CharacterEntityNode::GetHealth()const
 int CharacterEntityNode::GetMaxHealth()const
 {
 	return m_pCharacterTmpl->m_MaxHealth;
+}
+
+void CharacterEntityNode::AddHealth(int Health)
+{
+	m_Health += Health;
+
+	if (m_Health > m_pCharacterTmpl->m_MaxHealth)
+		m_Health = m_pCharacterTmpl->m_MaxHealth;
 }
 
 }

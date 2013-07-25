@@ -29,6 +29,9 @@ private:
 	void OnMenuReturnClicked();
 
 	sfg::Window::Ptr m_pMenuWindow;
+	sfg::Window::Ptr m_pHudWindow;
+	sfg::Label::Ptr m_pHealthLabel;
+	sfg::Label::Ptr m_pScoreLabel;
 	bool m_Paused;
 };
 

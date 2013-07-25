@@ -23,7 +23,7 @@ State(pStack, pContext)
 	char Buf[32];
 	StringUtilities::ToString(pContext->GetSettings()->GetScore(), Buf, 31);
 	std::string Message("Your score is ");
-	Message = Message + Buf + "\nPress Any Key To Continue";
+	Message = Message + Buf + "\nPress any key to continue";
 	m_Text.setFont(*pFont);
 	m_Text.setCharacterSize(20);
 	m_Text.setString(Message);

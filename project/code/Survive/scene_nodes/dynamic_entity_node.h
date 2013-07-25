@@ -16,6 +16,10 @@ public:
 
 	virtual void DynamicMove(sf::Vector2f Disp, bool SweepBothDirections);
 
+protected:
+
+	virtual void OnTouch(SceneNode* pOther);
+
 private:
 
 	sf::Vector2f m_Velocity;

@@ -1,5 +1,7 @@
 #include <Survive/scene_nodes/player_entity_node.h>
 #include <Survive/templates/player_template.h>
+#include <Survive/scene_nodes/pickup_entity_node.h>
+#include <Survive/world.h>
 
 namespace Survive
 {
@@ -29,6 +31,17 @@ unsigned int PlayerEntityNode::GetBulletTraceMask()const
 void PlayerEntityNode::OnHit(int Damage)
 {
 	CharacterEntityNode::OnHit(Damage);
+}
+
+void PlayerEntityNode::OnTouch(SceneNode* pOther)
+{
+	PickupEntityNode* pPickup = TypeCast<PickupEntityNode>(pOther);
+
+	if (pPickup)
+	{
+		AddHealth(pPickup->GetHealthToGive());
+		GetWorld()->AddSceneNodeToRemove(pOther);
+	}
 }
 
 }

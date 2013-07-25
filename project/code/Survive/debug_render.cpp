@@ -176,4 +176,13 @@ void DebugRender::Draw(sf::RenderWindow* pWindow)
 	}
 }
 
+void DebugRender::Clear()
+{
+	m_Lines.clear();
+	m_Boxes.clear();
+	m_ConvexPolygons.clear();
+	m_Circles.clear();
+	m_Texts.clear();
+}
+
 }
