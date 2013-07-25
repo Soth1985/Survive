@@ -185,9 +185,15 @@ void SceneNode::UpdateQuadTreeLocation()
 	if (pShape && m_pQuadTreeNode)
 	{
 		int oc = GetWorld()->GetQuadTree()->GetObjectCount();
-		m_pQuadTreeNode->Remove(this);
-		//int oc2 = GetWorld()->GetQuadTree()->GetObjectCount();
-		GetWorld()->GetQuadTree()->AddObject(this);
+
+		AlignedBoxShape Temp = GetBounds();
+		Temp.TransformShape(GetWorldTransform());
+
+		if (!m_pQuadTreeNode->GetBounds().Contains(Temp))
+		{
+			m_pQuadTreeNode->Remove(this);
+			GetWorld()->GetQuadTree()->AddObject(this);
+		}		
 		
 		//m_pQuadTreeNode->Update(this);
 		int oc1 = GetWorld()->GetQuadTree()->GetObjectCount();
